@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "317996428929",
+    "firebase_url": "https://nurad-hotel-default-rtdb.firebaseio.com",
+    "project_id": "nurad-hotel",
+    "storage_bucket": "nurad-hotel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317996428929:android:822260163be857b5d12780",
+        "android_client_info": {
+          "package_name": "com.example.nurad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcn17Uf8iIbHyC2izWbpoiHFUxvFegbh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317996428929:android:7b6a4696fbbf8914d12780",
+        "android_client_info": {
+          "package_name": "com.example.nuradadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcn17Uf8iIbHyC2izWbpoiHFUxvFegbh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
