@@ -13,8 +13,40 @@
         android:theme="@style/Theme.NUradAdmin"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".Activities.Create.Activity_RoomTypes"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Create.Activity_CreateRoomType"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Create.Activity_CreateRevenueCost"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Activities.BottomMenu.Activity_Available"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_Language"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_Statistics"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_SystemManagement"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_OtherRevenue"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_BookingCalendar"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.SideMenu.Activity_Dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Create.Activity_CreateBooking"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

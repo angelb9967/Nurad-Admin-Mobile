@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/booking"
+        android:title="Booking"
+        android:icon="@drawable/calendar_day" />
+
+    <item
+        android:id="@+id/available"
+        android:title="Available"
+        android:icon="@drawable/sign_hanging"/>
+
+    <item
+        android:id="@+id/inUse"
+        android:title="In Use"
+        android:icon="@drawable/bed" />
+
+    <item
+        android:id="@+id/history"
+        android:title="History"
+        android:icon="@drawable/time_past"/>
+</menu>

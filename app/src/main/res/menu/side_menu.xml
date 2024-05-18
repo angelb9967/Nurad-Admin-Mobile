@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/dashboard_menu"
+            android:icon="@drawable/dashboard"
+            android:title="Dashboard"/>
+
+        <item android:id="@+id/bookingCalendar_menu"
+            android:icon="@drawable/calendar_day"
+            android:title="Booking Calendar"/>
+
+        <item android:id="@+id/otherRevenue_menu"
+            android:icon="@drawable/calculator_bill"
+            android:title="Other Revenue &amp; Expenses"/>
+
+        <item android:id="@+id/systemManagement_menu"
+            android:icon="@drawable/settings"
+            android:title="System Management"/>
+
+        <item android:id="@+id/statistics_menu"
+            android:icon="@drawable/chart_simple"
+            android:title="Statistics"/>
+
+        <item android:id="@+id/language_menu"
+            android:icon="@drawable/globe"
+            android:title="Language"/>
+
+        <item android:id="@+id/logout_menu"
+            android:icon="@drawable/power"
+            android:title="Logout"/>
+    </group>
+</menu>
