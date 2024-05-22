@@ -26,7 +26,7 @@ public class Activity_CreateRoomType extends AppCompatActivity {
     private Button Save_Btn;
     private ImageView back_icon;
     private TextView title;
-    private String purpose="";
+    private String purpose = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

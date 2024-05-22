@@ -183,62 +183,6 @@
             app:layout_constraintStart_toStartOf="@+id/Adult_Etxt"
             app:layout_constraintTop_toBottomOf="@+id/Adult_Etxt" />
 
-        <EditText
-            android:id="@+id/CheckInTime_Etxt"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/custom_input"
-            android:hint="Check-In Time"
-            android:inputType="time"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            app:layout_constraintEnd_toStartOf="@+id/InTime_Img"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Child_Etxt" />
-
-        <ImageView
-            android:id="@+id/InTime_Img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="35dp"
-            app:layout_constraintBottom_toBottomOf="@id/CheckInTime_Etxt"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/CheckInTime_Etxt"
-            app:layout_constraintTop_toBottomOf="@+id/Child_Etxt"
-            app:layout_constraintVertical_bias="0.652"
-            app:srcCompat="@drawable/clock_five" />
-
-        <EditText
-            android:id="@+id/CheckOutTime_Etxt"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/custom_input"
-            android:hint="Check-Out Time"
-            android:inputType="time"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            app:layout_constraintEnd_toStartOf="@+id/OutTime_Img"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/CheckInTime_Etxt" />
-
-        <ImageView
-            android:id="@+id/OutTime_Img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="35dp"
-            app:layout_constraintBottom_toBottomOf="@id/CheckOutTime_Etxt"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/CheckOutTime_Etxt"
-            app:layout_constraintTop_toBottomOf="@+id/CheckInTime_Etxt"
-            app:layout_constraintVertical_bias="0.652"
-            app:srcCompat="@drawable/clock_five" />
-
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
@@ -247,9 +191,9 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:background="@android:color/darker_gray"
-            app:layout_constraintEnd_toEndOf="@+id/CheckOutTime_Etxt"
-            app:layout_constraintStart_toStartOf="@+id/CheckOutTime_Etxt"
-            app:layout_constraintTop_toBottomOf="@+id/CheckOutTime_Etxt"
+            app:layout_constraintEnd_toEndOf="@+id/Child_Etxt"
+            app:layout_constraintStart_toStartOf="@+id/Child_Etxt"
+            app:layout_constraintTop_toBottomOf="@+id/Child_Etxt"
             tools:layout_editor_absoluteX="30dp" />
 
         <TextView

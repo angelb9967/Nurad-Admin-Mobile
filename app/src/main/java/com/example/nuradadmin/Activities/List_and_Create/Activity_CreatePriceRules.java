@@ -32,11 +32,10 @@ import java.util.Locale;
 
 public class Activity_CreatePriceRules extends AppCompatActivity {
     private DatabaseReference databaseReference;
-    private EditText ruleName_Etxt, price_Etxt, extraAdultprice_Etxt, extraChildprice_Etxt, checkIn_Etxt, checkOut_Etxt, friday_Etxt, saturday_Etxt, sunday_Etxt;
+    private EditText ruleName_Etxt, price_Etxt, extraAdultprice_Etxt, extraChildprice_Etxt, friday_Etxt, saturday_Etxt, sunday_Etxt;
     private Button saveBtn;
-    private ImageView back_icon, checkIn_img, checkOut_img;
+    private ImageView back_icon;
     private TextView title;
-    private int mHour, mMinute;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +55,6 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
         price_Etxt = findViewById(R.id.Price_Etxt);
         extraAdultprice_Etxt = findViewById(R.id.Adult_Etxt);
         extraChildprice_Etxt = findViewById(R.id.Child_Etxt);
-        checkIn_Etxt = findViewById(R.id.CheckInTime_Etxt);
-        checkOut_Etxt = findViewById(R.id.CheckOutTime_Etxt);
-        checkIn_img = findViewById(R.id.InTime_Img);
-        checkOut_img = findViewById(R.id.OutTime_Img);
         friday_Etxt = findViewById(R.id.FridayPrice_Etxt);
         saturday_Etxt = findViewById(R.id.SaturdayPrice_Etxt);
         sunday_Etxt = findViewById(R.id.SundayPrice_Etxt);
@@ -74,61 +69,21 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
             finish();
         });
 
-        // Prevent keyboard from appearing when EditText is touched
-        checkIn_Etxt.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                showTimePickerDialog(checkIn_Etxt);
-                return true;
-            }
-            return false;
-        });
-
-        // Prevent keyboard from appearing when EditText is touched
-        checkOut_Etxt.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                showTimePickerDialog(checkOut_Etxt);
-                return true;
-            }
-            return false;
-        });
-
-        checkIn_Etxt.setOnFocusChangeListener((view, hasFocus) -> {
-            if(hasFocus){
-                showTimePickerDialog(checkIn_Etxt);
-            }
-        });
-
-        checkIn_img.setOnClickListener(view ->{
-           showTimePickerDialog(checkIn_Etxt);
-        });
-
-        checkOut_Etxt.setOnFocusChangeListener((view, hasFocus) -> {
-            if(hasFocus){
-                showTimePickerDialog(checkOut_Etxt);
-            }
-        });
-
-        checkOut_img.setOnClickListener(view ->{
-            showTimePickerDialog(checkOut_Etxt);
-        });
-
         saveBtn.setOnClickListener(view ->{
             final String rule_name = ruleName_Etxt.getText().toString();
             final String price = price_Etxt.getText().toString();
             final String extra_AdultPrice = extraAdultprice_Etxt.getText().toString();
             final String extra_ChildPrice = extraChildprice_Etxt.getText().toString();
-            final String checkIn_time = checkIn_Etxt.getText().toString();
-            final String checkOut_time = checkOut_Etxt.getText().toString();
             final String friday_price = friday_Etxt.getText().toString();
             final String saturday_price = saturday_Etxt.getText().toString();
             final String sunday_price = sunday_Etxt.getText().toString();
 
-            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(price) || TextUtils.isEmpty(extra_AdultPrice) || TextUtils.isEmpty(extra_ChildPrice) || TextUtils.isEmpty(checkIn_time) || TextUtils.isEmpty(checkOut_time) || TextUtils.isEmpty(friday_price) || TextUtils.isEmpty(saturday_price) || TextUtils.isEmpty(sunday_price)) {
+            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(price) || TextUtils.isEmpty(extra_AdultPrice) || TextUtils.isEmpty(extra_ChildPrice)  || TextUtils.isEmpty(friday_price) || TextUtils.isEmpty(saturday_price) || TextUtils.isEmpty(sunday_price)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Model_PriceRule modelPriceRule = new Model_PriceRule(rule_name, price, extra_AdultPrice, extra_ChildPrice, checkIn_time, checkOut_time, friday_price, saturday_price, sunday_price);
+            Model_PriceRule modelPriceRule = new Model_PriceRule(rule_name, price, extra_AdultPrice, extra_ChildPrice, friday_price, saturday_price, sunday_price);
 
             databaseReference.child(rule_name).setValue(modelPriceRule)
                     .addOnSuccessListener(aVoid -> {
@@ -136,8 +91,6 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
                         price_Etxt.setText("");
                         extraAdultprice_Etxt.setText("");
                         extraChildprice_Etxt.setText("");
-                        checkIn_Etxt.setText("");
-                        checkOut_Etxt.setText("");
                         friday_Etxt.setText("");
                         saturday_Etxt.setText("");
                         sunday_Etxt.setText("");
@@ -145,27 +98,5 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
-    }
-
-    private void showTimePickerDialog(EditText editText){
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                String formattedTime = formatTime(hourOfDay, minute);
-                editText.setText(formattedTime);
-            }
-        }, mHour, mMinute, false);
-        timePickerDialog.show();
-    }
-
-    private String formatTime(int hourOfDay, int minute) {
-        Calendar datetime = Calendar.getInstance();
-        datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        datetime.set(Calendar.MINUTE, minute);
-        return new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(datetime.getTime());
     }
 }
