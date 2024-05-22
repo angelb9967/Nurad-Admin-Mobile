@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/offwhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.List_and_Create.Activity_CreateRevenueCost">
+    tools:context=".Activities.List_and_Create.Activity_CreateRoom">
 
     <include
         android:id="@+id/include"
@@ -34,7 +33,7 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="30dp"
-                android:text="Revenue/Expenses"
+                android:text="Room"
                 android:textColor="@color/purple"
                 android:textSize="28sp"
                 android:textStyle="bold"
@@ -50,7 +49,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="Entry Details"
+                android:text="Room Information"
                 android:textColor="@color/softblack"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -61,77 +60,89 @@
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:paddingBottom="8dp"
-                android:text="Provide the necessary details for each field."
+                android:text="Enter the room details and provide a description."
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-            <EditText
-                android:id="@+id/Date_Etxt"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="30dp"
+            <FrameLayout
+                android:id="@+id/framelayout"
+                android:background="@drawable/dotted_bg"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/custom_input"
-                android:inputType="none"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:hint="Date"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                app:layout_constraintEnd_toStartOf="@+id/CalendarPicker_Img"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintTop_toBottomOf="@id/textView4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/CalendarPicker_Img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="35dp"
-                app:layout_constraintBottom_toBottomOf="@id/Date_Etxt"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Date_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
-                app:layout_constraintVertical_bias="0.652"
-                app:srcCompat="@drawable/calendar_days" />
+                <ImageView
+                    android:id="@+id/UploadBtn"
+                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="auto"
+                    android:src="#F88FD5"
+                    android:scaleType="fitXY"/>
+
+                <TextView
+                    android:id="@+id/UPhotoTW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Upload your picture"
+                    android:textColor="@color/purple"
+                    android:textSize="18sp"
+                    android:clickable="true"
+                    android:focusable="auto" />
+            </FrameLayout>
 
             <EditText
-                android:id="@+id/Time_Etxt"
-                android:layout_width="0dp"
+                android:id="@+id/RoomName_Etxt"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginStart="30dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:background="@drawable/custom_input"
-                android:hint="Time"
-                android:inputType="date"
+                android:hint="Room Name"
+                android:inputType="text"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
-                app:layout_constraintEnd_toStartOf="@+id/Time_Img"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Date_Etxt" />
-
-            <ImageView
-                android:id="@+id/Time_Img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="35dp"
-                app:layout_constraintBottom_toBottomOf="@id/Time_Etxt"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/Time_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Date_Etxt"
-                app:layout_constraintVertical_bias="0.652"
-                app:srcCompat="@drawable/clock_five" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/framelayout"
+                app:layout_constraintTop_toBottomOf="@+id/framelayout" />
+
+            <EditText
+                android:id="@+id/RoomTitle_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:hint="Room Title"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/RoomName_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/RoomName_Etxt" />
 
             <Spinner
-                android:id="@+id/EntryType_Spinner"
+                android:id="@+id/RoomsType_Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="12dp"
@@ -143,77 +154,35 @@
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Time_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Time_Etxt" />
+                app:layout_constraintStart_toStartOf="@+id/RoomTitle_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/RoomTitle_Etxt" />
 
-            <EditText
-                android:id="@+id/Amount_Etxt"
+            <Spinner
+                android:id="@+id/PriceRule_Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@drawable/custom_input"
-                android:hint="Amount"
-                android:inputType="numberDecimal"
+                android:background="@drawable/style_spinner"
+                android:inputType="text"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/EntryType_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/EntryType_Spinner" />
-
-            <View
-                android:id="@+id/view1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintEnd_toEndOf="@+id/Amount_Etxt"
-                app:layout_constraintStart_toStartOf="@+id/Amount_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Amount_Etxt"
-                tools:layout_editor_absoluteX="30dp" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:text="Additional Information"
-                android:textColor="@color/softblack"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/view1"
-                app:layout_constraintEnd_toEndOf="@+id/view1"
-                app:layout_constraintStart_toStartOf="@+id/view1"
-                tools:layout_editor_absoluteX="0dp" />
-
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:text="Add any additional notes about the Entry."
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/textView9"
-                app:layout_constraintStart_toStartOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintStart_toStartOf="@+id/RoomsType_Spinner"
+                app:layout_constraintTop_toBottomOf="@+id/RoomsType_Spinner" />
 
             <EditText
-                android:id="@+id/Notes_Etxt"
+                android:id="@+id/Description_Etxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minLines="3"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/custom_input"
-                android:hint="Note"
+                android:hint="Description"
                 android:gravity="top"
                 android:inputType="textMultiLine"
                 android:paddingTop="10dp"
@@ -222,8 +191,75 @@
                 android:paddingBottom="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textView10"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintStart_toStartOf="@+id/PriceRule_Spinner"
+                app:layout_constraintTop_toBottomOf="@+id/PriceRule_Spinner" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="@+id/DepositReq_checkbox"
+                app:layout_constraintStart_toStartOf="@+id/DepositReq_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/DepositReq_checkbox"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <CheckBox
+                android:id="@+id/DepositReq_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Deposit Required"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintStart_toStartOf="@+id/Description_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Description_Etxt"
+                tools:layout_editor_absoluteX="55dp"
+                tools:layout_editor_absoluteY="595dp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Settings"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/view1"
+                app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:paddingBottom="8dp"
+                android:text= "Select whether this room will be featured on the recommended section of the application."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <CheckBox
+                android:id="@+id/Recommended_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recommend Room to Users"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintStart_toStartOf="@+id/textView6"
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                tools:layout_editor_absoluteX="55dp"
+                tools:layout_editor_absoluteY="595dp" />
 
             <Button
                 android:id="@+id/Save_Btn"
@@ -241,8 +277,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Notes_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Notes_Etxt"/>
+                app:layout_constraintStart_toStartOf="@+id/Recommended_checkbox"
+                app:layout_constraintTop_toBottomOf="@+id/Recommended_checkbox"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

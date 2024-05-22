@@ -6,7 +6,7 @@
     android:background="@color/offwhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Create.Activity_CreateBooking">
+    tools:context=".Activities.List_and_Create.Activity_CreateBooking">
 
     <include
         android:id="@+id/include"
@@ -98,6 +98,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/custom_input"
                 android:hint="Phone Number"
+                android:maxLength="11"
                 android:inputType="phone"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
@@ -273,6 +274,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:inputType="number"
+                android:maxLength="2"
                 android:background="@drawable/custom_input"
                 android:hint="Extra Adult"
                 android:paddingStart="18dp"
@@ -323,6 +325,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:inputType="number"
+                android:maxLength="2"
                 android:background="@drawable/custom_input"
                 android:hint="Extra Child"
                 android:paddingStart="18dp"
@@ -484,22 +487,6 @@
                 app:layout_constraintStart_toStartOf="@+id/textView12"
                 app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-            <Spinner
-                android:id="@+id/RoomsType_Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/style_spinner"
-                android:inputType="text"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Rooms_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/Rooms_Spinner" />
-
             <Button
                 android:id="@+id/Save_Btn"
                 android:layout_width="match_parent"
@@ -516,11 +503,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/RoomsType_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/RoomsType_Spinner"/>
+                app:layout_constraintStart_toStartOf="@+id/Rooms_Spinner"
+                app:layout_constraintTop_toBottomOf="@+id/Rooms_Spinner"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

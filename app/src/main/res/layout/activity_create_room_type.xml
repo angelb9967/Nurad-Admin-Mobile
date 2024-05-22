@@ -6,7 +6,7 @@
     android:background="@color/offwhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Create.Activity_CreateRoomType">
+    tools:context=".Activities.List_and_Create.Activity_CreateRoomType">
 
     <include
         android:id="@+id/include"
@@ -50,7 +50,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="Room Information"
+                android:text="Room Type Information"
                 android:textColor="@color/softblack"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -74,8 +74,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -84,16 +83,15 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:paddingBottom="8dp"
-                android:text="Enter the room type name and provide a description (optional)."
+                android:text="Enter the room type name and provide a description."
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <EditText
-                android:id="@+id/Description_Txt"
+                android:id="@+id/Description_Etxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minLines="3"
@@ -129,8 +127,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Description_Txt"
-                app:layout_constraintTop_toBottomOf="@+id/Description_Txt"/>
+                app:layout_constraintStart_toStartOf="@+id/Description_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Description_Etxt"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

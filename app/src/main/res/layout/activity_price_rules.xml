@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.List_and_Create.Activity_RoomTypes">
+    tools:context=".Activities.List_and_Create.Activity_PriceRules">
 
     <include
         android:id="@+id/include"

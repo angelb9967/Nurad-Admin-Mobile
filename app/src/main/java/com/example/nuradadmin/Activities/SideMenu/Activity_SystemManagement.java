@@ -1,5 +1,6 @@
 package com.example.nuradadmin.Activities.SideMenu;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,8 +21,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nuradadmin.Activities.Create.Activity_CreateRoomType;
-import com.example.nuradadmin.Activities.Create.Activity_RoomTypes;
+import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
+import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
+import com.example.nuradadmin.Activities.List_and_Create.Activity_Rooms;
 import com.example.nuradadmin.R;
 import com.google.android.material.navigation.NavigationView;
 
@@ -31,7 +33,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
-    private LinearLayout roomType;
+    private LinearLayout roomType, priceRules, rooms;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +55,12 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         menu_icon = findViewById(R.id.menu_icon);
         title = findViewById(R.id.title);
         roomType = findViewById(R.id.RoomTypes);
+        priceRules = findViewById(R.id.PriceRules);
+        rooms = findViewById(R.id.Rooms);
 
         setSupportActionBar(toolbar);
 
         title.setText("System Management");
-
         navigationView.setNavigationItemSelectedListener(this);
 
         menu_icon.setOnClickListener(View -> {
@@ -69,9 +72,15 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         });
 
         roomType.setOnClickListener(View -> {
-            Intent i = new Intent(this, Activity_RoomTypes.class);
-            startActivity(i);
-            finish();
+            goToActivity(Activity_RoomTypes.class);
+        });
+
+        priceRules.setOnClickListener(View -> {
+            goToActivity(Activity_PriceRules.class);
+        });
+
+        rooms.setOnClickListener(View -> {
+            goToActivity(Activity_Rooms.class);
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -85,6 +94,12 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    private void goToActivity(Class<? extends Activity> activityClass) {
+        Intent intent = new Intent(this, activityClass);
+        startActivity(intent);
+        finish();
     }
 
     @Override

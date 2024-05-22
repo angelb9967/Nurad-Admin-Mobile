@@ -19,7 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nuradadmin.Activities.Create.Activity_CreateBooking;
+import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
 import com.example.nuradadmin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;

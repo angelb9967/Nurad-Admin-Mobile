@@ -1,4 +1,4 @@
-package com.example.nuradadmin.Activities.Create;
+package com.example.nuradadmin.Activities.List_and_Create;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -6,16 +6,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,18 +28,28 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_BookingCalendar;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
+import com.example.nuradadmin.Models.Model_Booking;
+import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class Activity_CreateBooking extends AppCompatActivity {
+    private DatabaseReference booking_DBref , rooms_DBref;
+    private ArrayList<String> rooms_list;
+    private CustomArrayAdapter rooms_adapter;
     private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
-    private EditText CheckIn_Etxt, CheckOut_Etxt, Adult_Etxt, Child_Etxt;
+    private EditText CustomerName_Etxt, PhoneNum_Etxt, CheckIn_Etxt, CheckOut_Etxt, BookingPrice_Etxt, Adult_Etxt, Child_Etxt, Note_Etxt;
+    private Button saveBtn;
     private TextView title;
-    private Spinner rooms_spinner, roomsType_spinner;
+    private Spinner rooms_spinner;
     private Calendar calendar;
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -51,8 +66,9 @@ public class Activity_CreateBooking extends AppCompatActivity {
 
         back_icon = findViewById(R.id.back_icon);
         title = findViewById(R.id.title);
+        CustomerName_Etxt = findViewById(R.id.CustomerName_Etxt);
+        PhoneNum_Etxt = findViewById(R.id.PhoneNumber_Etxt);
         rooms_spinner = findViewById(R.id.Rooms_Spinner);
-        roomsType_spinner = findViewById(R.id.RoomsType_Spinner);
         CheckIn_Etxt = findViewById(R.id.CheckInDate_Etxt);
         CheckOut_Etxt = findViewById(R.id.CheckOutDate_Etxt);
         CheckIn_Img = findViewById(R.id.CalendarPicker_In_Img);
@@ -63,8 +79,13 @@ public class Activity_CreateBooking extends AppCompatActivity {
         Child_Etxt = findViewById(R.id.Child_Etxt);
         Child_Plus = findViewById(R.id.Child_Plus_Img);
         Child_Minus = findViewById(R.id.Child_Minus_Img);
+        BookingPrice_Etxt = findViewById(R.id.BookingPrice_Etxt);
+        Note_Etxt = findViewById(R.id.Notes_Txt);
+        saveBtn = findViewById(R.id.Save_Btn);
 
         title.setText("Create");
+        booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
+        rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
 
         Adult_Plus.setOnClickListener(view -> {
             addOrSubtract_Quantity(Adult_Etxt, "plus", String.valueOf(Adult_Etxt.getText()));
@@ -110,6 +131,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
             showDatePicker_and_setDate(CheckIn_Etxt, year, month, day);
         });
 
+        // Prevent keyboard from appearing when EditText is touched
         CheckOut_Etxt.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
@@ -132,26 +154,65 @@ public class Activity_CreateBooking extends AppCompatActivity {
             showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
         });
 
-        String[] value1 = {"Select Room", "Room 1", "Room 2", "Room 3"};
-        ArrayList<String> arrayList1 = new ArrayList<>(Arrays.asList(value1));
-        CustomArrayAdapter arrayAdapter1 = new CustomArrayAdapter(this, R.layout.style_spinner, arrayList1);
-        rooms_spinner.setAdapter(arrayAdapter1);
+        rooms_list = new ArrayList<>();
+        rooms_adapter = new CustomArrayAdapter(Activity_CreateBooking.this, R.layout.style_spinner, rooms_list);
+        setupSpinner(rooms_spinner);
+        rooms_spinner.setAdapter(rooms_adapter);
+        Showdata(rooms_DBref, rooms_adapter, rooms_list);
 
-        String[] value2 = {"Select Room Type", "Single", "Double"};
-        ArrayList<String> arrayList2 = new ArrayList<>(Arrays.asList(value2));
-        CustomArrayAdapter arrayAdapter2 = new CustomArrayAdapter(this, R.layout.style_spinner, arrayList2);
-        roomsType_spinner.setAdapter(arrayAdapter2);
+        back_icon.setOnClickListener(View -> {
+            Intent i = new Intent(this, Activity_BookingCalendar.class);
+            startActivity(i);
+            finish();
+        });
 
-        // Set default selection to "Select Room"
-        rooms_spinner.setSelection(0);
-        rooms_spinner.post(() -> {
-            View selectedView = rooms_spinner.getSelectedView();
+        saveBtn.setOnClickListener(view ->{
+            final String customerName = CustomerName_Etxt.getText().toString();
+            final String phoneNumber = PhoneNum_Etxt.getText().toString();
+            final String checkInDate = CheckIn_Etxt.getText().toString();
+            final String checkOutDate = CheckOut_Etxt.getText().toString();
+            final String bookingPrice = BookingPrice_Etxt.getText().toString();
+            final String extraAdult = Adult_Etxt.getText().toString();
+            final String extraChild = Child_Etxt.getText().toString();
+            final String note = Note_Etxt.getText().toString();
+            final String room = rooms_spinner.getSelectedItem().toString();
+
+            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPrice) || TextUtils.isEmpty(extraAdult) || TextUtils.isEmpty(extraChild) || TextUtils.isEmpty(note) ||rooms_spinner.getSelectedItemPosition() == 0 ){
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String bookingId = booking_DBref.push().getKey();
+            Model_Booking modelBooking = new Model_Booking(customerName, phoneNumber, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room);
+            booking_DBref.child(bookingId).setValue(modelBooking)
+                    .addOnSuccessListener(aVoid -> {
+                        CustomerName_Etxt.setText("");
+                        PhoneNum_Etxt.setText("");
+                        CheckIn_Etxt.setText("");
+                        CheckOut_Etxt.setText("");
+                        BookingPrice_Etxt.setText("");
+                        Adult_Etxt.setText("");
+                        Child_Etxt.setText("");
+                        Note_Etxt.setText("");
+                        rooms_spinner.setSelection(0);
+                        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        });
+
+    }
+
+    private void setupSpinner(Spinner spinner){
+        // Set default selection to "Select Room [Room Spinner]"
+        spinner.setSelection(0);
+        spinner.post(() -> {
+            View selectedView = spinner.getSelectedView();
             if (selectedView != null && selectedView instanceof TextView) {
                 ((TextView) selectedView).setTextColor(Color.GRAY);
             }
         });
 
-        rooms_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String value = parent.getItemAtPosition(position).toString();
@@ -168,12 +229,6 @@ public class Activity_CreateBooking extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
                 // Do nothing
             }
-        });
-
-        back_icon.setOnClickListener(View -> {
-            Intent i = new Intent(this, Activity_BookingCalendar.class);
-            startActivity(i);
-            finish();
         });
     }
 
@@ -208,5 +263,24 @@ public class Activity_CreateBooking extends AppCompatActivity {
                 editText.setText(String.valueOf(intValue));
             }
         }
+    }
+
+    private void Showdata(DatabaseReference dbRef, CustomArrayAdapter adapter, ArrayList<String> list){
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.add("Select Room");
+
+                for(DataSnapshot item:snapshot.getChildren()){
+                    list.add(item.getKey().toString());
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
