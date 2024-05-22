@@ -39,14 +39,16 @@ public class Activity_CreateRoomType extends AppCompatActivity {
         });
         SystemUIUtil.setupSystemUI(this);
 
+        // Initialize views
         back_icon = findViewById(R.id.back_icon);
         title = findViewById(R.id.title);
         RoomType_Etxt = findViewById(R.id.RoomTypeName_Etxt);
         Description_Etxt = findViewById(R.id.Description_Etxt);
         Save_Btn = findViewById(R.id.Save_Btn);
 
+        // Retrieve the bundle from the intent
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if(bundle != null){ //If not null, extract all the data
             purpose = bundle.getString("Purpose");
             RoomType_Etxt.setText(bundle.getString("Room Type Name"));
             Description_Etxt.setText(bundle.getString("Room Type Description"));
@@ -78,13 +80,18 @@ public class Activity_CreateRoomType extends AppCompatActivity {
 
             Model_RoomType modelRoomType = new Model_RoomType(roomTypeName, description);
 
-            databaseReference.child(roomTypeName).setValue(modelRoomType)
-                    .addOnSuccessListener(aVoid -> {
-                        RoomType_Etxt.setText("");
-                        Description_Etxt.setText("");
-                        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            if(purpose.equalsIgnoreCase("View Details")){
+                // Update Data to Database
+            }else{
+                // Add and Save Data to Database
+                databaseReference.child(roomTypeName).setValue(modelRoomType)
+                        .addOnSuccessListener(aVoid -> {
+                            RoomType_Etxt.setText("");
+                            Description_Etxt.setText("");
+                            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
         });
     }
 }

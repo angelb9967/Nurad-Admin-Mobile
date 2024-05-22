@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoom;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoomType;
 import com.example.nuradadmin.Models.Model_RoomType;
 import com.example.nuradadmin.R;
@@ -39,7 +37,7 @@ public class Adapter_RoomType extends RecyclerView.Adapter<Adapter_RoomType.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Model_RoomType modelRoomType = modelRoomTypeList.get(position);
-        holder.roomTitle.setText(modelRoomType.getRoomType_Name());
+        holder.roomType.setText(modelRoomType.getRoomType_Name());
         holder.roomDescrip.setText(modelRoomType.getDescription());
 
         holder.roomType_layout.setOnClickListener(v -> {
@@ -57,12 +55,12 @@ public class Adapter_RoomType extends RecyclerView.Adapter<Adapter_RoomType.MyVi
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView roomTitle, roomDescrip;
+        TextView roomType, roomDescrip;
         CardView roomType_layout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            roomTitle = itemView.findViewById(R.id.roomTitle);
+            roomType = itemView.findViewById(R.id.roomType);
             roomDescrip = itemView.findViewById(R.id.roomTypeDescription);
             roomType_layout = itemView.findViewById(R.id.roomType_layout);
         }
