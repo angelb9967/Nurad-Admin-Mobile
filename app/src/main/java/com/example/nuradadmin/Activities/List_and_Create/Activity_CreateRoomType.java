@@ -55,7 +55,7 @@ public class Activity_CreateRoomType extends AppCompatActivity {
         }
 
         if(purpose.equalsIgnoreCase("View Details")){
-            title.setText("Details");
+            title.setText("Edit");
             Save_Btn.setText("Update");
         }else{
             title.setText("Create");

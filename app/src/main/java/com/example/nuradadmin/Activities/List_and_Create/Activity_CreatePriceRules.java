@@ -36,6 +36,7 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
     private Button saveBtn;
     private ImageView back_icon;
     private TextView title;
+    private String purpose = "";
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,26 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
         sunday_Etxt = findViewById(R.id.SundayPrice_Etxt);
         saveBtn = findViewById(R.id.Save_Btn);
 
-        title.setText("Create");
+        // Retrieve the bundle from the intent
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){ //If not null, extract all the data
+            purpose = bundle.getString("Purpose");
+            ruleName_Etxt.setText(bundle.getString("Rule Name"));
+            price_Etxt.setText(bundle.getString("Price"));
+            extraAdultprice_Etxt.setText(bundle.getString("Extra Adult Price"));
+            extraChildprice_Etxt.setText(bundle.getString("Extra Child Price"));
+            friday_Etxt.setText(bundle.getString("Friday Price"));
+            saturday_Etxt.setText(bundle.getString("Saturday Price"));
+            sunday_Etxt.setText(bundle.getString("Sunday Price"));
+        }
+
+        if(purpose.equalsIgnoreCase("View Details")){
+            title.setText("Edit");
+            saveBtn.setText("Update");
+        }else{
+            title.setText("Create");
+            saveBtn.setText("Save");
+        }
         databaseReference = FirebaseDatabase.getInstance().getReference("Price Rules");
 
         back_icon.setOnClickListener(view -> {
@@ -85,18 +105,23 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
 
             Model_PriceRule modelPriceRule = new Model_PriceRule(rule_name, price, extra_AdultPrice, extra_ChildPrice, friday_price, saturday_price, sunday_price);
 
-            databaseReference.child(rule_name).setValue(modelPriceRule)
-                    .addOnSuccessListener(aVoid -> {
-                        ruleName_Etxt.setText("");
-                        price_Etxt.setText("");
-                        extraAdultprice_Etxt.setText("");
-                        extraChildprice_Etxt.setText("");
-                        friday_Etxt.setText("");
-                        saturday_Etxt.setText("");
-                        sunday_Etxt.setText("");
-                        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            if(purpose.equalsIgnoreCase("View Details")){
+                // Update Data to Database
+            }else{
+                // Add and Save Data to Database
+                databaseReference.child(rule_name).setValue(modelPriceRule)
+                        .addOnSuccessListener(aVoid -> {
+                            ruleName_Etxt.setText("");
+                            price_Etxt.setText("");
+                            extraAdultprice_Etxt.setText("");
+                            extraChildprice_Etxt.setText("");
+                            friday_Etxt.setText("");
+                            saturday_Etxt.setText("");
+                            sunday_Etxt.setText("");
+                            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
         });
     }
 }

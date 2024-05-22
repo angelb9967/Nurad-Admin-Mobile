@@ -125,7 +125,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
             final String roomType = roomsType_spinner.getSelectedItem().toString();
             final String priceRule = priceRules_spinner.getSelectedItem().toString();
             final String description = description_Etxt.getText().toString();
-            final String price = "1500";
+            final double price = 1500.00;
             // Di ko pa siya nacocoompute based sa price rule
             // Compute Booking Price
             // Add Validation - Check if Empty Before Saving
@@ -141,12 +141,8 @@ public class Activity_CreateRoom extends AppCompatActivity {
                 return;
             }
 
-            String depositReq = "";
-            if (depositRequired_chkbox.isChecked()) {
-                depositReq = "true";
-            } else {
-                depositReq = "false";
-            }
+            boolean depositReq;
+            depositReq = depositRequired_chkbox.isChecked();
 
             if(recommendedRoom_chk_box.isChecked()){
                 rooms_DBref = FirebaseDatabase.getInstance().getReference("Check");

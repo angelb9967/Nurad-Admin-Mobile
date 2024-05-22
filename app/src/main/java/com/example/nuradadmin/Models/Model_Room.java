@@ -1,12 +1,14 @@
 package com.example.nuradadmin.Models;
 
 public class Model_Room {
-    private String roomName, title, roomType, priceRule, description, imageUrl, depositRequired, price;
+    private String roomName, title, roomType, priceRule, description, imageUrl;
+    private boolean depositRequired;
+    private double price;
 
     public Model_Room() {
     }
 
-    public Model_Room(String roomName, String title, String depositRequired, String price, String roomType, String priceRule, String description) {
+    public Model_Room(String roomName, String title, boolean depositRequired, double price, String roomType, String priceRule, String description) {
         this.price = price;
         this.title = title;
         this.depositRequired = depositRequired;
@@ -16,7 +18,7 @@ public class Model_Room {
         this.description = description;
     }
 
-    public Model_Room(String roomName, String title, String depositRequired, String price, String roomType, String priceRule, String description, String imageUrl) {
+    public Model_Room(String roomName, String title, boolean depositRequired, double price, String roomType, String priceRule, String description, String imageUrl) {
         this.price = price;
         this.title = title;
         this.depositRequired = depositRequired;
@@ -27,19 +29,19 @@ public class Model_Room {
         this.imageUrl = imageUrl;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getDepositRequired() {
+    public boolean isDepositRequired() {
         return depositRequired;
     }
 
-    public void setDepositRequired(String depositRequired) {
+    public void setDepositRequired(boolean depositRequired) {
         this.depositRequired = depositRequired;
     }
 

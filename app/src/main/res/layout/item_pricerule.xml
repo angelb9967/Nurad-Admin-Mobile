@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/priceRule_layout"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    android:elevation="8dp">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/priceRule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price Rule"
+            android:textColor="@color/purple"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/priceRule"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_marginTop="7dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/peso_sign"/>
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:text="200"
+                    android:textColor="#545454"
+                    android:textSize="17sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="4dp"
+                    android:src="@drawable/rent" />
+
+                <TextView
+                    android:id="@+id/textV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:text="Rent by Day"
+                    android:textColor="#545454"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/editBtn"
+                android:layout_width="70dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#882065"
+                android:padding="2dp"
+                android:text="EDIT"
+                android:textColor="#FFFFFF"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
