@@ -26,6 +26,7 @@ public class Activity_CreateRoomType extends AppCompatActivity {
     private Button Save_Btn;
     private ImageView back_icon;
     private TextView title;
+    private String purpose="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +45,20 @@ public class Activity_CreateRoomType extends AppCompatActivity {
         Description_Etxt = findViewById(R.id.Description_Etxt);
         Save_Btn = findViewById(R.id.Save_Btn);
 
-        title.setText("Create");
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            purpose = bundle.getString("Purpose");
+            RoomType_Etxt.setText(bundle.getString("Room Type Name"));
+            Description_Etxt.setText(bundle.getString("Room Type Description"));
+        }
+
+        if(purpose.equalsIgnoreCase("View Details")){
+            title.setText("Details");
+            Save_Btn.setText("Update");
+        }else{
+            title.setText("Create");
+            Save_Btn.setText("Save");
+        }
         databaseReference = FirebaseDatabase.getInstance().getReference("Room Types");
 
         back_icon.setOnClickListener(view -> {

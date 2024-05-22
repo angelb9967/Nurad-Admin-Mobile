@@ -55,10 +55,10 @@
             android:name=".Activities.SideMenu.Activity_BookingCalendar"
             android:exported="false" />
         <activity
-            android:name=".Activities.SideMenu.Activity_Dashboard"
+            android:name=".Activities.List_and_Create.Activity_CreateBooking"
             android:exported="false" />
         <activity
-            android:name=".Activities.List_and_Create.Activity_CreateBooking"
+            android:name=".Activities.SideMenu.Activity_Dashboard"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

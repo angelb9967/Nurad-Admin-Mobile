@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -179,8 +178,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        // Set the image URL in the model
-                        modelRoom.setImageUrl(uri.toString());
+                        modelRoom.setImageUrl(uri.toString()); // Set the image URL in the model
 
                         // Save room information to Firebase Realtime Database
                         rooms_DBref.child(modelRoom.getRoomName()).setValue(modelRoom)
