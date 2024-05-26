@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -27,7 +26,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_OtherRevenue;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
-import com.example.nuradadmin.Models.Model_PriceRule;
 import com.example.nuradadmin.Models.Models_RevenueCost;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
@@ -38,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class Activity_CreateRevenueCost extends AppCompatActivity {

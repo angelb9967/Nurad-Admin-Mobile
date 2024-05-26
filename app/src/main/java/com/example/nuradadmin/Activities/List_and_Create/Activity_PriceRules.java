@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_SystemManagement;
 import com.example.nuradadmin.Adapters.Adapter_PriceRule;
-import com.example.nuradadmin.Adapters.Adapter_RoomType;
 import com.example.nuradadmin.Models.Model_PriceRule;
-import com.example.nuradadmin.Models.Model_RoomType;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
