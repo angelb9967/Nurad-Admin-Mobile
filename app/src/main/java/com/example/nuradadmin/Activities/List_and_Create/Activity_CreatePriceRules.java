@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,18 +20,21 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.nuradadmin.Models.Model_PriceRule;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.example.nuradadmin.Utilities.TrimUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Locale;
 
 public class Activity_CreatePriceRules extends AppCompatActivity {
-    private DatabaseReference databaseReference;
+    private DatabaseReference priceRules_DBref;
     private EditText ruleName_Etxt, price_Etxt, extraAdultprice_Etxt, extraChildprice_Etxt, friday_Etxt, saturday_Etxt, sunday_Etxt;
     private Button saveBtn;
     private ImageView back_icon;
     private TextView title;
-    private String purpose = "";
+    private String purpose = "", old_priceRuleName = "";
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
             friday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Friday Price")));
             saturday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Saturday Price")));
             sunday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Sunday Price")));
+
+            old_priceRuleName = bundle.getString("Rule Name");
         }
 
         if(purpose.equalsIgnoreCase("View Details")){
@@ -75,7 +81,7 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
             title.setText("Create");
             saveBtn.setText("Save");
         }
-        databaseReference = FirebaseDatabase.getInstance().getReference("Price Rules");
+        priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
 
         back_icon.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_PriceRules.class);
@@ -84,7 +90,7 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
         });
 
         saveBtn.setOnClickListener(view ->{
-            final String rule_name = ruleName_Etxt.getText().toString();
+            final String rule_name = TrimUtil.trimRight(ruleName_Etxt.getText().toString());
             final String priceStr = price_Etxt.getText().toString();
             final String extraAdultPriceStr = extraAdultprice_Etxt.getText().toString();
             final String extraChildPriceStr = extraChildprice_Etxt.getText().toString();
@@ -108,9 +114,23 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
 
             if(purpose.equalsIgnoreCase("View Details")){
                 // Update Data to Database
+                priceRules_DBref.child(rule_name).setValue(modelPriceRule).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            if(!old_priceRuleName.equals(rule_name)){
+                                priceRules_DBref.child(old_priceRuleName).removeValue();
+                            }
+                            Toast.makeText(Activity_CreatePriceRules.this, "Updated", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(Activity_CreatePriceRules.this, "Failed to update: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }else{
                 // Add and Save Data to Database
-                databaseReference.child(rule_name).setValue(modelPriceRule)
+                priceRules_DBref.child(rule_name).setValue(modelPriceRule)
                         .addOnSuccessListener(aVoid -> {
                             ruleName_Etxt.setText("");
                             price_Etxt.setText("");

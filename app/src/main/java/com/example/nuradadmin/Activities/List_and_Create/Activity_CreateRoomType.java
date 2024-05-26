@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,17 +17,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nuradadmin.Models.Model_RoomType;
 import com.example.nuradadmin.R;
+import com.example.nuradadmin.Utilities.TrimUtil;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Activity_CreateRoomType extends AppCompatActivity {
-    private DatabaseReference databaseReference;
+    private DatabaseReference roomTypes_DBref;
     private EditText RoomType_Etxt, Description_Etxt;
     private Button Save_Btn;
     private ImageView back_icon;
     private TextView title;
-    private String purpose = "";
+    private String purpose = "", old_roomTypeName = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,8 @@ public class Activity_CreateRoomType extends AppCompatActivity {
             purpose = bundle.getString("Purpose");
             RoomType_Etxt.setText(bundle.getString("Room Type Name"));
             Description_Etxt.setText(bundle.getString("Room Type Description"));
+
+            old_roomTypeName = bundle.getString("Room Type Name");
         }
 
         if(purpose.equalsIgnoreCase("View Details")){
@@ -61,7 +67,7 @@ public class Activity_CreateRoomType extends AppCompatActivity {
             title.setText("Create");
             Save_Btn.setText("Save");
         }
-        databaseReference = FirebaseDatabase.getInstance().getReference("Room Types");
+        roomTypes_DBref = FirebaseDatabase.getInstance().getReference("Room Types");
 
         back_icon.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_RoomTypes.class);
@@ -70,8 +76,8 @@ public class Activity_CreateRoomType extends AppCompatActivity {
         });
 
         Save_Btn.setOnClickListener(view -> {
-            String roomTypeName = RoomType_Etxt.getText().toString();
-            String description = Description_Etxt.getText().toString();
+            final String roomTypeName = TrimUtil.trimRight(RoomType_Etxt.getText().toString());
+            final String description = TrimUtil.trimRight(Description_Etxt.getText().toString());
 
             if (roomTypeName.isEmpty() || description.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -81,10 +87,24 @@ public class Activity_CreateRoomType extends AppCompatActivity {
             Model_RoomType modelRoomType = new Model_RoomType(roomTypeName, description);
 
             if(purpose.equalsIgnoreCase("View Details")){
-                // Update Data to Database
+                // Update Data to Firebase
+                roomTypes_DBref.child(roomTypeName).setValue(modelRoomType).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            if(!old_roomTypeName.equals(roomTypeName)){
+                                roomTypes_DBref.child(old_roomTypeName).removeValue();
+                            }
+                            Toast.makeText(Activity_CreateRoomType.this, "Updated", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(Activity_CreateRoomType.this, "Failed to update: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }else{
-                // Add and Save Data to Database
-                databaseReference.child(roomTypeName).setValue(modelRoomType)
+                // Add Record and Save Data to Firebase
+                roomTypes_DBref.child(roomTypeName).setValue(modelRoomType)
                         .addOnSuccessListener(aVoid -> {
                             RoomType_Etxt.setText("");
                             Description_Etxt.setText("");
