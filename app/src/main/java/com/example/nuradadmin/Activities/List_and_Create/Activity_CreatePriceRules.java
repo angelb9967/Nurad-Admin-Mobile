@@ -66,12 +66,12 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
         if(bundle != null){ //If not null, extract all the data
             purpose = bundle.getString("Purpose");
             ruleName_Etxt.setText(bundle.getString("Rule Name"));
-            price_Etxt.setText(bundle.getString("Price"));
-            extraAdultprice_Etxt.setText(bundle.getString("Extra Adult Price"));
-            extraChildprice_Etxt.setText(bundle.getString("Extra Child Price"));
-            friday_Etxt.setText(bundle.getString("Friday Price"));
-            saturday_Etxt.setText(bundle.getString("Saturday Price"));
-            sunday_Etxt.setText(bundle.getString("Sunday Price"));
+            price_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Price")));
+            extraAdultprice_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Extra Adult Price")));
+            extraChildprice_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Extra Child Price")));
+            friday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Friday Price")));
+            saturday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Saturday Price")));
+            sunday_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Sunday Price")));
         }
 
         if(purpose.equalsIgnoreCase("View Details")){
@@ -91,17 +91,24 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
 
         saveBtn.setOnClickListener(view ->{
             final String rule_name = ruleName_Etxt.getText().toString();
-            final String price = price_Etxt.getText().toString();
-            final String extra_AdultPrice = extraAdultprice_Etxt.getText().toString();
-            final String extra_ChildPrice = extraChildprice_Etxt.getText().toString();
-            final String friday_price = friday_Etxt.getText().toString();
-            final String saturday_price = saturday_Etxt.getText().toString();
-            final String sunday_price = sunday_Etxt.getText().toString();
+            final String priceStr = price_Etxt.getText().toString();
+            final String extraAdultPriceStr = extraAdultprice_Etxt.getText().toString();
+            final String extraChildPriceStr = extraChildprice_Etxt.getText().toString();
+            final String fridayPriceStr = friday_Etxt.getText().toString();
+            final String saturdayPriceStr = saturday_Etxt.getText().toString();
+            final String sundayPriceStr = sunday_Etxt.getText().toString();
 
-            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(price) || TextUtils.isEmpty(extra_AdultPrice) || TextUtils.isEmpty(extra_ChildPrice)  || TextUtils.isEmpty(friday_price) || TextUtils.isEmpty(saturday_price) || TextUtils.isEmpty(sunday_price)) {
+            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(extraAdultPriceStr) || TextUtils.isEmpty(extraChildPriceStr) || TextUtils.isEmpty(fridayPriceStr) || TextUtils.isEmpty(saturdayPriceStr) || TextUtils.isEmpty(sundayPriceStr)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            final double price = Double.parseDouble(priceStr);
+            final double extra_AdultPrice = Double.parseDouble(extraAdultPriceStr);
+            final double extra_ChildPrice = Double.parseDouble(extraChildPriceStr);
+            final double friday_price = Double.parseDouble(fridayPriceStr);
+            final double saturday_price = Double.parseDouble(saturdayPriceStr);
+            final double sunday_price = Double.parseDouble(sundayPriceStr);
 
             Model_PriceRule modelPriceRule = new Model_PriceRule(rule_name, price, extra_AdultPrice, extra_ChildPrice, friday_price, saturday_price, sunday_price);
 

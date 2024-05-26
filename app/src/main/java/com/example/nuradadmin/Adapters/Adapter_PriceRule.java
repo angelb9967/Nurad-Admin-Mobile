@@ -37,7 +37,7 @@ public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.My
     public void onBindViewHolder(@NonNull Adapter_PriceRule.MyViewHolder holder, int position) {
         Model_PriceRule modelPriceRule = modelPriceRulesList.get(position);
         holder.priceRule.setText(modelPriceRule.getRuleName());
-        holder.price.setText(modelPriceRule.getPrice());
+        holder.price.setText(String.valueOf(modelPriceRule.getPrice()));
 
         holder.priceRule_layout.setOnClickListener(v -> {
             Intent intent = new Intent(context, Activity_CreatePriceRules.class);
