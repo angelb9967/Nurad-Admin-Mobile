@@ -1,12 +1,14 @@
 package com.example.nuradadmin.Models;
 
 public class Model_Booking {
-    private String customerName, phoneNumber, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room;
+    private String customerName, phoneNumber, checkInDate, checkOutDate, note, room;
+    private double bookingPrice;
+    private int extraAdult, extraChild;
 
     public Model_Booking() {
     }
 
-    public Model_Booking(String customerName, String phoneNumber, String checkInDate, String checkOutDate, String bookingPrice, String extraAdult, String extraChild, String note, String room) {
+    public Model_Booking(String customerName, String phoneNumber, String checkInDate, String checkOutDate, double bookingPrice, int extraAdult, int extraChild, String note, String room) {
         this.customerName = customerName;
         this.phoneNumber = phoneNumber;
         this.checkInDate = checkInDate;
@@ -50,27 +52,27 @@ public class Model_Booking {
         this.checkOutDate = checkOutDate;
     }
 
-    public String getBookingPrice() {
+    public double getBookingPrice() {
         return bookingPrice;
     }
 
-    public void setBookingPrice(String bookingPrice) {
+    public void setBookingPrice(double bookingPrice) {
         this.bookingPrice = bookingPrice;
     }
 
-    public String getExtraAdult() {
+    public int getExtraAdult() {
         return extraAdult;
     }
 
-    public void setExtraAdult(String extraAdult) {
+    public void setExtraAdult(int extraAdult) {
         this.extraAdult = extraAdult;
     }
 
-    public String getExtraChild() {
+    public int getExtraChild() {
         return extraChild;
     }
 
-    public void setExtraChild(String extraChild) {
+    public void setExtraChild(int extraChild) {
         this.extraChild = extraChild;
     }
 

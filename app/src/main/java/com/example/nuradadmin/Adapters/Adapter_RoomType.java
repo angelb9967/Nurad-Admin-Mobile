@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,7 @@ public class Adapter_RoomType extends RecyclerView.Adapter<Adapter_RoomType.MyVi
         holder.roomType.setText(modelRoomType.getRoomType_Name());
         holder.roomDescrip.setText(modelRoomType.getDescription());
 
-        holder.roomType_layout.setOnClickListener(v -> {
+        holder.edit_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Activity_CreateRoomType.class);
             intent.putExtra("Purpose", "View Details");
             intent.putExtra("Room Type Name", modelRoomTypeList.get(holder.getAdapterPosition()).getRoomType_Name());
@@ -55,13 +56,13 @@ public class Adapter_RoomType extends RecyclerView.Adapter<Adapter_RoomType.MyVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView roomType, roomDescrip;
-        CardView roomType_layout;
+        Button edit_btn;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomType = itemView.findViewById(R.id.roomType);
             roomDescrip = itemView.findViewById(R.id.roomTypeDescription);
-            roomType_layout = itemView.findViewById(R.id.roomType_layout);
+            edit_btn = itemView.findViewById(R.id.editBtn);
         }
     }
 }

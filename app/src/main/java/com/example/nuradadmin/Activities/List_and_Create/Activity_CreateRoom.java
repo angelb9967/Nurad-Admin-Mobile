@@ -45,7 +45,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 
 public class Activity_CreateRoom extends AppCompatActivity {
-    private ImageView uploadImg;
     private Uri imageUri;
     private CheckBox depositRequired_chkbox, recommendedRoom_chk_box;
     private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref;
@@ -55,7 +54,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
     private EditText roomName_Etxt, description_Etxt, roomTitle_Etxt;
     private Spinner roomsType_spinner, priceRules_spinner;
     private Button saveBtn;
-    private ImageView back_icon;
+    private ImageView back_icon, uploadImg;
     private TextView title, uploadphototext;
     private ProgressDialog progressDialog;
     @Override

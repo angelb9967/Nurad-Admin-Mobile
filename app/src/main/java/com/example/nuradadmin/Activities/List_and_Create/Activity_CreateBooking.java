@@ -171,16 +171,20 @@ public class Activity_CreateBooking extends AppCompatActivity {
             final String phoneNumber = PhoneNum_Etxt.getText().toString();
             final String checkInDate = CheckIn_Etxt.getText().toString();
             final String checkOutDate = CheckOut_Etxt.getText().toString();
-            final String bookingPrice = BookingPrice_Etxt.getText().toString();
-            final String extraAdult = Adult_Etxt.getText().toString();
-            final String extraChild = Child_Etxt.getText().toString();
+            final String bookingPriceStr = BookingPrice_Etxt.getText().toString();
+            final String extraAdultStr = Adult_Etxt.getText().toString();
+            final String extraChildStr = Child_Etxt.getText().toString();
             final String note = Note_Etxt.getText().toString();
             final String room = rooms_spinner.getSelectedItem().toString();
 
-            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPrice) || TextUtils.isEmpty(extraAdult) || TextUtils.isEmpty(extraChild) || TextUtils.isEmpty(note) ||rooms_spinner.getSelectedItemPosition() == 0 ){
+            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) ||rooms_spinner.getSelectedItemPosition() == 0 ){
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            final double bookingPrice = Double.parseDouble(bookingPriceStr);
+            final int extraAdult = Integer.parseInt(extraAdultStr);
+            final int extraChild = Integer.parseInt(extraChildStr);
 
             String bookingId = booking_DBref.push().getKey();
             Model_Booking modelBooking = new Model_Booking(customerName, phoneNumber, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room);

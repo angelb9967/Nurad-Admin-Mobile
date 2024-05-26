@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,10 @@ import com.example.nuradadmin.Activities.List_and_Create.Activity_CreatePriceRul
 import com.example.nuradadmin.Models.Model_PriceRule;
 import com.example.nuradadmin.R;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.MyViewHolder> {
     private Context context;
@@ -37,9 +41,12 @@ public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.My
     public void onBindViewHolder(@NonNull Adapter_PriceRule.MyViewHolder holder, int position) {
         Model_PriceRule modelPriceRule = modelPriceRulesList.get(position);
         holder.priceRule.setText(modelPriceRule.getRuleName());
-        holder.price.setText(String.valueOf(modelPriceRule.getPrice()));
 
-        holder.priceRule_layout.setOnClickListener(v -> {
+        // Format the Price
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        holder.price.setText(decimalFormat.format(modelPriceRule.getPrice()));
+
+        holder.edit_btn.setOnClickListener(v -> {
             Intent intent = new Intent(context, Activity_CreatePriceRules.class);
             intent.putExtra("Purpose", "View Details");
             intent.putExtra("Rule Name", modelPriceRulesList.get(holder.getAdapterPosition()).getRuleName());
@@ -60,13 +67,12 @@ public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.My
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView priceRule, price;
-        CardView priceRule_layout;
-
+        Button edit_btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             priceRule = itemView.findViewById(R.id.priceRule);
             price = itemView.findViewById(R.id.price);
-            priceRule_layout = itemView.findViewById(R.id.priceRule_layout);
+            edit_btn = itemView.findViewById(R.id.editBtn);
         }
     }
 }
