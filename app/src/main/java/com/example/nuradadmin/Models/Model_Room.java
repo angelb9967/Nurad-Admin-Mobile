@@ -2,24 +2,22 @@ package com.example.nuradadmin.Models;
 
 public class Model_Room {
     private String roomName, title, roomType, priceRule, description, imageUrl;
-    private boolean depositRequired;
-    private double price;
+    private boolean depositRequired, isRecommended;
 
     public Model_Room() {
     }
 
-    public Model_Room(String roomName, String title, boolean depositRequired, double price, String roomType, String priceRule, String description) {
-        this.price = price;
+    public Model_Room(String roomName, String title, boolean isRecommended, boolean depositRequired, String roomType, String priceRule, String description) {
         this.title = title;
         this.depositRequired = depositRequired;
         this.roomName = roomName;
         this.roomType = roomType;
         this.priceRule = priceRule;
         this.description = description;
+        this.isRecommended = isRecommended;
     }
 
-    public Model_Room(String roomName, String title, boolean depositRequired, double price, String roomType, String priceRule, String description, String imageUrl) {
-        this.price = price;
+    public Model_Room(String roomName, String title, boolean isRecommended, boolean depositRequired, String roomType, String priceRule, String description, String imageUrl) {
         this.title = title;
         this.depositRequired = depositRequired;
         this.roomName = roomName;
@@ -27,14 +25,7 @@ public class Model_Room {
         this.priceRule = priceRule;
         this.description = description;
         this.imageUrl = imageUrl;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+        this.isRecommended = isRecommended;
     }
 
     public boolean isDepositRequired() {
@@ -43,6 +34,14 @@ public class Model_Room {
 
     public void setDepositRequired(boolean depositRequired) {
         this.depositRequired = depositRequired;
+    }
+
+    public boolean isRecommended() {
+        return isRecommended;
+    }
+
+    public void setRecommended(boolean recommended) {
+        isRecommended = recommended;
     }
 
     public String getTitle() {

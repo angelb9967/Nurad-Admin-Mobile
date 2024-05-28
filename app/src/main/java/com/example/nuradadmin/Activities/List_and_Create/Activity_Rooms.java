@@ -75,7 +75,8 @@ public class Activity_Rooms extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         adapter = new Adapter_Room(Activity_Rooms.this, modelRoomList);
         recyclerView.setAdapter(adapter);
-        fetchRoomsFromDatabase("AllRooms", "RecommRooms", "Rooms");
+        fetchRoomsFromDatabase( "Rooms", "Check");
+//        fetchRoomsFromDatabase("AllRooms", "RecommRooms", "Rooms");
     }
 
     private void fetchRoomsFromDatabase(String... referencePaths) {

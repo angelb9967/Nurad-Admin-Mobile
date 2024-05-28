@@ -74,7 +74,7 @@
 
             <FrameLayout
                 android:id="@+id/framelayout"
-                android:background="@drawable/dotted_bg"
+                android:background="@drawable/pink_dotted_bg"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="8dp"
@@ -141,38 +141,6 @@
                 app:layout_constraintStart_toStartOf="@+id/RoomName_Etxt"
                 app:layout_constraintTop_toBottomOf="@+id/RoomName_Etxt" />
 
-            <Spinner
-                android:id="@+id/RoomsType_Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/style_spinner"
-                android:inputType="text"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/RoomTitle_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/RoomTitle_Etxt" />
-
-            <Spinner
-                android:id="@+id/PriceRule_Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/style_spinner"
-                android:inputType="text"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/RoomsType_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/RoomsType_Spinner" />
-
             <EditText
                 android:id="@+id/Description_Etxt"
                 android:layout_width="match_parent"
@@ -191,8 +159,114 @@
                 android:paddingBottom="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/RoomTitle_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/RoomTitle_Etxt" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="@+id/Description_Etxt"
+                app:layout_constraintStart_toStartOf="@+id/Description_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Description_Etxt"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Pricing"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/view2"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:paddingBottom="8dp"
+                android:text= "The booking price of the room will depend on the selected room type and price rule."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+
+            <Spinner
+                android:id="@+id/RoomsType_Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/style_spinner"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView21"
+                app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+            <Spinner
+                android:id="@+id/PriceRule_Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/style_spinner"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/RoomsType_Spinner"
+                app:layout_constraintTop_toBottomOf="@+id/RoomsType_Spinner" />
+
+            <EditText
+                android:id="@+id/Price_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:focusable="false"
+                android:hint="Price"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/PriceRule_Spinner"
                 app:layout_constraintTop_toBottomOf="@+id/PriceRule_Spinner" />
+
+            <CheckBox
+                android:id="@+id/DepositReq_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Deposit Required"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintStart_toStartOf="@+id/Price_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Price_Etxt"
+                tools:layout_editor_absoluteX="55dp"
+                tools:layout_editor_absoluteY="595dp" />
 
             <View
                 android:id="@+id/view1"
@@ -206,18 +280,6 @@
                 app:layout_constraintStart_toStartOf="@+id/DepositReq_checkbox"
                 app:layout_constraintTop_toBottomOf="@+id/DepositReq_checkbox"
                 tools:layout_editor_absoluteX="30dp" />
-
-            <CheckBox
-                android:id="@+id/DepositReq_checkbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Deposit Required"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                app:layout_constraintStart_toStartOf="@+id/Description_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Description_Etxt"
-                tools:layout_editor_absoluteX="55dp"
-                tools:layout_editor_absoluteY="595dp" />
 
             <TextView
                 android:id="@+id/textView5"
