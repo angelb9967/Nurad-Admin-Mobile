@@ -253,8 +253,27 @@ public class Activity_CreateRoom extends AppCompatActivity {
         }
     }
 
-    private void updateRoomDetailsWithImage(Uri uri, final Model_Room modelRoom){
-        // Upload the new image
+    private void updateRoomDetailsWithImage(Uri uri, final Model_Room modelRoom) {
+        // Reference to the old image URL
+        if (oldImageURL != null && !oldImageURL.isEmpty()) {
+            StorageReference oldImageRef = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageURL);
+            oldImageRef.delete().addOnSuccessListener(aVoid -> {
+                // Old image deleted successfully, now upload the new image
+                uploadNewImage(uri, modelRoom);
+            }).addOnFailureListener(e -> {
+                // Handle the error of deleting old image
+                progressDialog.dismiss();
+                Toast.makeText(Activity_CreateRoom.this, "Failed to delete old image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("FirebaseDelete", "Failed to delete old image", e);
+            });
+        } else {
+            // No old image to delete, directly upload the new image
+            uploadNewImage(uri, modelRoom);
+        }
+    }
+
+    private void uploadNewImage(Uri uri, final Model_Room modelRoom) {
+        // Generate a unique file name for the new image
         String fileName = System.currentTimeMillis() + "." + getFileExtension(uri);
         StorageReference fileRef = rooms_Sref.child("Room Images/" + fileName);
         progressDialog.show();
@@ -268,6 +287,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
             modelRoom.setImageUrl(url);
             updateRoomDetails(modelRoom);
             progressDialog.dismiss();
+            Toast.makeText(Activity_CreateRoom.this, "Image upload successful", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
             Toast.makeText(Activity_CreateRoom.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
