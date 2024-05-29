@@ -34,6 +34,7 @@ import com.example.nuradadmin.Models.Model_PriceRule;
 import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,9 +46,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Activity_CreateRoom extends AppCompatActivity {
-    private Uri imageUri;
     private FrameLayout frame_layout;
     private CheckBox depositRequired_chkbox, recommendedRoom_chk_box;
     private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref;
@@ -60,8 +61,8 @@ public class Activity_CreateRoom extends AppCompatActivity {
     private ImageView back_icon, uploadImg;
     private TextView title, uploadphototext;
     private ProgressDialog progressDialog;
-    private String purpose = "";
-
+    private Uri imageUri;
+    private String purpose = "", imageUrl = "", oldImageURL = "", url = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +133,8 @@ public class Activity_CreateRoom extends AppCompatActivity {
 
     private void loadRoomDetails(Bundle bundle) {
         purpose = bundle.getString("Purpose");
-        String imageUrl = bundle.getString("Image");
+        imageUrl = bundle.getString("Image");
+        oldImageURL = imageUrl;
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get().load(imageUrl).into(uploadImg);
@@ -218,11 +220,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
         final String priceRule = priceRules_spinner.getSelectedItem().toString();
         final String description = description_Etxt.getText().toString();
 
-        if (imageUri == null) {
-            Toast.makeText(this, "Please Select Image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (TextUtils.isEmpty(roomName) || TextUtils.isEmpty(roomType) || roomsType_spinner.getSelectedItemPosition() == 0 || priceRules_spinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(roomTitle)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
@@ -237,11 +234,61 @@ public class Activity_CreateRoom extends AppCompatActivity {
 
         Model_Room modelRoom = new Model_Room(roomName, roomTitle, isRecommended, depositReq, roomType, priceRule, description);
         if(purpose.equalsIgnoreCase("View Details")){
-
+            // Update Existing Record in Firebase
+            if (imageUri == null && Objects.equals(imageUrl, oldImageURL)) {
+                // If imageUri is not set, use the existing image URL
+                modelRoom.setImageUrl(oldImageURL);
+                updateRoomDetails(modelRoom);
+            } else {
+                // If imageUri is set, update with the new image
+                updateRoomDetailsWithImage(imageUri, modelRoom);
+            }
         } else {
+            // Add and Save New Record to Firebase
+            if (imageUri == null) {
+                Toast.makeText(this, "Please Select Image", Toast.LENGTH_SHORT).show();
+                return;
+            }
             uploadToFirebase(imageUri, modelRoom);
         }
     }
+
+    private void updateRoomDetailsWithImage(Uri uri, final Model_Room modelRoom){
+        // Upload the new image
+        String fileName = System.currentTimeMillis() + "." + getFileExtension(uri);
+        StorageReference fileRef = rooms_Sref.child("Room Images/" + fileName);
+        progressDialog.show();
+
+        fileRef.putFile(uri).addOnSuccessListener(taskSnapshot -> {
+            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+            while (!uriTask.isComplete());
+            Uri uriImage = uriTask.getResult();
+            url = uriImage.toString();
+            // Set the new image URL
+            modelRoom.setImageUrl(url);
+            updateRoomDetails(modelRoom);
+            progressDialog.dismiss();
+        }).addOnFailureListener(e -> {
+            progressDialog.dismiss();
+            Toast.makeText(Activity_CreateRoom.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("FirebaseUpload", "Failed to upload image", e);
+        });
+    }
+
+    private void updateRoomDetails(Model_Room modelRoom) {
+        DatabaseReference roomRef = rooms_DBref.child(modelRoom.getRoomName());
+        roomRef.setValue(modelRoom).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(Activity_CreateRoom.this, "Room Updated Successfully", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Activity_CreateRoom.this, Activity_Rooms.class);
+                startActivity(i);
+                finish();
+            } else {
+                Toast.makeText(Activity_CreateRoom.this, "Failed to Update Room", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -256,10 +303,11 @@ public class Activity_CreateRoom extends AppCompatActivity {
     }
 
     private void uploadToFirebase(Uri uri, final Model_Room modelRoom) {
-        StorageReference fileRef = rooms_Sref.child(System.currentTimeMillis() + "." + getFileExtension(uri));
-
+        StorageReference fileRef = rooms_Sref.child("Room Images/" + System.currentTimeMillis() + "." + getFileExtension(uri));
+        // Save Image to Firebase Storage
         fileRef.putFile(uri).addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri1 -> {
             modelRoom.setImageUrl(uri1.toString());
+            // Save data to Realtime Database
             rooms_DBref.child(modelRoom.getRoomName()).setValue(modelRoom).addOnSuccessListener(aVoid -> {
                 clearInputFields();
                 progressDialog.dismiss();
