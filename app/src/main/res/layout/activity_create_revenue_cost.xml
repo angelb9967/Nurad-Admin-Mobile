@@ -72,12 +72,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+            <TextView
+                android:id="@+id/textView101"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="35dp"
+                android:text="Date"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
             <EditText
                 android:id="@+id/Date_Etxt"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/custom_input"
                 android:inputType="none"
@@ -88,7 +100,7 @@
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toStartOf="@+id/CalendarPicker_Img"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textView101" />
 
             <ImageView
                 android:id="@+id/CalendarPicker_Img"
@@ -102,12 +114,24 @@
                 app:layout_constraintVertical_bias="0.652"
                 app:srcCompat="@drawable/calendar_days" />
 
+            <TextView
+                android:id="@+id/textView102"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Time"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Date_Etxt" />
+
             <EditText
                 android:id="@+id/Time_Etxt"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/custom_input"
                 android:hint="Time"
@@ -116,7 +140,7 @@
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toStartOf="@+id/Time_Img"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Date_Etxt" />
+                app:layout_constraintTop_toBottomOf="@+id/textView102" />
 
             <ImageView
                 android:id="@+id/Time_Img"
@@ -130,11 +154,23 @@
                 app:layout_constraintVertical_bias="0.652"
                 app:srcCompat="@drawable/clock_five" />
 
+            <TextView
+                android:id="@+id/textView103"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Transaction Type"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Time_Etxt" />
+
             <Spinner
                 android:id="@+id/EntryType_Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="12dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/style_spinner"
@@ -143,14 +179,26 @@
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Time_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Time_Etxt" />
+                app:layout_constraintStart_toStartOf="@+id/textView103"
+                app:layout_constraintTop_toBottomOf="@+id/textView103" />
+
+            <TextView
+                android:id="@+id/textView104"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Amount"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/EntryType_Spinner" />
 
             <EditText
                 android:id="@+id/Amount_Etxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="12dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/custom_input"
@@ -160,8 +208,8 @@
                 android:paddingEnd="18dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/EntryType_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/EntryType_Spinner" />
+                app:layout_constraintStart_toStartOf="@+id/textView104"
+                app:layout_constraintTop_toBottomOf="@+id/textView104" />
 
             <View
                 android:id="@+id/view1"

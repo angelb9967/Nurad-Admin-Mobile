@@ -135,7 +135,7 @@ public class Adapter_Room extends RecyclerView.Adapter<Adapter_Room.RoomViewHold
 
     private String formatPrice(double price) {
         // Format the price
-        return NumberFormat.getNumberInstance(Locale.US).format(price);
+        return String.format(Locale.US, "%.2f", price);
     }
 
     public void updateData(List<Model_Room> newRoomList) {

@@ -45,6 +45,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -83,7 +84,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
         if (bundle != null) {
             loadRoomDetails(bundle);
         }
-
         setEventListeners();
     }
 
@@ -171,7 +171,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
 
     private void changeSpinnerItemTextColor(Spinner spinner, int position) {
         View selectedView = spinner.getSelectedView();
-        if (selectedView != null && selectedView instanceof TextView) {
+        if (selectedView instanceof TextView) {
             if (position == 0) {
                 ((TextView) selectedView).setTextColor(Color.GRAY); // Set to gray if no item selected
             } else {
@@ -179,7 +179,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
             }
         }
     }
-
 
     private void setEventListeners() {
         back_icon.setOnClickListener(view -> {
@@ -197,6 +196,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
 
         saveBtn.setOnClickListener(view -> saveRoomDetails());
 
+        // To know the booking price of the room, the user has to select a price rule first
         priceRules_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -472,7 +472,25 @@ public class Activity_CreateRoom extends AppCompatActivity {
                 if (snapshot.exists()) {
                     Model_PriceRule modelPriceRule = snapshot.getValue(Model_PriceRule.class);
                     if (modelPriceRule != null) {
-                        double price = modelPriceRule.getPrice();
+                        double price;
+
+                        Calendar calendar = Calendar.getInstance();
+                        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                        switch (dayOfWeek) {
+                            case Calendar.FRIDAY:
+                                price = modelPriceRule.getFriday_price();
+                                break;
+                            case Calendar.SATURDAY:
+                                price = modelPriceRule.getSaturday_price();
+                                break;
+                            case Calendar.SUNDAY:
+                                price = modelPriceRule.getSunday_price();
+                                break;
+                            default:
+                                price = modelPriceRule.getPrice();
+                                break;
+                        }
+
                         price_Etxt.setText("₱" + String.format(Locale.US, "%.2f", price));
                     }
                 }
