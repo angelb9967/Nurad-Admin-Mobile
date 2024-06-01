@@ -162,11 +162,11 @@ public class Activity_CreateRoom extends AppCompatActivity {
         }
 
         if (purpose.equalsIgnoreCase("View Details")) {
-            title.setText("Edit");
-            saveBtn.setText("Update");
+            title.setText(R.string.Edit);
+            saveBtn.setText(R.string.Update);
         } else {
-            title.setText("Create");
-            saveBtn.setText("Save");
+            title.setText(R.string.Create);
+            saveBtn.setText(R.string.Save);
         }
     }
 
@@ -196,22 +196,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
         });
 
         saveBtn.setOnClickListener(view -> saveRoomDetails());
-
-        // To know the booking price of the room, the user has to select a price rule first
-        priceRules_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    String selectedPriceRule = priceRules_spinner.getSelectedItem().toString();
-                    retrieveAndSetPrice(selectedPriceRule);
-                } else {
-                    price_Etxt.setText("");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
-        });
     }
 
     private void saveRoomDetails() {
