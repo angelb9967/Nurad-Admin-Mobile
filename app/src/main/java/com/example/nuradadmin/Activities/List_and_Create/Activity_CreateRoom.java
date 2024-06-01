@@ -156,7 +156,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         old_roomName = bundle.getString("Room Number");
 
         if (recommendedRoom_chk_box.isChecked()) {
-            old_DBref = FirebaseDatabase.getInstance().getReference("Check");
+            old_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
             old_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
         }
@@ -215,7 +215,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
 
         // Determine the database reference based on the recommended checkbox state
         if (isRecommended) {
-            rooms_DBref = FirebaseDatabase.getInstance().getReference("Check");
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
             rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
         }
@@ -289,7 +289,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         DatabaseReference roomRef;
         // Check if the recommended state has changed
         if (recommendedRoom_chk_box.isChecked()) {
-            rooms_DBref = FirebaseDatabase.getInstance().getReference("Check");
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
             rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
         }

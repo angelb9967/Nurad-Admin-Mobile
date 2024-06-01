@@ -81,12 +81,12 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
         title.setText("Rooms");
 
         room_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
-        recommended_DBref = FirebaseDatabase.getInstance().getReference("Check");
+        recommended_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         adapter = new Adapter_Room(Activity_Rooms.this, modelRoomList, this, this);
         recyclerView.setAdapter(adapter);
-        fetchRoomsFromDatabase( "Rooms", "Check");
+        fetchRoomsFromDatabase( "Rooms", "RecommRooms");
 
         back_icon.setOnClickListener(View -> {
             Intent i = new Intent(this, Activity_SystemManagement.class);
