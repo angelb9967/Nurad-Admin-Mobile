@@ -14,19 +14,34 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/priceRule"
+        <LinearLayout
+            android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Price Rule"
-            android:textColor="@color/purple"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/priceRuleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/priceRule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Price Rule"
+                android:textColor="@color/purple"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/priceRule"
+            android:layout_below="@id/top"
             android:orientation="horizontal">
 
             <LinearLayout
