@@ -2,6 +2,7 @@ package com.example.nuradadmin.Activities.List_and_Create;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_SystemManagement;
 import com.example.nuradadmin.Adapters.Adapter_Room;
+import com.example.nuradadmin.Adapters.Adapter_RoomType;
 import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
@@ -30,7 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Activity_Rooms extends AppCompatActivity {
+public class Activity_Rooms extends AppCompatActivity  implements Adapter_RoomType.OnLongItemClickListener{
+    public static boolean isContextualModeEnabled = false;
     private RecyclerView recyclerView;
     private List<Model_Room> modelRoomList;
     private List<String> roomTitles;
@@ -103,5 +106,13 @@ public class Activity_Rooms extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onLongItemClick(int position) {
+        // Handle long click action here
+        isContextualModeEnabled = true;
+
+        adapter.notifyDataSetChanged();
     }
 }

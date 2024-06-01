@@ -2,7 +2,8 @@ package com.example.nuradadmin.Models;
 public class Model_RoomType {
     private String roomType_Name;
     private String description;
-
+    private boolean isChecked;
+    private int backgroundColor;
     public Model_RoomType() {
     }
 
@@ -25,5 +26,21 @@ public class Model_RoomType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }
