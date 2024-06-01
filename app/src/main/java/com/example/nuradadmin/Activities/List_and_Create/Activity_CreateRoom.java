@@ -52,7 +52,7 @@ import java.util.Objects;
 public class Activity_CreateRoom extends AppCompatActivity {
     private FrameLayout frame_layout;
     private CheckBox depositRequired_chkbox, recommendedRoom_chk_box;
-    private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref;
+    private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref, old_DBref;
     private StorageReference rooms_Sref;
     private ArrayList<String> roomTypes_list, priceRules_list;
     private CustomArrayAdapter roomTypes_adapter, priceRules_adapter;
@@ -63,7 +63,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
     private TextView title, uploadphototext;
     private ProgressDialog progressDialog;
     private Uri imageUri;
-    private String purpose = "", imageUrl = "", oldImageURL = "", url = "";
+    private String purpose = "", imageUrl = "", oldImageURL = "", url = "", old_roomName = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,18 +76,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         });
         SystemUIUtil.setupSystemUI(this);
 
-        initializeViews();
-        setupFirebase();
-        setupSpinners();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            loadRoomDetails(bundle);
-        }
-        setEventListeners();
-    }
-
-    private void initializeViews() {
+        // Initialize views
         back_icon = findViewById(R.id.back_icon);
         title = findViewById(R.id.title);
         roomName_Etxt = findViewById(R.id.RoomName_Etxt);
@@ -104,9 +93,19 @@ public class Activity_CreateRoom extends AppCompatActivity {
         price_Etxt = findViewById(R.id.Price_Etxt);
         disablePriceEtxt();
 
+        // Initialize Progress Dialog
         progressDialog = new ProgressDialog(Activity_CreateRoom.this);
         progressDialog.setTitle("Create Room");
         progressDialog.setMessage("Saving information ...");
+
+        setupFirebase();
+        setupSpinners();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            loadRoomDetails(bundle);
+        }
+        setEventListeners();
     }
 
     private void setupFirebase() {
@@ -134,8 +133,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
     private void loadRoomDetails(Bundle bundle) {
         purpose = bundle.getString("Purpose");
         imageUrl = bundle.getString("Image");
-        oldImageURL = imageUrl;
-
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get().load(imageUrl).into(uploadImg);
         } else {
@@ -147,18 +144,22 @@ public class Activity_CreateRoom extends AppCompatActivity {
         roomName_Etxt.setText(bundle.getString("Room Number"));
         roomTitle_Etxt.setText(bundle.getString("Room Title"));
         description_Etxt.setText(bundle.getString("Description"));
-
         String roomType = bundle.getString("Room Type");
         String priceRule = bundle.getString("Price Rule");
-
-        Log.d("SpinnerIndices", "Room Type String: " + roomType);
-        Log.d("SpinnerIndices", "Price Rule String: " + priceRule);
-
         roomsType_spinner.setTag(roomType);
         priceRules_spinner.setTag(priceRule);
-
         depositRequired_chkbox.setChecked(bundle.getBoolean("Deposit Required?"));
         recommendedRoom_chk_box.setChecked(bundle.getBoolean("Recommend Room?"));
+
+        // For comparison
+        oldImageURL = imageUrl;
+        old_roomName = bundle.getString("Room Number");
+
+        if (recommendedRoom_chk_box.isChecked()) {
+            old_DBref = FirebaseDatabase.getInstance().getReference("Check");
+        } else {
+            old_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+        }
 
         if (purpose.equalsIgnoreCase("View Details")) {
             title.setText("Edit");
@@ -228,12 +229,16 @@ public class Activity_CreateRoom extends AppCompatActivity {
         boolean depositReq = depositRequired_chkbox.isChecked();
         boolean isRecommended = recommendedRoom_chk_box.isChecked();
 
+        // Determine the database reference based on the recommended checkbox state
         if (isRecommended) {
             rooms_DBref = FirebaseDatabase.getInstance().getReference("Check");
+        } else {
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
         }
 
         Model_Room modelRoom = new Model_Room(roomName, roomTitle, isRecommended, depositReq, roomType, priceRule, description);
-        if(purpose.equalsIgnoreCase("View Details")){
+
+        if (purpose.equalsIgnoreCase("View Details")) {
             // Update Existing Record in Firebase
             if (imageUri == null && Objects.equals(imageUrl, oldImageURL)) {
                 // If imageUri is not set, use the existing image URL
@@ -286,6 +291,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
             // Set the new image URL
             modelRoom.setImageUrl(url);
             updateRoomDetails(modelRoom);
+
             progressDialog.dismiss();
             Toast.makeText(Activity_CreateRoom.this, "Image upload successful", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
@@ -296,7 +302,29 @@ public class Activity_CreateRoom extends AppCompatActivity {
     }
 
     private void updateRoomDetails(Model_Room modelRoom) {
-        DatabaseReference roomRef = rooms_DBref.child(modelRoom.getRoomName());
+        DatabaseReference roomRef;
+        // Check if the recommended state has changed
+        if (recommendedRoom_chk_box.isChecked()) {
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("Check");
+        } else {
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+        }
+
+        if (old_DBref != null && !old_DBref.equals(rooms_DBref)) { // Remove the room from the old database reference
+            old_DBref.child(old_roomName).removeValue();
+        }
+
+        // Room Name is Primary Key, if there are changes
+        if (!old_roomName.equals(modelRoom.getRoomName())) {
+            roomRef = old_DBref.child(old_roomName);  // Delete old record
+            roomRef.removeValue();
+
+            roomRef = rooms_DBref.child(modelRoom.getRoomName());  // Create a new one
+        } else {
+            // If none, update on the old record
+            roomRef = rooms_DBref.child(old_roomName);
+        }
+
         roomRef.setValue(modelRoom).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(Activity_CreateRoom.this, "Room Updated Successfully", Toast.LENGTH_SHORT).show();
@@ -308,7 +336,6 @@ public class Activity_CreateRoom extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
