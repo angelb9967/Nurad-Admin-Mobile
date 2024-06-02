@@ -3,7 +3,6 @@ package com.example.nuradadmin.Activities.SideMenu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +11,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -22,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
 import com.example.nuradadmin.Fragments.Fragment_Available;
 import com.example.nuradadmin.Fragments.Fragment_Booking;
 import com.example.nuradadmin.Fragments.Fragment_History;
@@ -30,9 +27,7 @@ import com.example.nuradadmin.Fragments.Fragment_Housekeeping;
 import com.example.nuradadmin.Fragments.Fragment_InUse;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
-import com.example.nuradadmin.databinding.ActivityAvailableBinding;
 import com.example.nuradadmin.databinding.ActivityBookingCalendarBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 

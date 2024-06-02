@@ -12,22 +12,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreatePriceRules;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
-import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
 import com.example.nuradadmin.Models.Model_PriceRule;
-import com.example.nuradadmin.Models.Model_RoomType;
 import com.example.nuradadmin.R;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.MyViewHolder> {
     private Context context;
