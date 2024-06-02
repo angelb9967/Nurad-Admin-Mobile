@@ -58,6 +58,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
+                            app:tint="@color/purple"
                             android:src="@drawable/bed_alt"
                             android:layout_gravity="center_horizontal"/>
 
@@ -68,7 +69,6 @@
                             android:text="Room Types"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -94,7 +94,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            app:tint="@color/softblack"
+                            app:tint="@color/purple"
                             android:src="@drawable/brand"
                             android:layout_gravity="center_horizontal"/>
 
@@ -105,7 +105,6 @@
                             android:text="Price Rules"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -131,7 +130,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            app:tint="@color/softblack"
+                            app:tint="@color/purple"
                             android:src="@drawable/door_open"
                             android:layout_gravity="center_horizontal"/>
 
@@ -142,7 +141,6 @@
                             android:text="Rooms"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -167,7 +165,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            app:tint="@color/softblack"
+                            app:tint="@color/purple"
                             android:src="@drawable/chart_simple"
                             android:layout_gravity="center_horizontal"/>
 
@@ -178,7 +176,6 @@
                             android:text="Statistics"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -203,7 +200,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            app:tint="@color/softblack"
+                            app:tint="@color/purple"
                             android:src="@drawable/time_past"
                             android:layout_gravity="center_horizontal"/>
 
@@ -214,7 +211,6 @@
                             android:text="History"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -239,7 +235,7 @@
                         <ImageView
                             android:layout_width="70dp"
                             android:layout_height="70dp"
-                            app:tint="@color/softblack"
+                            app:tint="@color/purple"
                             android:src="@drawable/power"
                             android:layout_gravity="center_horizontal"/>
 
@@ -250,7 +246,6 @@
                             android:text="Logout"
                             android:layout_gravity="center_horizontal"
                             android:textSize="18sp"
-                            android:textStyle="bold"
                             android:textColor="@color/softblack"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
