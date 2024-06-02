@@ -1,17 +1,27 @@
 package com.example.nuradadmin.Models;
 
 public class Models_RevenueCost {
-    private String date, time, selected, amount, note;
+    private String primaryKey, date, time, transactionType, note;
+    private double amount;
 
     public Models_RevenueCost() {
     }
 
-    public Models_RevenueCost(String date, String time, String selected, String amount, String note) {
+    public Models_RevenueCost(String primaryKey, String date, String time, String transactionType, double amount, String note) {
+        this.primaryKey = primaryKey;
         this.date = date;
         this.time = time;
-        this.selected = selected;
+        this.transactionType = transactionType;
         this.amount = amount;
         this.note = note;
+    }
+
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
     }
 
     public String getDate() {
@@ -30,19 +40,19 @@ public class Models_RevenueCost {
         this.time = time;
     }
 
-    public String getSelected() {
-        return selected;
+    public String getTransactionType() {
+        return transactionType;
     }
 
-    public void setSelected(String selected) {
-        this.selected = selected;
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 
-    public String getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

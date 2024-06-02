@@ -18,45 +18,77 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
+import com.example.nuradadmin.Fragments.Fragment_Available;
+import com.example.nuradadmin.Fragments.Fragment_Booking;
+import com.example.nuradadmin.Fragments.Fragment_History;
+import com.example.nuradadmin.Fragments.Fragment_Housekeeping;
+import com.example.nuradadmin.Fragments.Fragment_InUse;
 import com.example.nuradadmin.R;
+import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.example.nuradadmin.databinding.ActivityAvailableBinding;
+import com.example.nuradadmin.databinding.ActivityBookingCalendarBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 
 public class Activity_BookingCalendar extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+   private ActivityBookingCalendarBinding binding;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
-    private FloatingActionButton floatingBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_booking_calendar);
+        binding = ActivityBookingCalendarBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple));
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.purple));
+        SystemUIUtil.setupSystemUI(this);
 
         drawerLayout = findViewById(R.id.main);
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbarMenu);
         menu_icon = findViewById(R.id.menu_icon);
         title = findViewById(R.id.title);
-        floatingBtn = findViewById(R.id.floatingActionButton);
-
         setSupportActionBar(toolbar);
+        // Set the initial fragment (default) to display when the activity is created
         title.setText("Booking Calendar");
+        replaceFragment(new Fragment_Booking());
 
+        // Bottom Navigation
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            // Check which menu item is selected and replace the current fragment accordingly
+            if (item.getItemId() == R.id.booking) {
+                title.setText("Booking");
+                replaceFragment(new Fragment_Booking());
+            } else if (item.getItemId() == R.id.available){
+                title.setText("Available");
+                replaceFragment(new Fragment_Available());
+            } else if (item.getItemId() == R.id.inUse){
+                title.setText("In Use");
+                replaceFragment(new Fragment_InUse());
+            } else if (item.getItemId() == R.id.housekeeping){
+                title.setText("Housekeeping");
+                replaceFragment(new Fragment_Housekeeping());
+            } else if (item.getItemId() == R.id.history){
+                title.setText("History");
+                replaceFragment(new Fragment_History());
+            }
+            return true;
+        });
+
+        // Side Navigation
         navigationView.setNavigationItemSelectedListener(this);
 
         menu_icon.setOnClickListener(View -> {
@@ -65,12 +97,6 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
             } else {
                 drawerLayout.openDrawer(navigationView);
             }
-        });
-
-        floatingBtn.setOnClickListener(view ->{
-            Intent i = new Intent(this, Activity_CreateBooking.class);
-            startActivity(i);
-            finish();
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -114,5 +140,12 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
             return false;
         }
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
     }
 }

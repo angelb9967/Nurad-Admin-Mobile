@@ -75,11 +75,11 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
         }
 
         if(purpose.equalsIgnoreCase("View Details")){
-            title.setText("Edit");
-            saveBtn.setText("Update");
+            title.setText(R.string.Edit);
+            saveBtn.setText(R.string.Update);
         }else{
-            title.setText("Create");
-            saveBtn.setText("Save");
+            title.setText(R.string.Create);
+            saveBtn.setText(R.string.Save);
         }
         priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
 

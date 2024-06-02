@@ -42,7 +42,7 @@ import java.util.List;
 
 public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.OnLongItemClickListener, Adapter_Room.OnSelectionChangedListener {
     public static boolean isContextualModeEnabled = false;
-    private ImageView back_icon, moveOutDeleteMode, delete_icon;;
+    private ImageView back_icon, moveOutDeleteMode, delete_icon;
     private RecyclerView recyclerView;
     private List<String> roomTitles;
     private List<Model_Room> modelRoomList;
@@ -80,13 +80,13 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
 
         title.setText("Rooms");
 
-        room_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+        room_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         recommended_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         adapter = new Adapter_Room(Activity_Rooms.this, modelRoomList, this, this);
         recyclerView.setAdapter(adapter);
-        fetchRoomsFromDatabase( "Rooms", "RecommRooms");
+        fetchRoomsFromDatabase( "AllRooms", "RecommRooms");
 
         back_icon.setOnClickListener(View -> {
             Intent i = new Intent(this, Activity_SystemManagement.class);
@@ -120,7 +120,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
     }
 
     private void fetchRoomsFromDatabase(String... referencePaths) {
-        modelRoomList.clear(); // Clear the list before adding new data
+        modelRoomList.clear();
         roomTitles.clear();
         for (String referencePath : referencePaths) {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(referencePath);

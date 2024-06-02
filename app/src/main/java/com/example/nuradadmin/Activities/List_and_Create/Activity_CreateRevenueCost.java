@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,6 +30,8 @@ import com.example.nuradadmin.Adapters.CustomArrayAdapter;
 import com.example.nuradadmin.Models.Models_RevenueCost;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -50,6 +53,7 @@ public class Activity_CreateRevenueCost extends AppCompatActivity {
     private TextView title;
     private Calendar calendar;
     private int mHour, mMinute;
+    private String purpose = "", primaryKey = "";
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +78,38 @@ public class Activity_CreateRevenueCost extends AppCompatActivity {
         Time_Img = findViewById(R.id.Time_Img);
         saveBtn = findViewById(R.id.Save_Btn);
 
-        title.setText("Create");
+        String[] value = {"Select Type", "Revenue", "Cost"};
+        selector_list = new ArrayList<>(Arrays.asList(value));
+        selector_adapter = new CustomArrayAdapter(this, R.layout.style_spinner, selector_list);
+        selector_spinner.setAdapter(selector_adapter);
+
+        // Retrieve the bundle from the intent
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){ //If not null, extract all the data
+            purpose = bundle.getString("Purpose");
+            primaryKey = bundle.getString("Primary Key");
+            Date_Etxt.setText(bundle.getString("Date"));
+            Time_Etxt.setText(bundle.getString("Time"));
+            String transType = bundle.getString("Transaction Type");
+            int spinnerPosition = selector_adapter.getPosition(transType);
+            selector_spinner.setSelection(spinnerPosition);
+            Amount_Etxt.setText(String.format(Locale.US, "%.2f", bundle.getDouble("Amount")));
+            Note_Etxt.setText(bundle.getString("Note"));
+        }
+
+        if(purpose.equalsIgnoreCase("View Details")){
+            title.setText(R.string.Edit);
+            saveBtn.setText(R.string.Update);
+        }else{
+            title.setText(R.string.Create);
+            saveBtn.setText(R.string.Save);
+        }
         revenueCost_DBref = FirebaseDatabase.getInstance().getReference("Revenue and Expenses");
 
         calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        String[] value = {"Select Option", "Revenue", "Cost"};
-        selector_list = new ArrayList<>(Arrays.asList(value));
-        selector_adapter = new CustomArrayAdapter(this, R.layout.style_spinner, selector_list);
-        selector_spinner.setAdapter(selector_adapter);
 
         // Prevent keyboard from appearing when EditText is touched
         Date_Etxt.setOnTouchListener((v, event) -> {
@@ -134,27 +158,51 @@ public class Activity_CreateRevenueCost extends AppCompatActivity {
         saveBtn.setOnClickListener(view ->{
             final String date = Date_Etxt.getText().toString();
             final String time = Time_Etxt.getText().toString();
-            final String selected_option = selector_spinner.getSelectedItem().toString();
-            final String amount = Amount_Etxt.getText().toString();
+            final String selected_transactionType = selector_spinner.getSelectedItem().toString();
+            final String amountStr = Amount_Etxt.getText().toString().toString();
             final String note = Note_Etxt.getText().toString();
 
-            if (TextUtils.isEmpty(date) || TextUtils.isEmpty(time) || selector_spinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(amount) || TextUtils.isEmpty(note)) {
+            if (TextUtils.isEmpty(date) || TextUtils.isEmpty(time) || selector_spinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(amountStr) || TextUtils.isEmpty(note)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            final double amount = Double.parseDouble(amountStr);
             String revenueCostID = revenueCost_DBref.push().getKey();
-            Models_RevenueCost modelRevenueCost = new Models_RevenueCost(date, time, selected_option, amount, note);
-            revenueCost_DBref.child(revenueCostID).setValue(modelRevenueCost)
-                    .addOnSuccessListener(aVoid -> {
-                        Date_Etxt.setText("");
-                        Time_Etxt.setText("");
-                        selector_spinner.setSelection(0);
-                        Amount_Etxt.setText("");
-                        Note_Etxt.setText("");
-                        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+            if(purpose.equalsIgnoreCase("View Details")){
+                revenueCostID = primaryKey;
+            }
+
+            Models_RevenueCost modelRevenueCost = new Models_RevenueCost(revenueCostID, date, time, selected_transactionType, amount, note);
+
+            if(purpose.equalsIgnoreCase("View Details")) {
+                // Update Data to Database
+                revenueCost_DBref.child(primaryKey).setValue(modelRevenueCost).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(Activity_CreateRevenueCost.this, "Updated", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(Activity_CreateRevenueCost.this, "Failed to update: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else{
+                // Add and Save Data to Database
+                assert revenueCostID != null;
+                revenueCost_DBref.child(revenueCostID).setValue(modelRevenueCost)
+                        .addOnSuccessListener(aVoid -> {
+                            Date_Etxt.setText("");
+                            Time_Etxt.setText("");
+                            selector_spinner.setSelection(0);
+                            Amount_Etxt.setText("");
+                            Note_Etxt.setText("");
+                            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
         });
     }
 

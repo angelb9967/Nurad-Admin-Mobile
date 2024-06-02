@@ -50,8 +50,6 @@ public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.My
     public Adapter_PriceRule.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pricerule, parent, false);
         return new Adapter_PriceRule.MyViewHolder(view, longItemClickListener);
-
-
     }
 
     @Override

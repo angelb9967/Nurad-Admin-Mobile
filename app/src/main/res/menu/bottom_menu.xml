@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/booking"
+        android:title="Booking"
+        android:icon="@drawable/calendar_day" />
+
+    <item
         android:id="@+id/available"
         android:title="Available"
         android:icon="@drawable/sign_hanging" />

@@ -1,7 +1,6 @@
 package com.example.nuradadmin.Models;
 
 public class Model_PriceRule {
-//    private String ruleName, price, extraAdult_price, extraChild_price, friday_price, saturday_price, sunday_price;
     private String ruleName;
     private double price, extraAdult_price, extraChild_price, friday_price, saturday_price, sunday_price;
     public Model_PriceRule() {

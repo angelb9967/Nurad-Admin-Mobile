@@ -25,6 +25,7 @@ import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_Rooms;
 import com.example.nuradadmin.R;
+import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.android.material.navigation.NavigationView;
 
 public class Activity_SystemManagement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -44,10 +45,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple));
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.purple));
+        SystemUIUtil.setupSystemUI(this);
 
         drawerLayout = findViewById(R.id.main);
         navigationView = findViewById(R.id.navigation_view);

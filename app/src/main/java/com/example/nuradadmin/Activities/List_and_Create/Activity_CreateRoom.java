@@ -111,7 +111,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
     private void setupFirebase() {
         roomTypes_DBref = FirebaseDatabase.getInstance().getReference("Room Types");
         priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
-        rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+        rooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         rooms_Sref = FirebaseStorage.getInstance().getReference();
 
         roomTypes_list = new ArrayList<>();
@@ -158,7 +158,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         if (recommendedRoom_chk_box.isChecked()) {
             old_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
-            old_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+            old_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         }
 
         if (purpose.equalsIgnoreCase("View Details")) {
@@ -217,7 +217,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         if (isRecommended) {
             rooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
-            rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         }
 
         Model_Room modelRoom = new Model_Room(roomName, roomTitle, isRecommended, depositReq, roomType, priceRule, description);
@@ -291,7 +291,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         if (recommendedRoom_chk_box.isChecked()) {
             rooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         } else {
-            rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+            rooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         }
 
         if (old_DBref != null && !old_DBref.equals(rooms_DBref)) { // Remove the room from the old database reference
