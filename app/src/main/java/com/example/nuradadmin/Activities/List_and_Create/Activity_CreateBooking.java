@@ -28,6 +28,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.nuradadmin.Activities.SideMenu.Activity_BookingCalendar;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
 import com.example.nuradadmin.Models.Model_Booking;
+import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.firebase.database.DataSnapshot;
@@ -38,17 +39,19 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Activity_CreateBooking extends AppCompatActivity {
-    private DatabaseReference booking_DBref , rooms_DBref;
-    private ArrayList<String> rooms_list;
-    private CustomArrayAdapter rooms_adapter;
+    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef;
+    private ArrayList<String> roomsList;
+    private CustomArrayAdapter roomsAdapter;
     private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
     private EditText CustomerName_Etxt, PhoneNum_Etxt, CheckIn_Etxt, CheckOut_Etxt, BookingPrice_Etxt, Adult_Etxt, Child_Etxt, Note_Etxt;
     private Button saveBtn;
     private TextView title;
     private Spinner rooms_spinner;
     private Calendar calendar;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
 
         title.setText("Create");
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
-        rooms_DBref = FirebaseDatabase.getInstance().getReference("Rooms");
+        allRoomsRef = FirebaseDatabase.getInstance().getReference("AllRooms");
+        recommendedRef = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         Adult_Plus.setOnClickListener(view -> {
             addOrSubtract_Quantity(Adult_Etxt, "plus", String.valueOf(Adult_Etxt.getText()));
@@ -119,13 +123,13 @@ public class Activity_CreateBooking extends AppCompatActivity {
             showDatePicker_and_setDate(CheckIn_Etxt, year, month, day);
         });
 
-        CheckIn_Etxt.setOnFocusChangeListener((view, hasFocus) ->{
-            if(hasFocus){
+        CheckIn_Etxt.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
                 showDatePicker_and_setDate(CheckIn_Etxt, year, month, day);
             }
         });
 
-        CheckIn_Etxt.setOnClickListener(view ->{
+        CheckIn_Etxt.setOnClickListener(view -> {
             showDatePicker_and_setDate(CheckIn_Etxt, year, month, day);
         });
 
@@ -142,21 +146,24 @@ public class Activity_CreateBooking extends AppCompatActivity {
             showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
         });
 
-        CheckOut_Etxt.setOnFocusChangeListener((view, hasFocus) ->{
-            if(hasFocus){
+        CheckOut_Etxt.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
                 showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
             }
         });
 
-        CheckOut_Etxt.setOnClickListener(view ->{
+        CheckOut_Etxt.setOnClickListener(view -> {
             showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
         });
 
-        rooms_list = new ArrayList<>();
-        rooms_adapter = new CustomArrayAdapter(Activity_CreateBooking.this, R.layout.style_spinner, rooms_list);
+        roomsList = new ArrayList<>();
+        roomsAdapter = new CustomArrayAdapter(Activity_CreateBooking.this, R.layout.style_spinner, roomsList);
         setupSpinner(rooms_spinner);
-        rooms_spinner.setAdapter(rooms_adapter);
-        Showdata(rooms_DBref, rooms_adapter, rooms_list);
+        rooms_spinner.setAdapter(roomsAdapter);
+
+        // Show data from both databases
+        Showdata(allRoomsRef, roomsAdapter, roomsList);
+        Showdata(recommendedRef, roomsAdapter, roomsList);
 
         back_icon.setOnClickListener(View -> {
             Intent i = new Intent(this, Activity_BookingCalendar.class);
@@ -164,7 +171,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
             finish();
         });
 
-        saveBtn.setOnClickListener(view ->{
+        saveBtn.setOnClickListener(view -> {
             final String customerName = CustomerName_Etxt.getText().toString();
             final String phoneNumber = PhoneNum_Etxt.getText().toString();
             final String checkInDate = CheckIn_Etxt.getText().toString();
@@ -175,7 +182,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
             final String note = Note_Etxt.getText().toString();
             final String room = rooms_spinner.getSelectedItem().toString();
 
-            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) ||rooms_spinner.getSelectedItemPosition() == 0 ){
+            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) || rooms_spinner.getSelectedItemPosition() == 0) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -201,10 +208,9 @@ public class Activity_CreateBooking extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
-
     }
 
-    private void setupSpinner(Spinner spinner){
+    private void setupSpinner(Spinner spinner) {
         // Set default selection to "Select Room [Room Spinner]"
         spinner.setSelection(0);
         spinner.post(() -> {
@@ -234,7 +240,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         });
     }
 
-    private void showDatePicker_and_setDate(EditText field, int year, int month, int day){
+    private void showDatePicker_and_setDate(EditText field, int year, int month, int day) {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 Activity_CreateBooking.this, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -248,40 +254,41 @@ public class Activity_CreateBooking extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void addOrSubtract_Quantity(EditText editText, String operation, String curr_value){
+    private void addOrSubtract_Quantity(EditText editText, String operation, String curr_value) {
         curr_value = editText.getText().toString().trim();
 
-        if(curr_value.isEmpty() && operation.equalsIgnoreCase("plus")){
+        if (curr_value.isEmpty() && operation.equalsIgnoreCase("plus")) {
             editText.setText("1");
-        }else if (curr_value.equals("0") && operation.equalsIgnoreCase("minus") || curr_value.isEmpty() && operation.equalsIgnoreCase("minus")){
+        } else if (curr_value.equals("0") && operation.equalsIgnoreCase("minus") || curr_value.isEmpty() && operation.equalsIgnoreCase("minus")) {
             editText.setText("0");
-        }else{
+        } else {
             int intValue = Integer.parseInt(curr_value);
-            if(operation.equalsIgnoreCase("plus")){
+            if (operation.equalsIgnoreCase("plus")) {
                 intValue++;
                 editText.setText(String.valueOf(intValue));
-            }else{
+            } else {
                 intValue--;
                 editText.setText(String.valueOf(intValue));
             }
         }
     }
 
-    private void Showdata(DatabaseReference dbRef, CustomArrayAdapter adapter, ArrayList<String> list){
+    private void Showdata(DatabaseReference dbRef, CustomArrayAdapter adapter, ArrayList<String> list) {
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.add("Select Room");
-
-                for(DataSnapshot item:snapshot.getChildren()){
-                    list.add(item.getKey().toString());
+                if (list.isEmpty()) {
+                    list.add("Select Room");
+                }
+                for (DataSnapshot item : snapshot.getChildren()) {
+                    list.add(item.getKey());
                 }
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle possible errors.
             }
         });
     }
