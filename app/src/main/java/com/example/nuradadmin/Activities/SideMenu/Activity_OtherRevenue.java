@@ -1,10 +1,16 @@
 package com.example.nuradadmin.Activities.SideMenu;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -35,22 +41,27 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Activity_OtherRevenue extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Activity_OtherRevenue extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Adapter_RevenueCost.OnLongItemClickListener, Adapter_RevenueCost.OnSelectionChangedListener {
+    private static final String TAG = "Activity_OtherRevenue";
+    public static boolean isContextualModeEnabled = false;
+    private ImageView menu_icon, moveOutDeleteMode, delete_icon;
     private DatabaseReference revenueCost_DBref;
     private RecyclerView recyclerView;
     private List<Models_RevenueCost> modelRevenueCostList;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ValueEventListener eventListener;
-    private ImageView menu_icon;
     private Toolbar toolbar;
-    private TextView title;
+    private TextView title, itemCounter;
     private Adapter_RevenueCost adapter;
     private FloatingActionButton floatingBtn;
+    private View toolbar_normal;
+    private View toolbar_deleteMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: called");
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_other_revenue);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -67,6 +78,11 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
         title = findViewById(R.id.title);
         floatingBtn = findViewById(R.id.floatingActionButton);
         recyclerView = findViewById(R.id.recyclerView);
+        toolbar_normal = findViewById(R.id.toolbar_normal);
+        toolbar_deleteMode = findViewById(R.id.toolbar_deleteMode);
+        itemCounter = findViewById(R.id.counter);
+        delete_icon = findViewById(R.id.delete_icon);
+        moveOutDeleteMode = findViewById(R.id.back_btn);
 
         setSupportActionBar(toolbar);
         modelRevenueCostList = new ArrayList<>();
@@ -77,7 +93,7 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
         GridLayoutManager gridLayoutManager = new GridLayoutManager(Activity_OtherRevenue.this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        adapter = new Adapter_RevenueCost(Activity_OtherRevenue.this, modelRevenueCostList);
+        adapter = new Adapter_RevenueCost(Activity_OtherRevenue.this, modelRevenueCostList, this, this);
         recyclerView.setAdapter(adapter);
 
         loadRevenueCostData();
@@ -87,15 +103,39 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
         menu_icon.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(navigationView)) {
                 drawerLayout.closeDrawer(navigationView);
+                Log.d(TAG, "Drawer closed");
             } else {
                 drawerLayout.openDrawer(navigationView);
+                Log.d(TAG, "Drawer opened");
             }
         });
 
         floatingBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, Activity_CreateRevenueCost.class);
             startActivity(intent);
+            Log.d(TAG, "Floating button clicked, starting Activity_CreateRevenueCost");
             finish();
+        });
+
+        moveOutDeleteMode.setOnClickListener(view -> {
+            isContextualModeEnabled = false;
+            toolbar_deleteMode.setVisibility(View.GONE);
+            toolbar_normal.setVisibility(View.VISIBLE);
+            adapter.clearSelectedItems(); // Clear selected items
+            adapter.notifyDataSetChanged();
+            updateItemCounter(0);
+            Log.d(TAG, "Exited delete mode");
+        });
+
+        delete_icon.setOnClickListener(view -> {
+            List<Models_RevenueCost> selectedItems = adapter.getSelectedItems();
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(this, "No item selected", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Delete icon clicked, but no items selected");
+            } else {
+                showDeleteItemDialog(this);
+                Log.d(TAG, "Delete icon clicked, showing delete dialog");
+            }
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -103,8 +143,10 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
             public void handleOnBackPressed() {
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
+                    Log.d(TAG, "Back pressed, closing drawer");
                 } else {
                     finish();
+                    Log.d(TAG, "Back pressed, finishing activity");
                 }
             }
         };
@@ -120,6 +162,7 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
                     Models_RevenueCost modelRevenueCost = itemSnapshot.getValue(Models_RevenueCost.class);
                     if (modelRevenueCost != null) {
                         modelRevenueCostList.add(modelRevenueCost);
+                        Log.d(TAG, "Data added: " + modelRevenueCost.toString());
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -127,34 +170,116 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                Log.e(TAG, "Data loading cancelled or failed: " + error.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (revenueCost_DBref != null && eventListener != null) {
+            revenueCost_DBref.removeEventListener(eventListener);
+            Log.d(TAG, "Event listener removed");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isContextualModeEnabled = false;
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+            Log.d(TAG, "Activity stopped, notifying adapter");
+        }
+    }
+
+    public void onLongItemClick(int position) {
+        if (!adapter.getSelectedItems().contains(position)) {
+            isContextualModeEnabled = true;
+            updateItemCounter(1);
+            toolbar_normal.setVisibility(View.GONE);
+            toolbar_deleteMode.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+            Log.d(TAG, "Item long clicked, entering contextual mode");
+        }
+    }
+
+    public void onSelectionChanged(int count) {
+        updateItemCounter(count);
+        Log.d(TAG, "Selection changed, item count: " + count);
+    }
+
+    private void updateItemCounter(int count) {
+        itemCounter.setText(count + " Item(s) Selected");
+        Log.d(TAG, "Item counter updated: " + count);
+    }
+
+    private void showDeleteItemDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Delete Item");
+        builder.setMessage("Are you sure you want to delete the selected item(s)?");
+
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.d(TAG, "Delete confirmed, deleting items");
+                // Delete selected item(s)
+                for (Models_RevenueCost revenueCost : adapter.getSelectedItems()) {
+                    revenueCost_DBref.child(revenueCost.getPrimaryKey()).removeValue();
+                    Log.d(TAG, "Item deleted: " + revenueCost.getPrimaryKey());
+                }
+                // Reset contextual mode and update UI
+                isContextualModeEnabled = false;
+                toolbar_deleteMode.setVisibility(View.GONE);
+                toolbar_normal.setVisibility(View.VISIBLE);
+                adapter.clearSelectedItems();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Log.d(TAG, "Delete cancelled");
+            }
+        });
+
+        builder.create().show();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         drawerLayout.closeDrawer(GravityCompat.START);
         int id = menuItem.getItemId();
+        Log.d(TAG, "Navigation item selected, id: " + id);
 
         if (id == R.id.dashboard_menu) {
             startActivity(new Intent(this, Activity_Dashboard.class));
             overridePendingTransition(0, 0);
+            Log.d(TAG, "Navigating to Dashboard");
         } else if (id == R.id.bookingCalendar_menu) {
             startActivity(new Intent(this, Activity_BookingCalendar.class));
             overridePendingTransition(0, 0);
+            Log.d(TAG, "Navigating to Booking Calendar");
         } else if (id == R.id.otherRevenue_menu) {
             drawerLayout.closeDrawer(GravityCompat.START);
+            Log.d(TAG, "Staying in Other Revenue");
         } else if (id == R.id.systemManagement_menu) {
             startActivity(new Intent(this, Activity_SystemManagement.class));
             overridePendingTransition(0, 0);
+            Log.d(TAG, "Navigating to System Management");
         } else if (id == R.id.statistics_menu) {
             startActivity(new Intent(this, Activity_Statistics.class));
             overridePendingTransition(0, 0);
+            Log.d(TAG, "Navigating to Statistics");
         } else if (id == R.id.language_menu) {
             startActivity(new Intent(this, Activity_Language.class));
             overridePendingTransition(0, 0);
+            Log.d(TAG, "Navigating to Language");
         } else if (id == R.id.logout_menu) {
+            Log.d(TAG, "Logging out");
             // Logout
         } else {
             return false;
