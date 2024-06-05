@@ -28,7 +28,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.nuradadmin.Activities.SideMenu.Activity_BookingCalendar;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
 import com.example.nuradadmin.Models.Model_Booking;
-import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.firebase.database.DataSnapshot;
@@ -39,7 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class Activity_CreateBooking extends AppCompatActivity {
     private DatabaseReference booking_DBref, allRoomsRef, recommendedRef;
@@ -51,7 +49,6 @@ public class Activity_CreateBooking extends AppCompatActivity {
     private TextView title;
     private Spinner rooms_spinner;
     private Calendar calendar;
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +64,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
 
         back_icon = findViewById(R.id.back_icon);
         title = findViewById(R.id.title);
-        CustomerName_Etxt = findViewById(R.id.CustomerName_Etxt);
-        PhoneNum_Etxt = findViewById(R.id.PhoneNumber_Etxt);
+        CustomerName_Etxt = findViewById(R.id.FirstName_Etxt);
+        PhoneNum_Etxt = findViewById(R.id.MobilePhone_Etxt);
         rooms_spinner = findViewById(R.id.Rooms_Spinner);
         CheckIn_Etxt = findViewById(R.id.CheckInDate_Etxt);
         CheckOut_Etxt = findViewById(R.id.CheckOutDate_Etxt);

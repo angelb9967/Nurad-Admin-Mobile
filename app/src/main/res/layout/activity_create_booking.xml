@@ -50,7 +50,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="Customer Information"
+                android:text="Contact Information"
                 android:textColor="@color/softblack"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -65,21 +65,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="35dp"
-                android:text="Customer Name"
+                android:text="First Name"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/Prefix_Spinner" />
 
             <EditText
-                android:id="@+id/CustomerName_Etxt"
+                android:id="@+id/FirstName_Etxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/custom_input"
-                android:hint="Customer Name"
+                android:hint="First Name"
                 android:inputType="text"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
@@ -87,8 +87,38 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView101"
                 app:layout_constraintTop_toBottomOf="@+id/textView101"
-                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                />
+                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+
+            <TextView
+                android:id="@+id/textView301"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="35dp"
+                android:text="Last Name"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/FirstName_Etxt" />
+
+            <EditText
+                android:id="@+id/LastName_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/custom_input"
+                android:hint="Last Name"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView301"
+                app:layout_constraintTop_toBottomOf="@+id/textView301"
+                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+
 
             <TextView
                 android:id="@+id/textView4"
@@ -96,12 +126,70 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:paddingBottom="8dp"
-                android:text="Enter the customer's name and phone number."
+                android:text="Enter the customer's name and contact information."
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <TextView
+                android:id="@+id/textView201"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="35dp"
+                android:text="Prefix Name"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <Spinner
+                android:id="@+id/Prefix_Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/style_spinner"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView201"
+                app:layout_constraintTop_toBottomOf="@+id/textView201" />
+
+            <TextView
+                android:id="@+id/textView303"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Phone"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/LastName_Etxt" />
+
+            <EditText
+                android:id="@+id/Phone_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Phone"
+                android:maxLength="11"
+                android:inputType="phone"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView303"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView303"
+                app:layout_constraintTop_toBottomOf="@+id/textView303"/>
 
             <TextView
                 android:id="@+id/textView102"
@@ -114,14 +202,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/CustomerName_Etxt" />
+                app:layout_constraintTop_toBottomOf="@+id/Phone_Etxt" />
 
             <EditText
-                android:id="@+id/PhoneNumber_Etxt"
+                android:id="@+id/MobilePhone_Etxt"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/custom_input"
-                android:hint="Phone Number"
+                android:hint="Mobile Phone"
                 android:maxLength="11"
                 android:inputType="phone"
                 android:paddingStart="18dp"
@@ -133,6 +221,36 @@
                 app:layout_constraintStart_toStartOf="@+id/textView102"
                 app:layout_constraintTop_toBottomOf="@+id/textView102"/>
 
+            <TextView
+                android:id="@+id/textView305"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Email"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/MobilePhone_Etxt" />
+
+            <EditText
+                android:id="@+id/Email_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Email"
+                android:maxLength="11"
+                android:inputType="textEmailAddress"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView305"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView305"
+                app:layout_constraintTop_toBottomOf="@+id/textView305"/>
+
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
@@ -141,9 +259,365 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintEnd_toEndOf="@+id/PhoneNumber_Etxt"
-                app:layout_constraintStart_toStartOf="@+id/PhoneNumber_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/PhoneNumber_Etxt"
+                app:layout_constraintEnd_toEndOf="@+id/Email_Etxt"
+                app:layout_constraintStart_toStartOf="@+id/Email_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Email_Etxt"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <TextView
+                android:id="@+id/textView306"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Address Information"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                app:layout_constraintEnd_toEndOf="@+id/view"
+                app:layout_constraintStart_toStartOf="@+id/view"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <TextView
+                android:id="@+id/textView307"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Enter the address information."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView306"
+                app:layout_constraintStart_toStartOf="@+id/textView306"
+                app:layout_constraintTop_toBottomOf="@+id/textView306" />
+
+            <TextView
+                android:id="@+id/textView309"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Country"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView307" />
+
+            <EditText
+                android:id="@+id/Country_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Country"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView309"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView309"
+                app:layout_constraintTop_toBottomOf="@+id/textView309"/>
+
+            <TextView
+                android:id="@+id/textView310"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Address 1"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Country_Etxt" />
+
+            <EditText
+                android:id="@+id/Address1_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Address 1"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView310"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView310"
+                app:layout_constraintTop_toBottomOf="@+id/textView310"/>
+
+            <TextView
+                android:id="@+id/textView311"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Address 2"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Address1_Etxt" />
+
+            <EditText
+                android:id="@+id/Address2_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Address 2"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView311"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView311"
+                app:layout_constraintTop_toBottomOf="@+id/textView311"/>
+
+            <TextView
+                android:id="@+id/textView312"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="City"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Address2_Etxt" />
+
+            <EditText
+                android:id="@+id/City_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="City"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView312"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView312"
+                app:layout_constraintTop_toBottomOf="@+id/textView312"/>
+
+            <TextView
+                android:id="@+id/textView313"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Zip/Postal Code"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/City_Etxt" />
+
+            <EditText
+                android:id="@+id/ZipCode_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Zip / Postal Code"
+                android:inputType="text"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView313"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView313"
+                app:layout_constraintTop_toBottomOf="@+id/textView313"/>
+
+            <View
+                android:id="@+id/view01"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="@+id/ZipCode_Etxt"
+                app:layout_constraintStart_toStartOf="@+id/ZipCode_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/ZipCode_Etxt"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <TextView
+                android:id="@+id/textView314"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Payment Information"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/view01"
+                app:layout_constraintEnd_toEndOf="@+id/view01"
+                app:layout_constraintStart_toStartOf="@+id/view01"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <TextView
+                android:id="@+id/textView315"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Enter the payment information."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView314"
+                app:layout_constraintStart_toStartOf="@+id/textView314"
+                app:layout_constraintTop_toBottomOf="@+id/textView314" />
+
+            <TextView
+                android:id="@+id/textView316"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Card Number"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView315" />
+
+            <EditText
+                android:id="@+id/CardNumber_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Card Number"
+                android:inputType="number"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView316"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView316"
+                app:layout_constraintTop_toBottomOf="@+id/textView316"/>
+
+            <TextView
+                android:id="@+id/textView317"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="35dp"
+                android:text="Expiration Date"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/CardNumber_Etxt" />
+
+            <EditText
+                android:id="@+id/ExpirationDate_Etxt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/custom_input"
+                android:inputType="none"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="Expiration Date"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:layout_constraintEnd_toStartOf="@+id/ExpirationCalendarPicker_Img"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView317" />
+
+            <ImageView
+                android:id="@+id/ExpirationCalendarPicker_Img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="35dp"
+                app:layout_constraintBottom_toBottomOf="@id/ExpirationDate_Etxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ExpirationDate_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/CardNumber_Etxt"
+                app:layout_constraintVertical_bias="0.652"
+                app:srcCompat="@drawable/calendar_days" />
+
+            <TextView
+                android:id="@+id/textView318"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="CVV"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ExpirationDate_Etxt" />
+
+            <EditText
+                android:id="@+id/CVV_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="CVV"
+                android:inputType="number"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView318"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView318"
+                app:layout_constraintTop_toBottomOf="@+id/textView318"/>
+
+            <TextView
+                android:id="@+id/textView319"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:text="Name on the Card"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/CVV_Etxt" />
+
+            <EditText
+                android:id="@+id/NameOntheCard_Etxt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/custom_input"
+                android:hint="Name on the Card"
+                android:inputType="number"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView319"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView319"
+                app:layout_constraintTop_toBottomOf="@+id/textView319"/>
+
+            <View
+                android:id="@+id/view02"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="@+id/NameOntheCard_Etxt"
+                app:layout_constraintStart_toStartOf="@+id/NameOntheCard_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/NameOntheCard_Etxt"
                 tools:layout_editor_absoluteX="30dp" />
 
             <TextView
@@ -157,9 +631,9 @@
                 android:textColor="@color/softblack"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/view"
-                app:layout_constraintEnd_toEndOf="@+id/view"
-                app:layout_constraintStart_toStartOf="@+id/view"
+                app:layout_constraintTop_toBottomOf="@+id/view02"
+                app:layout_constraintEnd_toEndOf="@+id/view02"
+                app:layout_constraintStart_toStartOf="@+id/view02"
                 tools:layout_editor_absoluteX="0dp" />
 
             <TextView
