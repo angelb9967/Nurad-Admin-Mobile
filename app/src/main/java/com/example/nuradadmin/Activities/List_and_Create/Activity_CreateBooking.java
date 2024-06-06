@@ -27,7 +27,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_BookingCalendar;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
+import com.example.nuradadmin.Models.Model_AddressInfo;
 import com.example.nuradadmin.Models.Model_Booking;
+import com.example.nuradadmin.Models.Model_ContactInfo;
+import com.example.nuradadmin.Models.Model_PaymentInfo;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.firebase.database.DataSnapshot;
@@ -37,18 +40,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class Activity_CreateBooking extends AppCompatActivity {
-    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef;
+    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef,
+            contact_DBref, address_DBref, payment_DBref;
     private ArrayList<String> roomsList;
-    private CustomArrayAdapter roomsAdapter;
+    private CustomArrayAdapter roomsAdapter, prefixAdapter;
     private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
-    private EditText CustomerName_Etxt, PhoneNum_Etxt, CheckIn_Etxt, CheckOut_Etxt, BookingPrice_Etxt, Adult_Etxt, Child_Etxt, Note_Etxt;
+    private EditText FirstName_Etxt, LastName_Etxt, PhoneNum_Etxt, MobilePhone_Etxt, Email_Etxt,
+            Country_Etxt, Address1_Etxt, Address2_Etxt, City_Etxt, ZipPostalCode_Etxt,
+            CardNum_Etxt, ExpirationDte_Etxt, CVV_Etxt, NameOnTheCard_Etxt,
+            CheckIn_Etxt, CheckOut_Etxt, BookingPrice_Etxt, Adult_Etxt, Child_Etxt, Note_Etxt;
     private Button saveBtn;
     private TextView title;
-    private Spinner rooms_spinner;
+    private Spinner rooms_spinner, prefix_spinner;
     private Calendar calendar;
+    private ArrayList<String> prefix_list;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +71,28 @@ public class Activity_CreateBooking extends AppCompatActivity {
         });
         SystemUIUtil.setupSystemUI(this);
 
+        // Initialize Views
+        // Contact Information
         back_icon = findViewById(R.id.back_icon);
         title = findViewById(R.id.title);
-        CustomerName_Etxt = findViewById(R.id.FirstName_Etxt);
-        PhoneNum_Etxt = findViewById(R.id.MobilePhone_Etxt);
+        prefix_spinner = findViewById(R.id.Prefix_Spinner);
+        FirstName_Etxt = findViewById(R.id.FirstName_Etxt);
+        LastName_Etxt = findViewById(R.id.LastName_Etxt);
+        PhoneNum_Etxt = findViewById(R.id.Phone_Etxt);
+        MobilePhone_Etxt = findViewById(R.id.MobilePhone_Etxt);
+        Email_Etxt = findViewById(R.id.Email_Etxt);
+        // Address Information
+        Country_Etxt = findViewById(R.id.Country_Etxt);
+        Address1_Etxt = findViewById(R.id.Address1_Etxt);
+        Address2_Etxt = findViewById(R.id.Address2_Etxt);
+        City_Etxt = findViewById(R.id.City_Etxt);
+        ZipPostalCode_Etxt = findViewById(R.id.ZipCode_Etxt);
+        // Payment Information
+        CardNum_Etxt = findViewById(R.id.CardNumber_Etxt);
+        ExpirationDte_Etxt = findViewById(R.id.ExpirationDate_Etxt);
+        CVV_Etxt = findViewById(R.id.CVV_Etxt);
+        NameOnTheCard_Etxt = findViewById(R.id.NameOntheCard_Etxt);
+        // Booking Dates
         rooms_spinner = findViewById(R.id.Rooms_Spinner);
         CheckIn_Etxt = findViewById(R.id.CheckInDate_Etxt);
         CheckOut_Etxt = findViewById(R.id.CheckOutDate_Etxt);
@@ -85,6 +112,14 @@ public class Activity_CreateBooking extends AppCompatActivity {
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         allRoomsRef = FirebaseDatabase.getInstance().getReference("AllRooms");
         recommendedRef = FirebaseDatabase.getInstance().getReference("RecommRooms");
+        contact_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
+        address_DBref = FirebaseDatabase.getInstance().getReference("Address Information");
+        payment_DBref = FirebaseDatabase.getInstance().getReference("Payment Information");
+
+        String[] value = {"Select Prefix", "Mr", "Ms"};
+        prefix_list = new ArrayList<>(Arrays.asList(value));
+        prefixAdapter = new CustomArrayAdapter(this, R.layout.style_spinner, prefix_list);
+        prefix_spinner.setAdapter(prefixAdapter);
 
         Adult_Plus.setOnClickListener(view -> {
             addOrSubtract_Quantity(Adult_Etxt, "plus", String.valueOf(Adult_Etxt.getText()));
@@ -169,8 +204,24 @@ public class Activity_CreateBooking extends AppCompatActivity {
         });
 
         saveBtn.setOnClickListener(view -> {
-            final String customerName = CustomerName_Etxt.getText().toString();
-            final String phoneNumber = PhoneNum_Etxt.getText().toString();
+            final String prefix = prefix_spinner.getSelectedItem().toString();
+            final String firstName = FirstName_Etxt.getText().toString();
+            final String lastName = LastName_Etxt.getText().toString();
+            final String phone = PhoneNum_Etxt.getText().toString();
+            final String mobilePhone = MobilePhone_Etxt.getText().toString();
+            final String email = Email_Etxt.getText().toString();
+
+            final String country = Country_Etxt.getText().toString();
+            final String address1 = Address1_Etxt.getText().toString();
+            final String address2 = Address2_Etxt.getText().toString();
+            final String city = City_Etxt.getText().toString();
+            final String zipCode = ZipPostalCode_Etxt.getText().toString();
+
+            final String cardNumber = CardNum_Etxt.getText().toString();
+            final String expirationDate = ExpirationDte_Etxt.getText().toString();
+            final String cvv = CVV_Etxt.getText().toString();
+            final String nameOnTheCard = NameOnTheCard_Etxt.getText().toString();
+
             final String checkInDate = CheckIn_Etxt.getText().toString();
             final String checkOutDate = CheckOut_Etxt.getText().toString();
             final String bookingPriceStr = BookingPrice_Etxt.getText().toString();
@@ -179,7 +230,10 @@ public class Activity_CreateBooking extends AppCompatActivity {
             final String note = Note_Etxt.getText().toString();
             final String room = rooms_spinner.getSelectedItem().toString();
 
-            if (TextUtils.isEmpty(customerName) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) || rooms_spinner.getSelectedItemPosition() == 0) {
+            if (prefix_spinner.getSelectedItemPosition() == 0 || (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(mobilePhone)|| TextUtils.isEmpty(email) ||
+                    TextUtils.isEmpty(country) || TextUtils.isEmpty(address1) || TextUtils.isEmpty(address2) || TextUtils.isEmpty(city) || TextUtils.isEmpty(zipCode) ||
+                    TextUtils.isEmpty(cardNumber) || TextUtils.isEmpty(expirationDate) || TextUtils.isEmpty(cvv) || TextUtils.isEmpty(nameOnTheCard) ||
+                    TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) || rooms_spinner.getSelectedItemPosition() == 0)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -189,22 +243,76 @@ public class Activity_CreateBooking extends AppCompatActivity {
             final int extraChild = Integer.parseInt(extraChildStr);
 
             String bookingId = booking_DBref.push().getKey();
-            Model_Booking modelBooking = new Model_Booking(customerName, phoneNumber, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room);
-            booking_DBref.child(bookingId).setValue(modelBooking)
-                    .addOnSuccessListener(aVoid -> {
-                        CustomerName_Etxt.setText("");
-                        PhoneNum_Etxt.setText("");
-                        CheckIn_Etxt.setText("");
-                        CheckOut_Etxt.setText("");
-                        BookingPrice_Etxt.setText("");
-                        Adult_Etxt.setText("");
-                        Child_Etxt.setText("");
-                        Note_Etxt.setText("");
-                        rooms_spinner.setSelection(0);
-                        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            String contactId = contact_DBref.push().getKey();
+            String addressId = address_DBref.push().getKey();
+            String paymentId = payment_DBref.push().getKey();
+
+            Model_Booking modelBooking = new Model_Booking(bookingId, contactId, addressId, paymentId, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room);
+            saveToBookingFirebase(bookingId, modelBooking);
+
+            Model_ContactInfo modelContactInfo = new Model_ContactInfo(contactId, prefix, firstName, lastName, phone, mobilePhone, email);
+            saveToContactInfoFirebase(contactId, modelContactInfo);
+
+            Model_AddressInfo modelAddressInfo = new Model_AddressInfo(addressId, country, address1, address2, city, zipCode);
+            saveToAddressInfoFirebase(addressId, modelAddressInfo);
+
+            Model_PaymentInfo modelPaymentInfo = new Model_PaymentInfo(paymentId, cardNumber, expirationDate, cvv, nameOnTheCard);
+            saveToPaymentInfoFirebase(paymentId, modelPaymentInfo);
         });
+    }
+
+    private void saveToBookingFirebase(String booking_ID, Model_Booking model_booking){
+        booking_DBref.child(booking_ID).setValue(model_booking)
+                .addOnSuccessListener(aVoid -> {
+                    CheckIn_Etxt.setText("");
+                    CheckOut_Etxt.setText("");
+                    BookingPrice_Etxt.setText("");
+                    Adult_Etxt.setText("");
+                    Child_Etxt.setText("");
+                    Note_Etxt.setText("");
+                    rooms_spinner.setSelection(0);
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveToContactInfoFirebase(String contact_ID, Model_ContactInfo model_contactInfo){
+        contact_DBref.child(contact_ID).setValue(model_contactInfo)
+                .addOnSuccessListener(aVoid -> {
+                    prefix_spinner.setSelection(0);
+                    FirstName_Etxt.setText("");
+                    LastName_Etxt.setText("");
+                    PhoneNum_Etxt.setText("");
+                    MobilePhone_Etxt.setText("");
+                    Email_Etxt.setText("");
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveToAddressInfoFirebase(String address_ID, Model_AddressInfo model_addressInfo){
+        address_DBref.child(address_ID).setValue(model_addressInfo)
+                .addOnSuccessListener(aVoid -> {
+                    Country_Etxt.setText("");
+                    Address1_Etxt.setText("");
+                    Address2_Etxt.setText("");
+                    City_Etxt.setText("");
+                    ZipPostalCode_Etxt.setText("");
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveToPaymentInfoFirebase(String payment_ID, Model_PaymentInfo model_paymentInfo){
+        payment_DBref.child(payment_ID).setValue(model_paymentInfo)
+                .addOnSuccessListener(aVoid -> {
+                    CardNum_Etxt.setText("");
+                    ExpirationDte_Etxt.setText("");
+                    CVV_Etxt.setText("");
+                    NameOnTheCard_Etxt.setText("");
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void setupSpinner(Spinner spinner) {

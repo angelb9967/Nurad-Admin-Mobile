@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginStart="35dp"
-                android:text="Phone Number"
+                android:text="Mobile Phone"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -240,7 +240,6 @@
                 android:layout_height="50dp"
                 android:background="@drawable/custom_input"
                 android:hint="Email"
-                android:maxLength="11"
                 android:inputType="textEmailAddress"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
@@ -569,6 +568,7 @@
                 android:background="@drawable/custom_input"
                 android:hint="CVV"
                 android:inputType="number"
+                android:maxLength="3"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:layout_marginStart="30dp"
@@ -597,7 +597,7 @@
                 android:layout_height="50dp"
                 android:background="@drawable/custom_input"
                 android:hint="Name on the Card"
-                android:inputType="number"
+                android:inputType="textPersonName"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:layout_marginStart="30dp"
@@ -852,18 +852,6 @@
                 app:srcCompat="@drawable/square_minus" />
 
             <TextView
-                android:id="@+id/textView13"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:text=" * Optional"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/Adult_Etxt"
-                app:layout_constraintStart_toStartOf="@+id/Adult_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Adult_Etxt" />
-
-            <TextView
                 android:id="@+id/textView107"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -874,7 +862,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                app:layout_constraintTop_toBottomOf="@+id/Adult_Etxt" />
 
             <EditText
                 android:id="@+id/Child_Etxt"
@@ -914,18 +902,6 @@
                 app:layout_constraintTop_toTopOf="@id/Child_Etxt"
                 app:srcCompat="@drawable/square_minus" />
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:text=" * Optional"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="@+id/Child_Etxt"
-                app:layout_constraintStart_toStartOf="@+id/Child_Etxt"
-                app:layout_constraintTop_toBottomOf="@+id/Child_Etxt" />
-
             <View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
@@ -934,9 +910,9 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintEnd_toEndOf="@+id/textView14"
-                app:layout_constraintStart_toStartOf="@+id/textView14"
-                app:layout_constraintTop_toBottomOf="@+id/textView14"
+                app:layout_constraintEnd_toEndOf="@+id/Child_Etxt"
+                app:layout_constraintStart_toStartOf="@+id/Child_Etxt"
+                app:layout_constraintTop_toBottomOf="@+id/Child_Etxt"
                 tools:layout_editor_absoluteX="30dp" />
 
             <TextView
@@ -1057,6 +1033,58 @@
                 app:layout_constraintStart_toStartOf="@+id/textView108"
                 app:layout_constraintTop_toBottomOf="@+id/textView108" />
 
+            <View
+                android:id="@+id/view10"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="@+id/Rooms_Spinner"
+                app:layout_constraintStart_toStartOf="@+id/Rooms_Spinner"
+                app:layout_constraintTop_toBottomOf="@+id/Rooms_Spinner"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <TextView
+                android:id="@+id/textView783"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Add Ons"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/view10"
+                app:layout_constraintEnd_toEndOf="@+id/view10"
+                app:layout_constraintStart_toStartOf="@+id/view10"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <TextView
+                android:id="@+id/textView791"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Choose an add-on to enhance your experience."
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView783"
+                app:layout_constraintStart_toStartOf="@+id/textView783"
+                app:layout_constraintTop_toBottomOf="@+id/textView783" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:maxHeight="300dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView791"/>
+
             <Button
                 android:id="@+id/Save_Btn"
                 android:layout_width="match_parent"
@@ -1073,8 +1101,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/Rooms_Spinner"
-                app:layout_constraintTop_toBottomOf="@+id/Rooms_Spinner"/>
+                app:layout_constraintStart_toStartOf="@+id/recyclerView"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

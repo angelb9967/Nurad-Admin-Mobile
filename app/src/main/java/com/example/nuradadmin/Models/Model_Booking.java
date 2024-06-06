@@ -1,16 +1,19 @@
 package com.example.nuradadmin.Models;
 
 public class Model_Booking {
-    private String customerName, phoneNumber, checkInDate, checkOutDate, note, room;
+    private String booking_id, contact_id, payment_id, address_id;
+    private String checkInDate, checkOutDate, note, room;
     private double bookingPrice;
     private int extraAdult, extraChild;
 
     public Model_Booking() {
     }
 
-    public Model_Booking(String customerName, String phoneNumber, String checkInDate, String checkOutDate, double bookingPrice, int extraAdult, int extraChild, String note, String room) {
-        this.customerName = customerName;
-        this.phoneNumber = phoneNumber;
+    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String checkInDate, String checkOutDate, double bookingPrice, int extraAdult, int extraChild, String note, String room) {
+        this.booking_id = booking_id;
+        this.contact_id = contact_id;
+        this.address_id = address_id;
+        this.payment_id = payment_id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookingPrice = bookingPrice;
@@ -20,20 +23,36 @@ public class Model_Booking {
         this.room = room;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getBooking_id() {
+        return booking_id;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setBooking_id(String booking_id) {
+        this.booking_id = booking_id;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getContact_id() {
+        return contact_id;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setContact_id(String contact_id) {
+        this.contact_id = contact_id;
+    }
+
+    public String getPayment_id() {
+        return payment_id;
+    }
+
+    public void setPayment_id(String payment_id) {
+        this.payment_id = payment_id;
+    }
+
+    public String getAddress_id() {
+        return address_id;
+    }
+
+    public void setAddress_id(String address_id) {
+        this.address_id = address_id;
     }
 
     public String getCheckInDate() {
