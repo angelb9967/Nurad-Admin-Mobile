@@ -21,7 +21,6 @@ import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoom;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_Rooms;
 import com.example.nuradadmin.Models.Model_PriceRule;
-import com.example.nuradadmin.Models.Model_RoomType;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Models.Model_Room;
 import com.google.firebase.database.DataSnapshot;

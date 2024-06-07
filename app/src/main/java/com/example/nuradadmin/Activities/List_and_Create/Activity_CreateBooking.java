@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +26,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_BookingCalendar;
+import com.example.nuradadmin.Adapters.Adapter_AddOn;
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
+import com.example.nuradadmin.Models.Model_AddOns;
 import com.example.nuradadmin.Models.Model_AddressInfo;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
@@ -42,17 +48,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Activity_CreateBooking extends AppCompatActivity {
     private DatabaseReference booking_DBref, allRoomsRef, recommendedRef,
-            contact_DBref, address_DBref, payment_DBref;
-    private ArrayList<String> roomsList;
-    private CustomArrayAdapter roomsAdapter, prefixAdapter;
-    private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
+            contact_DBref, address_DBref, payment_DBref, addOns_DBref;
     private EditText FirstName_Etxt, LastName_Etxt, PhoneNum_Etxt, MobilePhone_Etxt, Email_Etxt,
             Country_Etxt, Address1_Etxt, Address2_Etxt, City_Etxt, ZipPostalCode_Etxt,
             CardNum_Etxt, ExpirationDte_Etxt, CVV_Etxt, NameOnTheCard_Etxt,
             CheckIn_Etxt, CheckOut_Etxt, BookingPrice_Etxt, Adult_Etxt, Child_Etxt, Note_Etxt;
+    private ArrayList<String> roomsList;
+    private List<Model_AddOns> modelAddOnsList;
+    private Adapter_AddOn addOnAdapter;
+    private RecyclerView recyclerView;
+    private CustomArrayAdapter roomsAdapter, prefixAdapter;
+    private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
     private Button saveBtn;
     private TextView title;
     private Spinner rooms_spinner, prefix_spinner;
@@ -106,15 +118,19 @@ public class Activity_CreateBooking extends AppCompatActivity {
         Child_Minus = findViewById(R.id.Child_Minus_Img);
         BookingPrice_Etxt = findViewById(R.id.BookingPrice_Etxt);
         Note_Etxt = findViewById(R.id.Notes_Txt);
+        recyclerView = findViewById(R.id.recyclerView);
         saveBtn = findViewById(R.id.Save_Btn);
 
         title.setText("Create");
+        Adult_Etxt.setText("1");
+        Child_Etxt.setText("0");
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         allRoomsRef = FirebaseDatabase.getInstance().getReference("AllRooms");
         recommendedRef = FirebaseDatabase.getInstance().getReference("RecommRooms");
         contact_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
         address_DBref = FirebaseDatabase.getInstance().getReference("Address Information");
         payment_DBref = FirebaseDatabase.getInstance().getReference("Payment Information");
+        addOns_DBref = FirebaseDatabase.getInstance().getReference("AddOns");
 
         String[] value = {"Select Prefix", "Mr", "Ms"};
         prefix_list = new ArrayList<>(Arrays.asList(value));
@@ -126,7 +142,14 @@ public class Activity_CreateBooking extends AppCompatActivity {
         });
 
         Adult_Minus.setOnClickListener(view -> {
-            addOrSubtract_Quantity(Adult_Etxt, "minus", String.valueOf(Adult_Etxt.getText()));
+            String curr_value = Adult_Etxt.getText().toString().trim();
+            if (curr_value.equals("0") || curr_value.equals("1") || curr_value.equals("2") || curr_value.isEmpty()) {
+                Adult_Etxt.setText("1");
+            } else {
+                int intValue = Integer.parseInt(curr_value);
+                intValue--;
+                Adult_Etxt.setText(String.valueOf(intValue));
+            }
         });
 
         Child_Plus.setOnClickListener(view -> {
@@ -188,6 +211,11 @@ public class Activity_CreateBooking extends AppCompatActivity {
             showDatePicker_and_setDate(CheckOut_Etxt, year, month, day);
         });
 
+        modelAddOnsList = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        addOnAdapter = new Adapter_AddOn(Activity_CreateBooking.this, modelAddOnsList);
+        recyclerView.setAdapter(addOnAdapter);
+
         roomsList = new ArrayList<>();
         roomsAdapter = new CustomArrayAdapter(Activity_CreateBooking.this, R.layout.style_spinner, roomsList);
         setupSpinner(rooms_spinner);
@@ -196,6 +224,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         // Show data from both databases
         Showdata(allRoomsRef, roomsAdapter, roomsList);
         Showdata(recommendedRef, roomsAdapter, roomsList);
+        ShowAddOns(addOns_DBref, addOnAdapter, modelAddOnsList);
 
         back_icon.setOnClickListener(View -> {
             Intent i = new Intent(this, Activity_BookingCalendar.class);
@@ -225,29 +254,36 @@ public class Activity_CreateBooking extends AppCompatActivity {
             final String checkInDate = CheckIn_Etxt.getText().toString();
             final String checkOutDate = CheckOut_Etxt.getText().toString();
             final String bookingPriceStr = BookingPrice_Etxt.getText().toString();
-            final String extraAdultStr = Adult_Etxt.getText().toString();
-            final String extraChildStr = Child_Etxt.getText().toString();
+            final String AdultStr = Adult_Etxt.getText().toString();
+            final String ChildStr = Child_Etxt.getText().toString();
             final String note = Note_Etxt.getText().toString();
             final String room = rooms_spinner.getSelectedItem().toString();
 
             if (prefix_spinner.getSelectedItemPosition() == 0 || (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(mobilePhone)|| TextUtils.isEmpty(email) ||
                     TextUtils.isEmpty(country) || TextUtils.isEmpty(address1) || TextUtils.isEmpty(address2) || TextUtils.isEmpty(city) || TextUtils.isEmpty(zipCode) ||
                     TextUtils.isEmpty(cardNumber) || TextUtils.isEmpty(expirationDate) || TextUtils.isEmpty(cvv) || TextUtils.isEmpty(nameOnTheCard) ||
-                    TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(extraAdultStr) || TextUtils.isEmpty(extraChildStr) || TextUtils.isEmpty(note) || rooms_spinner.getSelectedItemPosition() == 0)) {
+                    TextUtils.isEmpty(checkInDate) || TextUtils.isEmpty(checkOutDate) || TextUtils.isEmpty(bookingPriceStr) || TextUtils.isEmpty(AdultStr) || TextUtils.isEmpty(ChildStr) || TextUtils.isEmpty(note) || rooms_spinner.getSelectedItemPosition() == 0)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            if (AdultStr.equalsIgnoreCase("0")){
+                Toast.makeText(this, "Please indicate at least one adult!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             final double bookingPrice = Double.parseDouble(bookingPriceStr);
-            final int extraAdult = Integer.parseInt(extraAdultStr);
-            final int extraChild = Integer.parseInt(extraChildStr);
+            final int adultNum = Integer.parseInt(AdultStr);
+            final int childNum = Integer.parseInt(ChildStr);
+
+            Map<String, String> selectedAddOns = addOnAdapter.getSelectedAddOns();
 
             String bookingId = booking_DBref.push().getKey();
             String contactId = contact_DBref.push().getKey();
             String addressId = address_DBref.push().getKey();
             String paymentId = payment_DBref.push().getKey();
 
-            Model_Booking modelBooking = new Model_Booking(bookingId, contactId, addressId, paymentId, checkInDate, checkOutDate, bookingPrice, extraAdult, extraChild, note, room);
+            Model_Booking modelBooking = new Model_Booking(bookingId, contactId, addressId, paymentId, checkInDate, checkOutDate, bookingPrice, adultNum, childNum, note, room, selectedAddOns);
             saveToBookingFirebase(bookingId, modelBooking);
 
             Model_ContactInfo modelContactInfo = new Model_ContactInfo(contactId, prefix, firstName, lastName, phone, mobilePhone, email);
@@ -363,7 +399,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         curr_value = editText.getText().toString().trim();
 
         if (curr_value.isEmpty() && operation.equalsIgnoreCase("plus")) {
-            editText.setText("1");
+            editText.setText("2");
         } else if (curr_value.equals("0") && operation.equalsIgnoreCase("minus") || curr_value.isEmpty() && operation.equalsIgnoreCase("minus")) {
             editText.setText("0");
         } else {
@@ -397,4 +433,27 @@ public class Activity_CreateBooking extends AppCompatActivity {
             }
         });
     }
+
+    private void ShowAddOns(DatabaseReference dbRef, Adapter_AddOn adapter, List<Model_AddOns> list) {
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear(); // Clear existing data
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Model_AddOns addOn = dataSnapshot.getValue(Model_AddOns.class);
+                    if (addOn != null) {
+                        list.add(addOn);
+                    }
+                }
+                adapter.notifyDataSetChanged(); // Notify adapter about data change
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors.
+                Log.e("ShowAddOns", "Error: " + error.getMessage());
+            }
+        });
+    }
+
 }

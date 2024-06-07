@@ -1,15 +1,16 @@
 package com.example.nuradadmin.Models;
+import java.util.Map;
 
 public class Model_Booking {
     private String booking_id, contact_id, payment_id, address_id;
     private String checkInDate, checkOutDate, note, room;
     private double bookingPrice;
-    private int extraAdult, extraChild;
-
+    private int Adult, Child;
+    private Map<String, String> selectedAddOns;
     public Model_Booking() {
     }
 
-    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String checkInDate, String checkOutDate, double bookingPrice, int extraAdult, int extraChild, String note, String room) {
+    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String checkInDate, String checkOutDate, double bookingPrice, int Adult, int Child, String note, String room,  Map<String, String> selectedAddOns) {
         this.booking_id = booking_id;
         this.contact_id = contact_id;
         this.address_id = address_id;
@@ -17,10 +18,11 @@ public class Model_Booking {
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookingPrice = bookingPrice;
-        this.extraAdult = extraAdult;
-        this.extraChild = extraChild;
+        this.Adult = Adult;
+        this.Child = Child;
         this.note = note;
         this.room = room;
+        this.selectedAddOns = selectedAddOns;
     }
 
     public String getBooking_id() {
@@ -79,20 +81,20 @@ public class Model_Booking {
         this.bookingPrice = bookingPrice;
     }
 
-    public int getExtraAdult() {
-        return extraAdult;
+    public int getAdult() {
+        return Adult;
     }
 
-    public void setExtraAdult(int extraAdult) {
-        this.extraAdult = extraAdult;
+    public void setAdult(int adult) {
+        Adult = adult;
     }
 
-    public int getExtraChild() {
-        return extraChild;
+    public int getChild() {
+        return Child;
     }
 
-    public void setExtraChild(int extraChild) {
-        this.extraChild = extraChild;
+    public void setChild(int child) {
+        Child = child;
     }
 
     public String getNote() {
@@ -109,5 +111,12 @@ public class Model_Booking {
 
     public void setRoom(String room) {
         this.room = room;
+    }
+    public Map<String, String> getSelectedAddOns() {
+        return selectedAddOns;
+    }
+
+    public void setSelectedAddOns(Map<String, String> selectedAddOns) {
+        this.selectedAddOns = selectedAddOns;
     }
 }
