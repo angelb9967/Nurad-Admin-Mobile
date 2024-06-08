@@ -64,7 +64,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
     private Adapter_AddOn addOnAdapter;
     private RecyclerView recyclerView;
     private CustomArrayAdapter roomsAdapter, prefixAdapter;
-    private ImageView back_icon, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
+    private ImageView back_icon, ExpirationDte_Img, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
     private Button saveBtn;
     private TextView title;
     private Spinner rooms_spinner, prefix_spinner;
@@ -102,6 +102,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         // Payment Information
         CardNum_Etxt = findViewById(R.id.CardNumber_Etxt);
         ExpirationDte_Etxt = findViewById(R.id.ExpirationDate_Etxt);
+        ExpirationDte_Img = findViewById(R.id.ExpirationCalendarPicker_Img);
         CVV_Etxt = findViewById(R.id.CVV_Etxt);
         NameOnTheCard_Etxt = findViewById(R.id.NameOntheCard_Etxt);
         // Booking Dates
@@ -164,6 +165,25 @@ public class Activity_CreateBooking extends AppCompatActivity {
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Prevent keyboard from appearing when EditText is touched
+        ExpirationDte_Etxt.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showDatePicker_and_setMonthYear(ExpirationDte_Etxt, year, month, day);
+                return true;
+            }
+            return false;
+        });
+
+        ExpirationDte_Img.setOnClickListener(view -> {
+            showDatePicker_and_setMonthYear(ExpirationDte_Etxt, year, month, day);
+        });
+
+        ExpirationDte_Etxt.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                showDatePicker_and_setMonthYear(ExpirationDte_Etxt, year, month, day);
+            }
+        });
 
         // Prevent keyboard from appearing when EditText is touched
         CheckIn_Etxt.setOnTouchListener((v, event) -> {
@@ -307,6 +327,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
                     Child_Etxt.setText("");
                     Note_Etxt.setText("");
                     rooms_spinner.setSelection(0);
+                    addOnAdapter.clearSelectedAddOns();
                     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -391,8 +412,54 @@ public class Activity_CreateBooking extends AppCompatActivity {
                 field.setText(date);
             }
         }, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         datePickerDialog.show();
+    }
+
+    private void showDatePicker_and_setMonthYear(EditText field, int year, int month, int day){
+        // Get the current year, month, and day
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // A DatePickerDialog with a custom style to show only the year and month
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                Activity_CreateBooking.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    }
+                }, year, month, 1);
+
+        if (year == currentYear) {
+            // If the selected year is the current year, set the minimum date to the current month
+            datePickerDialog.getDatePicker().setMinDate(getTimeInMillis(currentDay, currentMonth, currentYear));
+        } else {
+            // If the selected year is a future year, set the minimum date to the first day of the year
+            datePickerDialog.getDatePicker().setMinDate(getTimeInMillis(1, 0, year));
+        }
+
+        // Set the DatePicker mode to show only the year and month
+        datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        datePickerDialog.show();
+        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month + 1;
+                String date = month + "/" + (year % 100);
+                field.setText(date);
+            }
+        });
+    }
+
+    // Helper method to get time in milliseconds for a given date
+    private long getTimeInMillis(int day, int month, int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        return calendar.getTimeInMillis();
     }
 
     private void addOrSubtract_Quantity(EditText editText, String operation, String curr_value) {
@@ -455,5 +522,4 @@ public class Activity_CreateBooking extends AppCompatActivity {
             }
         });
     }
-
 }

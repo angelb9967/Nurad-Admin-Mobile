@@ -26,7 +26,7 @@ import java.util.Map;
 public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHolder> {
     private Context context;
     private List<Model_AddOns> addOnList;
-    private Map<String, String> selectedAddOns; // To store selected add-ons with their ID and Title
+    private Map<String, String> selectedAddOns;
     public Adapter_AddOn(Context context, List<Model_AddOns> addOnList) {
         this.context = context;
         this.addOnList = addOnList;
@@ -56,16 +56,22 @@ public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHold
             holder.addOn_Image.setImageResource(R.drawable.logo_purple);
         }
 
+        // Check if the add-on is selected and update UI
+        if (selectedAddOns.containsKey(addOns.getId())) {
+            holder.addOn_Btn.setText("✔");
+            holder.addOn_background.setBackgroundColor(Color.parseColor("#FBE3F3"));
+        } else {
+            holder.addOn_Btn.setText("ADD");
+            holder.addOn_background.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        }
+
         holder.addOn_Btn.setOnClickListener(v ->{
-            if(holder.addOn_Btn.getText().equals("ADD")){
-                holder.addOn_Btn.setText("✔");
-                holder.addOn_background.setBackgroundColor(Color.parseColor("#FBE3F3"));
-                selectedAddOns.put(addOns.getId(), addOns.getTitle());
-            } else {
-                holder.addOn_Btn.setText("ADD");
-                holder.addOn_background.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            if(selectedAddOns.containsKey(addOns.getId())){
                 selectedAddOns.remove(addOns.getId());
+            } else {
+                selectedAddOns.put(addOns.getId(), addOns.getTitle());
             }
+            notifyDataSetChanged();
         });
     }
 
@@ -75,6 +81,10 @@ public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHold
     }
     public Map<String, String> getSelectedAddOns() {
         return selectedAddOns;
+    }
+    public void clearSelectedAddOns() {
+        selectedAddOns.clear();
+        notifyDataSetChanged();
     }
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout addOn_background;
