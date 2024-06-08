@@ -22,14 +22,15 @@
 
         <View
             android:id="@+id/view"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#B5B5B5"
+            android:background="#E6DBDB"
             android:layout_below="@+id/roomName"
             />
 
         <LinearLayout
-            android:layout_marginTop="5dp"
             android:layout_below="@id/view"
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -49,7 +50,8 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="2dp"
                     android:src="@drawable/house_return"
-                    app:tint="@color/darkgray" />
+                    app:tint="@color/darkgray"
+                    android:contentDescription="@string/ToDo" />
 
                 <TextView
                     android:id="@+id/lastDateUsed"
@@ -92,7 +94,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/cross_small" />
+                    android:src="@drawable/cross_small"
+                    android:contentDescription="@string/ToDo" />
 
                 <TextView
                     android:id="@+id/CleanStatus"
@@ -109,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1 hour ago"
-                    android:textColor="@color/black"
+                    android:textColor="@color/lightgray"
                     android:textSize="16sp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignBaseline="@+id/CleanStatus"
