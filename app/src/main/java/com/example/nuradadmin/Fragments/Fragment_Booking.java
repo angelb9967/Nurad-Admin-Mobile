@@ -31,11 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_Booking#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Fragment_Booking extends Fragment {
     private FloatingActionButton floatingBtn;
     private CalendarView calendarView;
