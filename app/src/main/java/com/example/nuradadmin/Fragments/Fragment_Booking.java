@@ -1,9 +1,13 @@
 package com.example.nuradadmin.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +16,20 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
+import com.example.nuradadmin.Adapters.Adapter_AvailableRooms;
+import com.example.nuradadmin.Adapters.Adapter_Booking;
+import com.example.nuradadmin.Models.Model_AvailableRooms;
+import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +39,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class Fragment_Booking extends Fragment {
     private FloatingActionButton floatingBtn;
     private CalendarView calendarView;
+    private RecyclerView recyclerView;
+    private List<Model_Booking> modelBookingList;
+    private DatabaseReference booking_DBref;
+    private Adapter_Booking adapter;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -57,6 +78,32 @@ public class Fragment_Booking extends Fragment {
 
         floatingBtn = view.findViewById(R.id.floatingActionButton);
         calendarView = view.findViewById(R.id.calendarView);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        modelBookingList = new ArrayList<>();
+        adapter = new Adapter_Booking(getContext(), modelBookingList);
+        recyclerView.setAdapter(adapter);
+
+        booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
+        booking_DBref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                modelBookingList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Model_Booking booking = snapshot.getValue(Model_Booking.class);
+                    modelBookingList.add(booking);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+                Toast.makeText(getContext(), "Failed to load data.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         floatingBtn.setOnClickListener(v -> {
             Intent i = new Intent(getActivity(), Activity_CreateBooking.class);

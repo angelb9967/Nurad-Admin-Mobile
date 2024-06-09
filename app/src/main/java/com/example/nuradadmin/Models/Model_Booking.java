@@ -6,6 +6,7 @@ public class Model_Booking {
     private String checkInDate, checkOutDate, note, room;
     private double bookingPrice;
     private int Adult, Child;
+    private String status;
     private Map<String, String> selectedAddOns;
     public Model_Booking() {
     }
@@ -112,6 +113,15 @@ public class Model_Booking {
     public void setRoom(String room) {
         this.room = room;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Map<String, String> getSelectedAddOns() {
         return selectedAddOns;
     }
