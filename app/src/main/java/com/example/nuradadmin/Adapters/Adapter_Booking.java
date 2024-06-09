@@ -121,6 +121,11 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         return bookingList.size();
     }
 
+    public void updateList(List<Model_Booking> newBookingList) {
+        this.bookingList = newBookingList;
+        notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView roomName, roomTitle, guestName, status;
         public MyViewHolder(@NonNull View itemView) {

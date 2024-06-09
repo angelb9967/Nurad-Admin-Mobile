@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
@@ -28,8 +31,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class Fragment_Booking extends Fragment {
     private FloatingActionButton floatingBtn;
@@ -38,6 +46,7 @@ public class Fragment_Booking extends Fragment {
     private List<Model_Booking> modelBookingList;
     private DatabaseReference booking_DBref;
     private Adapter_Booking adapter;
+    private TextView date, indicator;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -73,8 +82,26 @@ public class Fragment_Booking extends Fragment {
 
         floatingBtn = view.findViewById(R.id.floatingActionButton);
         calendarView = view.findViewById(R.id.calendarView);
+        date = view.findViewById(R.id.date_Etxt);
+        indicator = view.findViewById(R.id.indicator_Etxt);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Get the current date
+        Calendar currentCalendar = Calendar.getInstance();
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+        int currentMonth = currentCalendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
+        int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
+
+        // Set the default selected day to the current date
+        calendarView.setDate(currentCalendar.getTimeInMillis(), false, true);
+
+        // Format the current date [TextView label on top of the Recycler View]
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+        String formattedMonth = monthFormat.format(currentCalendar.getTime());
+
+        // Set the formatted date to the date EditText
+        date.setText(formattedMonth + " " + currentDay);
 
         modelBookingList = new ArrayList<>();
         adapter = new Adapter_Booking(getContext(), modelBookingList);
@@ -91,6 +118,8 @@ public class Fragment_Booking extends Fragment {
                     modelBookingList.add(booking);
                 }
                 adapter.notifyDataSetChanged();
+                // Set the default selected day to the current date
+                filterBookingsByDate(currentYear, currentMonth, currentDay);
             }
 
             @Override
@@ -106,10 +135,84 @@ public class Fragment_Booking extends Fragment {
         });
 
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
-            String date = dayOfMonth + "/" + (month + 1) + "/" + year;
-            Toast.makeText(getActivity(), "You selected: " + date, Toast.LENGTH_SHORT).show();
-        });
+            // Format the selected date
+            Calendar selectedCalendar = Calendar.getInstance();
+            selectedCalendar.set(year, month, dayOfMonth);
+            SimpleDateFormat selectedMonthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+            String formattedSelectedMonth = selectedMonthFormat.format(selectedCalendar.getTime());
 
+            // Set the formatted date to the date EditText
+            date.setText(formattedSelectedMonth + " " + dayOfMonth);
+
+            setIndicatorText(year, month, dayOfMonth);
+
+            // Filter bookings based on the selected date
+            filterBookingsByDate(year, month + 1, dayOfMonth);
+        });
         return view;
+    }
+
+    private void filterBookingsByDate(int year, int month, int dayOfMonth) {
+        List<Model_Booking> filteredList = new ArrayList<>();
+        Calendar selectedCalendar = Calendar.getInstance();
+        selectedCalendar.set(year, month - 1, dayOfMonth);
+        selectedCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        selectedCalendar.set(Calendar.MINUTE, 0);
+        selectedCalendar.set(Calendar.SECOND, 0);
+        selectedCalendar.set(Calendar.MILLISECOND, 0);
+
+        for (Model_Booking booking : modelBookingList) {
+            // Assuming Model_Booking has getCheckInDate() and getCheckOutDate() methods
+            Calendar checkinCalendar = Calendar.getInstance();
+            Calendar checkoutCalendar = Calendar.getInstance();
+
+            try {
+                // Assuming the dates are stored in the format "dd/MM/yyyy"
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                checkinCalendar.setTime(Objects.requireNonNull(sdf.parse(booking.getCheckInDate())));
+                checkinCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                checkinCalendar.set(Calendar.MINUTE, 0);
+                checkinCalendar.set(Calendar.SECOND, 0);
+                checkinCalendar.set(Calendar.MILLISECOND, 0);
+
+                checkoutCalendar.setTime(Objects.requireNonNull(sdf.parse(booking.getCheckOutDate())));
+                checkoutCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                checkoutCalendar.set(Calendar.MINUTE, 0);
+                checkoutCalendar.set(Calendar.SECOND, 0);
+                checkoutCalendar.set(Calendar.MILLISECOND, 0);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.e("Fragment_Booking", e.toString());
+            }
+
+            if ((selectedCalendar.equals(checkinCalendar) || selectedCalendar.after(checkinCalendar))
+                    && (selectedCalendar.equals(checkoutCalendar) || selectedCalendar.before(checkoutCalendar))) {
+                filteredList.add(booking);
+            }
+        }
+
+        adapter.updateList(filteredList);
+    }
+
+    private void setIndicatorText(int year, int month, int dayOfMonth) {
+        Calendar currentCalendar = Calendar.getInstance();
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+        int currentMonth = currentCalendar.get(Calendar.MONTH);
+        int currentDayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH);
+
+        // Check if the selected date is today, yesterday, or tomorrow
+        if (year == currentYear && month == currentMonth && dayOfMonth == currentDayOfMonth) {
+            indicator.setText("Today");
+        } else if (year == currentYear && month == currentMonth && dayOfMonth == currentDayOfMonth - 1) {
+            indicator.setText("Yesterday");
+        } else if (year == currentYear && month == currentMonth && dayOfMonth == currentDayOfMonth + 1) {
+            indicator.setText("Tomorrow");
+        } else {
+            Calendar selectedCalendar = Calendar.getInstance();
+            selectedCalendar.set(year, month, dayOfMonth);
+            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+            String dayOfWeek = dayFormat.format(selectedCalendar.getTime());
+            indicator.setText(dayOfWeek);
+        }
     }
 }
