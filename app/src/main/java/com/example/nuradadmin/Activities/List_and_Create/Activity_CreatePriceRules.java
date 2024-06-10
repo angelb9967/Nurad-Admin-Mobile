@@ -91,16 +91,28 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
 
         saveBtn.setOnClickListener(view ->{
             final String rule_name = TrimUtil.trimRight(ruleName_Etxt.getText().toString());
-            final String priceStr = price_Etxt.getText().toString();
-            final String extraAdultPriceStr = extraAdultprice_Etxt.getText().toString();
-            final String extraChildPriceStr = extraChildprice_Etxt.getText().toString();
-            final String fridayPriceStr = friday_Etxt.getText().toString();
-            final String saturdayPriceStr = saturday_Etxt.getText().toString();
-            final String sundayPriceStr = sunday_Etxt.getText().toString();
+            final String priceStr = price_Etxt.getText().toString().trim();
+            final String extraAdultPriceStr = extraAdultprice_Etxt.getText().toString().trim();
+            final String extraChildPriceStr = extraChildprice_Etxt.getText().toString().trim();
+            String fridayPriceStr = friday_Etxt.getText().toString().trim();
+            String saturdayPriceStr = saturday_Etxt.getText().toString().trim();
+            String sundayPriceStr = sunday_Etxt.getText().toString().trim();
 
-            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(extraAdultPriceStr) || TextUtils.isEmpty(extraChildPriceStr) || TextUtils.isEmpty(fridayPriceStr) || TextUtils.isEmpty(saturdayPriceStr) || TextUtils.isEmpty(sundayPriceStr)) {
+            if (TextUtils.isEmpty(rule_name) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(extraAdultPriceStr) || TextUtils.isEmpty(extraChildPriceStr)) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
+            }
+
+            if(TextUtils.isEmpty(fridayPriceStr)){
+                fridayPriceStr = priceStr;
+            }
+
+            if(TextUtils.isEmpty(saturdayPriceStr)){
+                saturdayPriceStr = priceStr;
+            }
+
+            if(TextUtils.isEmpty(sundayPriceStr)){
+                sundayPriceStr = priceStr;
             }
 
             final double price = Double.parseDouble(priceStr);

@@ -117,10 +117,12 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ImageView
+        <ImageButton
             android:id="@+id/menubtn"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
+            android:layout_width="22dp"
+            android:layout_height="55dp"
+            android:backgroundTint="@color/white"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
