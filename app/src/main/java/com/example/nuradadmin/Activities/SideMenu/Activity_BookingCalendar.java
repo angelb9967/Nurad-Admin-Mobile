@@ -58,7 +58,7 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
         title = findViewById(R.id.title);
         setSupportActionBar(toolbar);
         // Set the initial fragment (default) to display when the activity is created
-        title.setText("Booking Calendar");
+        title.setText("Booking");
         replaceFragment(new Fragment_Booking());
 
         // Bottom Navigation

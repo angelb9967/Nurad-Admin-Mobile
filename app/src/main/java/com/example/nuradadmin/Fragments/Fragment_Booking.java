@@ -14,14 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
-import com.example.nuradadmin.Adapters.Adapter_AvailableRooms;
 import com.example.nuradadmin.Adapters.Adapter_Booking;
-import com.example.nuradadmin.Models.Model_AvailableRooms;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,9 +32,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
+import java.util.TimeZone;
 
 public class Fragment_Booking extends Fragment {
     private FloatingActionButton floatingBtn;
@@ -87,17 +85,27 @@ public class Fragment_Booking extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Get the current date
-        Calendar currentCalendar = Calendar.getInstance();
+        // Get the current date and time in Manila timezone
+        TimeZone manilaTimeZone = TimeZone.getTimeZone("Asia/Manila");
+        Calendar currentCalendar = Calendar.getInstance(manilaTimeZone);
         int currentYear = currentCalendar.get(Calendar.YEAR);
-        int currentMonth = currentCalendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
+        int currentMonth = currentCalendar.get(Calendar.MONTH); // Calendar.MONTH is zero-based
         int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
 
-        // Set the default selected day to the current date
-        calendarView.setDate(currentCalendar.getTimeInMillis(), false, true);
+        // Set the Calendar instance with current year, month, and day
+        Calendar defaultSelectedDate = Calendar.getInstance(manilaTimeZone);
+        defaultSelectedDate.set(currentYear, currentMonth, currentDay);
+        defaultSelectedDate.add(Calendar.DAY_OF_MONTH, 0);
+
+        // Convert Calendar to milliseconds
+        long adjustedTimeMillis = defaultSelectedDate.getTimeInMillis();
+
+        // Set the default selected date on the CalendarView
+        calendarView.setDate(adjustedTimeMillis, false, true);
 
         // Format the current date [TextView label on top of the Recycler View]
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+        monthFormat.setTimeZone(manilaTimeZone);  // Set timezone to Manila
         String formattedMonth = monthFormat.format(currentCalendar.getTime());
 
         // Set the formatted date to the date EditText
@@ -118,8 +126,7 @@ public class Fragment_Booking extends Fragment {
                     modelBookingList.add(booking);
                 }
                 adapter.notifyDataSetChanged();
-                // Set the default selected day to the current date
-                filterBookingsByDate(currentYear, currentMonth, currentDay);
+                filterBookingsByDate(currentYear, currentMonth + 1, currentDay);
             }
 
             @Override
@@ -136,25 +143,29 @@ public class Fragment_Booking extends Fragment {
 
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             // Format the selected date
-            Calendar selectedCalendar = Calendar.getInstance();
+            Calendar selectedCalendar = Calendar.getInstance(manilaTimeZone);
             selectedCalendar.set(year, month, dayOfMonth);
             SimpleDateFormat selectedMonthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
+            selectedMonthFormat.setTimeZone(manilaTimeZone);  // Set timezone to Manila
             String formattedSelectedMonth = selectedMonthFormat.format(selectedCalendar.getTime());
 
             // Set the formatted date to the date EditText
             date.setText(formattedSelectedMonth + " " + dayOfMonth);
 
-            setIndicatorText(year, month, dayOfMonth);
+            setIndicatorText(year, month, dayOfMonth, manilaTimeZone);
 
             // Filter bookings based on the selected date
             filterBookingsByDate(year, month + 1, dayOfMonth);
+            Log.d("Fragment_Booking", "year/month+1/dayOfMonth:" + year + " " + month + " " + dayOfMonth);
         });
+        filterBookingsByDate(currentYear, currentMonth + 1, currentDay);
         return view;
     }
 
     private void filterBookingsByDate(int year, int month, int dayOfMonth) {
+        TimeZone manilaTimeZone = TimeZone.getTimeZone("Asia/Manila");
         List<Model_Booking> filteredList = new ArrayList<>();
-        Calendar selectedCalendar = Calendar.getInstance();
+        Calendar selectedCalendar = Calendar.getInstance(manilaTimeZone);
         selectedCalendar.set(year, month - 1, dayOfMonth);
         selectedCalendar.set(Calendar.HOUR_OF_DAY, 0);
         selectedCalendar.set(Calendar.MINUTE, 0);
@@ -162,43 +173,49 @@ public class Fragment_Booking extends Fragment {
         selectedCalendar.set(Calendar.MILLISECOND, 0);
 
         for (Model_Booking booking : modelBookingList) {
-            // Assuming Model_Booking has getCheckInDate() and getCheckOutDate() methods
-            Calendar checkinCalendar = Calendar.getInstance();
-            Calendar checkoutCalendar = Calendar.getInstance();
-
             try {
-                // Assuming the dates are stored in the format "dd/MM/yyyy"
+                // Parse the check-in and check-out dates from Model_Booking
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                checkinCalendar.setTime(Objects.requireNonNull(sdf.parse(booking.getCheckInDate())));
+                sdf.setTimeZone(manilaTimeZone); // Set timezone to Manila
+                Date checkinDate = sdf.parse(booking.getCheckInDate());
+                Date checkoutDate = sdf.parse(booking.getCheckOutDate());
+
+                // Set check-in and check-out times to 00:00:00 for proper comparison
+                Calendar checkinCalendar = Calendar.getInstance(manilaTimeZone);
+                checkinCalendar.setTime(checkinDate);
                 checkinCalendar.set(Calendar.HOUR_OF_DAY, 0);
                 checkinCalendar.set(Calendar.MINUTE, 0);
                 checkinCalendar.set(Calendar.SECOND, 0);
                 checkinCalendar.set(Calendar.MILLISECOND, 0);
 
-                checkoutCalendar.setTime(Objects.requireNonNull(sdf.parse(booking.getCheckOutDate())));
+                Calendar checkoutCalendar = Calendar.getInstance(manilaTimeZone);
+                checkoutCalendar.setTime(checkoutDate);
                 checkoutCalendar.set(Calendar.HOUR_OF_DAY, 0);
                 checkoutCalendar.set(Calendar.MINUTE, 0);
                 checkoutCalendar.set(Calendar.SECOND, 0);
                 checkoutCalendar.set(Calendar.MILLISECOND, 0);
+
+                // Check if the selected date falls within the booking period
+                if (!selectedCalendar.before(checkinCalendar) && !selectedCalendar.after(checkoutCalendar)) {
+                    filteredList.add(booking);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.e("Fragment_Booking", e.toString());
             }
-
-            if ((selectedCalendar.equals(checkinCalendar) || selectedCalendar.after(checkinCalendar))
-                    && (selectedCalendar.equals(checkoutCalendar) || selectedCalendar.before(checkoutCalendar))) {
-                filteredList.add(booking);
-            }
         }
-
         adapter.updateList(filteredList);
     }
 
-    private void setIndicatorText(int year, int month, int dayOfMonth) {
-        Calendar currentCalendar = Calendar.getInstance();
+    private void setIndicatorText(int year, int month, int dayOfMonth, TimeZone timeZone) {
+        Calendar currentCalendar = Calendar.getInstance(timeZone);
         int currentYear = currentCalendar.get(Calendar.YEAR);
         int currentMonth = currentCalendar.get(Calendar.MONTH);
         int currentDayOfMonth = currentCalendar.get(Calendar.DAY_OF_MONTH);
+
+        // Set the selected date to the Calendar instance
+        Calendar selectedCalendar = Calendar.getInstance(timeZone);
+        selectedCalendar.set(year, month, dayOfMonth);
 
         // Check if the selected date is today, yesterday, or tomorrow
         if (year == currentYear && month == currentMonth && dayOfMonth == currentDayOfMonth) {
@@ -208,9 +225,9 @@ public class Fragment_Booking extends Fragment {
         } else if (year == currentYear && month == currentMonth && dayOfMonth == currentDayOfMonth + 1) {
             indicator.setText("Tomorrow");
         } else {
-            Calendar selectedCalendar = Calendar.getInstance();
-            selectedCalendar.set(year, month, dayOfMonth);
+            // If not today, yesterday, or tomorrow, display the day of the week
             SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+            dayFormat.setTimeZone(timeZone);
             String dayOfWeek = dayFormat.format(selectedCalendar.getTime());
             indicator.setText(dayOfWeek);
         }

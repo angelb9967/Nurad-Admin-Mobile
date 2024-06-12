@@ -7,6 +7,7 @@ public class Model_Booking {
     private double bookingPrice;
     private int Adult, Child;
     private String status;
+    private String checkInTime, checkOutTime;
     private Map<String, String> selectedAddOns;
     public Model_Booking() {
     }
@@ -120,6 +121,22 @@ public class Model_Booking {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCheckInTime() {
+        return checkInTime;
+    }
+
+    public void setCheckInTime(String checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public String getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setCheckOutTime(String checkOutTime) {
+        this.checkOutTime = checkOutTime;
     }
 
     public Map<String, String> getSelectedAddOns() {

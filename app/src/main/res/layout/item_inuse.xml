@@ -8,19 +8,40 @@
     android:elevation="8dp">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <TextView
-            android:id="@+id/roomName"
+        <LinearLayout
+            android:id="@+id/top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Room 000"
-            android:textColor="@color/purple"
-            android:textSize="20sp"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:layout_height="35dp"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/roomName"
+                android:layout_width="342dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Room #"
+                android:textColor="@color/purple"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/menubtn"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                app:tint="@color/purple"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/option_horizontal" />
+
+        </LinearLayout>
 
         <View
             android:id="@+id/view"
@@ -29,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E6DBDB"
-            android:layout_below="@id/roomName" />
+            android:layout_below="@id/top" />
 
         <LinearLayout
             android:id="@+id/linearLayout0"
@@ -57,9 +78,7 @@
                 android:textSize="16sp"
                 android:ellipsize="end"
                 android:maxLines="1" />
-
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/linearLayout1"

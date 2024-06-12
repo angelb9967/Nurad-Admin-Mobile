@@ -100,6 +100,7 @@
                     android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:tint="@color/darkgray"
                     android:layout_marginTop="2dp"
                     app:srcCompat="@drawable/user" />
 
@@ -120,7 +121,7 @@
         <ImageButton
             android:id="@+id/menubtn"
             android:layout_width="22dp"
-            android:layout_height="55dp"
+            android:layout_height="45dp"
             android:backgroundTint="@color/white"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"

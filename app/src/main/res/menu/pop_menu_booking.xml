@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="Edit Details"
+        android:id="@+id/edit"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="Check In"
+        android:id="@+id/checkIn"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="Check Out"
+        android:id="@+id/checkOut"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="Cancel Booking"
+        android:id="@+id/cancelBooking"
+        app:showAsAction="never"/>
+
+    <item
+        android:title="Delete"
+        android:id="@+id/delete"
+        app:showAsAction="never"/>
+</menu>

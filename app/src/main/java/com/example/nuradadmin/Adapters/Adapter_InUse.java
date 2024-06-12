@@ -20,7 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHolder> {
     private Context context;
@@ -47,9 +53,41 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         Model_InUse inUse = inUseList.get(position);
         holder.roomName.setText(inUse.getRoomName());
         fetchBooking(inUse.getBooking_id(), holder);
+
+        // Parse the actual check-in date and time
+        String actualCheckInDateTime = inUse.getActualCheckInDateTime(); // e.g., "12/6/2024 8:59 AM"
+        Log.d("Adapter_InUse", "Actual check-in date and time: " + actualCheckInDateTime);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.getDefault());
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Manila")); // Assuming the original date is in Manila time
+
+        try {
+            Date checkInDate = formatter.parse(actualCheckInDateTime);
+            Log.d("Adapter_InUse", "Parsed check-in date: " + checkInDate);
+
+            // Get the current date and time in Manila time zone
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+            Log.d("Adapter_InUse", "Current date and time in Manila: " + now.getTime());
+
+            // Calculate the duration between the check-in date and the current date
+            long durationMillis = now.getTimeInMillis() - checkInDate.getTime();
+            long days = durationMillis / (1000 * 60 * 60 * 24);
+            long hours = (durationMillis / (1000 * 60 * 60)) % 24;
+            long minutes = (durationMillis / (1000 * 60)) % 60;
+
+            // Display the duration of stay
+            String durationText = (days > 0 ? days + " days " : "") +
+                    (hours > 0 ? hours + " hours " : "") +
+                    (minutes > 0 ? minutes + " minutes" : "");
+            holder.durationOfStay.setText(durationText);
+            Log.d("Adapter_InUse", "Duration of stay: " + durationText); // Ensure this line executes
+
+        } catch (ParseException e) {
+            Log.e("Adapter_InUse", "Error parsing check-in date: " + e.getMessage());
+        }
     }
 
-    private void fetchBooking(String bookingID, Adapter_InUse.MyViewHolder holder){
+    private void fetchBooking(String bookingID, Adapter_InUse.MyViewHolder holder) {
         bookings_DBref.child(bookingID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -61,16 +99,16 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                         holder.checkInDate.setText(booking.getCheckInDate());
                         holder.checkOutDate.setText(booking.getCheckOutDate());
                     } else {
-                        Log.e("Adapter_InUse", "Booking ID is null for In-Use Room: " + bookingID);
+                        Log.e("Adapter_InUse", "Booking is null for In-Use Room: " + bookingID);
                     }
                 } else {
-                    Log.e("Adapter_InUse", "Booking ID does not exist for In-Use Room: " + bookingID);
+                    Log.e("Adapter_InUse", "Booking does not exist for In-Use Room: " + bookingID);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Adapter_InUse", "Failed to retrieve Contact ID: " + error.getMessage());
+                Log.e("Adapter_InUse", "Failed to retrieve booking: " + error.getMessage());
             }
         });
     }
@@ -84,16 +122,16 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                     if (contactInfo != null) {
                         holder.guestName.setText(contactInfo.getFirstName() + " " + contactInfo.getLastName());
                     } else {
-                        Log.e("Adapter_InUse", "Contact ID is null for booking: " + contactID);
+                        Log.e("Adapter_InUse", "Contact is null for booking: " + contactID);
                     }
                 } else {
-                    Log.e("Adapter_InUse", "Contact ID does not exist for booking: " + contactID);
+                    Log.e("Adapter_InUse", "Contact does not exist for booking: " + contactID);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Adapter_InUse", "Failed to retrieve Contact ID: " + error.getMessage());
+                Log.e("Adapter_InUse", "Failed to retrieve contact: " + error.getMessage());
             }
         });
     }
@@ -103,8 +141,9 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         return inUseList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView roomName, guestName, booking_price, checkInDate, checkOutDate;
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        private TextView roomName, guestName, booking_price, checkInDate, checkOutDate, durationOfStay;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
@@ -112,6 +151,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
             booking_price = itemView.findViewById(R.id.bookingPrice);
             checkInDate = itemView.findViewById(R.id.checkInDate);
             checkOutDate = itemView.findViewById(R.id.checkOutDate);
+            durationOfStay = itemView.findViewById(R.id.durationOfStay);
         }
     }
 }

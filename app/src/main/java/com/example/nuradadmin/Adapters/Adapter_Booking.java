@@ -1,18 +1,23 @@
 package com.example.nuradadmin.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nuradadmin.Models.Model_AddOns;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
+import com.example.nuradadmin.Models.Model_InUse;
 import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +26,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyViewHolder> {
     private Context context;
@@ -29,29 +40,148 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
     private DatabaseReference contactInfo_DBref;
     private DatabaseReference allRooms_DBref;
     private DatabaseReference recomm_DBref;
+    private DatabaseReference inUse_DBref;
+    private DatabaseReference availableRooms_DBref;
     public Adapter_Booking(Context context, List<Model_Booking> bookingList) {
         this.context = context;
         this.bookingList = bookingList;
         contactInfo_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
         allRooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         recomm_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
+        inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
+        availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
     }
 
     @NonNull
     @Override
     public Adapter_Booking.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_booking, parent, false);
-        return new Adapter_Booking.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
-    @Override
     public void onBindViewHolder(@NonNull Adapter_Booking.MyViewHolder holder, int position) {
         Model_Booking booking = bookingList.get(position);
         holder.roomName.setText(booking.getRoom());
         holder.status.setText(booking.getStatus());
         fetchContactInfo(booking.getContact_id(), holder);
         fetchRoom(booking.getRoom(), holder);
+
+        holder.optionMenu_Btn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_menu_booking, popupMenu.getMenu());
+            MenuItem checkInItem = popupMenu.getMenu().findItem(R.id.checkIn);
+            MenuItem checkOutItem = popupMenu.getMenu().findItem(R.id.checkOut);
+            MenuItem cancelBookingItem = popupMenu.getMenu().findItem(R.id.cancelBooking);
+
+            // Check if check-in is allowed
+            String checkInDateStr = booking.getCheckInDate();
+            String checkInTimeStr = booking.getCheckInTime();
+            String checkOutDateStr = booking.getCheckOutDate();
+            String checkOutTimeStr = booking.getCheckOutTime();
+
+            // Correct date format
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH);
+
+            TimeZone timeZone = TimeZone.getTimeZone("Asia/Manila");
+
+            Calendar checkInDateTime = Calendar.getInstance(timeZone);
+            Calendar checkOutDateTime = Calendar.getInstance(timeZone);
+            Calendar currentDateTime = Calendar.getInstance(timeZone);
+
+            currentDateTime.setTimeInMillis(System.currentTimeMillis());
+            dateTimeFormat.setTimeZone(timeZone);
+            String currentTimeStr = dateTimeFormat.format(currentDateTime.getTime());
+
+            try {
+                // Combine date and time strings for check-in
+                String checkInDateTimeStr = checkInDateStr + " " + checkInTimeStr;
+                Date checkInDate = dateTimeFormat.parse(checkInDateTimeStr);
+                checkInDateTime.setTime(checkInDate);
+
+                // Combine date and time strings for check-out
+                String checkOutDateTimeStr = checkOutDateStr + " " + checkOutTimeStr;
+                Date checkOutDate = dateTimeFormat.parse(checkOutDateTimeStr);
+                checkOutDateTime.setTime(checkOutDate);
+            } catch (ParseException e) {
+                Log.e("Adapter_Booking", "Failed to parse date or time: " + e.getMessage());
+                checkInItem.setEnabled(false);
+                return;
+            }
+
+            // Check if the current time is within the allowed check-in period
+            boolean isCheckInAllowed = !currentDateTime.before(checkInDateTime) && !currentDateTime.after(checkOutDateTime);
+            checkInItem.setEnabled(isCheckInAllowed);
+
+            if (booking.getStatus().equalsIgnoreCase("Checked In")){
+                checkInItem.setEnabled(false);
+                checkOutItem.setEnabled(true);
+                cancelBookingItem.setEnabled(false);
+            }
+
+            if (booking.getStatus().equalsIgnoreCase("Booked")){
+                checkInItem.setEnabled(true);
+                checkOutItem.setEnabled(false);
+                cancelBookingItem.setEnabled(true);
+            }
+
+            if (booking.getStatus().equalsIgnoreCase("Cancelled")){
+                checkInItem.setEnabled(false);
+                checkOutItem.setEnabled(false);
+                cancelBookingItem.setEnabled(false);
+            }
+
+            popupMenu.show();
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.edit) {
+                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
+                } else if (item.getItemId() == R.id.checkIn) {
+                    if (checkInItem.isEnabled()) {
+                        // Change the Room Status
+                        booking.setStatus("Checked In");
+                        updateBookingStatus(booking.getBooking_id(), "Checked In");
+
+                        // Save the Room to In Use Rooms
+                        Model_InUse model_inUse = new Model_InUse(booking.getBooking_id(), booking.getRoom(), currentTimeStr);
+                        saveToInUse(booking.getRoom(), model_inUse);
+
+                        // Remove the Room from the Available Rooms because it is now occupied.
+                        DatabaseReference nodeReference = availableRooms_DBref.child(booking.getRoom());
+                        nodeReference.removeValue().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Log.d("Adapter_Booking", "Node deleted successfully.");
+                            } else {
+                                Log.e("Adapter_Booking", "Failed to delete node.");
+                            }
+                        });
+                    }
+                } else if (item.getItemId() == R.id.checkOut) {
+                    Toast.makeText(context, "You clicked checkOut", Toast.LENGTH_SHORT).show();
+                } else if (item.getItemId() == R.id.cancelBooking) {
+                    booking.setStatus("Cancelled");
+                    updateBookingStatus(booking.getBooking_id(), "Cancelled");
+                } else if (item.getItemId() == R.id.delete) {
+                    Toast.makeText(context, "You clicked delete", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error! couldn't identify popup menu option.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
+            });
+        });
     }
+
+    private void updateBookingStatus(String bookingId, String status) {
+        DatabaseReference bookingRef = FirebaseDatabase.getInstance().getReference("Booking").child(bookingId);
+        bookingRef.child("status").setValue(status).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(context, "Booking status updated to " + status, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Failed to update booking status", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void fetchContactInfo(String contactID, Adapter_Booking.MyViewHolder holder) {
         contactInfo_DBref.child(contactID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -85,7 +215,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                     if (room != null) {
                         holder.roomTitle.setText((room.getTitle()));
                     } else {
-                        Log.e("Adapter_Booking", "Room ID is null for booking: " + roomID);
+                        Log.e("Adapter_Booking", "Room is null for roomId: " + roomID);
                     }
                 } else {
                     recomm_DBref.child(roomID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -96,10 +226,10 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                                 if (room != null) {
                                     holder.roomTitle.setText((room.getTitle()));
                                 } else {
-                                    Log.e("Adapter_Booking", "Room ID is null for booking: " + roomID);
+                                    Log.e("Adapter_Booking", "Room is null for roomId: " + roomID);
                                 }
                             } else {
-                                Log.e("Adapter_Booking", "Room ID does not exist for booking: " + roomID);
+                                Log.e("Adapter_Booking", "Room does not exist for roomId: " + roomID);
                             }
                         }
                         @Override
@@ -116,24 +246,35 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         });
     }
 
+    private void saveToInUse(String roomName, Model_InUse model_inUse){
+        inUse_DBref.child(roomName).setValue(model_inUse)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
     @Override
     public int getItemCount() {
         return bookingList.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateList(List<Model_Booking> newBookingList) {
         this.bookingList = newBookingList;
         notifyDataSetChanged();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView roomName, roomTitle, guestName, status;
+        private ImageButton optionMenu_Btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
             roomTitle = itemView.findViewById(R.id.roomTitle);
             guestName = itemView.findViewById(R.id.guestName);
             status = itemView.findViewById(R.id.status);
+            optionMenu_Btn = itemView.findViewById(R.id.menubtn);
         }
     }
 }
