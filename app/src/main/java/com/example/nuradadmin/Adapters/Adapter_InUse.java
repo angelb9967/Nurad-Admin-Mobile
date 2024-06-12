@@ -3,9 +3,13 @@ package com.example.nuradadmin.Adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,6 +89,23 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         } catch (ParseException e) {
             Log.e("Adapter_InUse", "Error parsing check-in date: " + e.getMessage());
         }
+
+        holder.optionMenu_Btn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_menu_inuse, popupMenu.getMenu());
+
+            popupMenu.show();
+
+//            popupMenu.setOnMenuItemClickListener(item -> {
+//                if (item.getItemId() == R.id.edit) {
+//                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
+//                    return false;
+//                }
+//                return true;
+//            });
+        });
     }
 
     private void fetchBooking(String bookingID, Adapter_InUse.MyViewHolder holder) {
@@ -143,7 +164,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView roomName, guestName, booking_price, checkInDate, checkOutDate, durationOfStay;
-
+        private ImageButton optionMenu_Btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
@@ -152,6 +173,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
             checkInDate = itemView.findViewById(R.id.checkInDate);
             checkOutDate = itemView.findViewById(R.id.checkOutDate);
             durationOfStay = itemView.findViewById(R.id.durationOfStay);
+            optionMenu_Btn = itemView.findViewById(R.id.menubtn);
         }
     }
 }

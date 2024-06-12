@@ -163,7 +163,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 } else if (item.getItemId() == R.id.delete) {
                     Toast.makeText(context, "You clicked delete", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "Error! couldn't identify popup menu option.", Toast.LENGTH_SHORT).show();
+                    Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
                     return false;
                 }
                 return true;
@@ -192,10 +192,10 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                     if (contactInfo != null) {
                         holder.guestName.setText(contactInfo.getFirstName() + " " + contactInfo.getLastName());
                     } else {
-                        Log.e("Adapter_Booking", "Contact ID is null for booking: " + contactID);
+                        Log.e("Adapter_Booking", "Contact Information is null for Contact ID: " + contactID);
                     }
                 } else {
-                    Log.e("Adapter_Booking", "Contact ID does not exist for booking: " + contactID);
+                    Log.e("Adapter_Booking", "Contact Information is null for Contact ID: " + contactID);
                 }
             }
 

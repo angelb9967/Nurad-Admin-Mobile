@@ -5,7 +5,9 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -74,6 +76,23 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
             e.printStackTrace();
             holder.indicator.setText("Unknown time");
         }
+
+        holder.optionMenu_Btn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_menu_available, popupMenu.getMenu());
+
+            popupMenu.show();
+
+//            popupMenu.setOnMenuItemClickListener(item -> {
+//                if (item.getItemId() == R.id.edit) {
+//                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
+//                    return false;
+//                }
+//                return true;
+//            });
+        });
     }
 
     @Override
@@ -84,6 +103,7 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView roomName, lastDateUsed, lastTimeUsed, indicator, status;
         private ImageView icon;
+        private ImageButton optionMenu_Btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
@@ -92,6 +112,7 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
             icon = itemView.findViewById(R.id.icon2);
             indicator = itemView.findViewById(R.id.indicator);
             status = itemView.findViewById(R.id.CleanStatus);
+            optionMenu_Btn = itemView.findViewById(R.id.menubtn);
         }
     }
 }
