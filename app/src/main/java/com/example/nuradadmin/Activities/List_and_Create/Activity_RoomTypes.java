@@ -41,6 +41,8 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
     private RecyclerView recyclerView;
     private List<Model_RoomType> modelRoomTypeList;
     private DatabaseReference roomType_DBref;
+    private DatabaseReference allRooms_DBref;
+    private DatabaseReference recommendedRooms_DBref;
     private ValueEventListener eventListener;
     private TextView title, itemCounter;
     private FloatingActionButton floatingBtn;
@@ -81,6 +83,8 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
         recyclerView.setAdapter(adapter);
 
         roomType_DBref = FirebaseDatabase.getInstance().getReference("Room Types");
+        allRooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
+        recommendedRooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         eventListener = roomType_DBref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -121,7 +125,7 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
             if (selectedItems.isEmpty()) {
                 Toast.makeText(this, "No item selected", Toast.LENGTH_SHORT).show();
             } else {
-                showDeleteItemDialog(this);
+                checkRoomTypesUsage(selectedItems);
             }
         });
 
@@ -167,6 +171,44 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
 
     private void updateItemCounter(int count) {
         itemCounter.setText(count + " Item(s) Selected");
+    }
+
+    private void checkRoomTypesUsage(List<Model_RoomType> selectedItems) {
+        final int[] checksCompleted = {0};
+        final boolean[] isInUse = {false};
+
+        for (Model_RoomType roomType : selectedItems) {
+            checkRoomTypeUsageInDatabase(allRooms_DBref, roomType, selectedItems.size(), checksCompleted, isInUse);
+            checkRoomTypeUsageInDatabase(recommendedRooms_DBref, roomType, selectedItems.size(), checksCompleted, isInUse);
+        }
+    }
+
+    private void checkRoomTypeUsageInDatabase(DatabaseReference databaseRef, Model_RoomType roomType, int totalSelectedItems, int[] checksCompleted, boolean[] isInUse) {
+        databaseRef.orderByChild("roomType").equalTo(roomType.getRoomType_Name()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                checksCompleted[0]++;
+                if (snapshot.exists()) {
+                    isInUse[0] = true;
+                }
+                if (checksCompleted[0] == totalSelectedItems * 2) {
+                    handleRoomTypesUsage(isInUse[0], totalSelectedItems);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+
+    private void handleRoomTypesUsage(boolean isInUse, int totalSelectedItems) {
+        if (isInUse) {
+            Toast.makeText(this, "The room/s can't be deleted because they are in use.", Toast.LENGTH_SHORT).show();
+        } else {
+            showDeleteItemDialog(this);
+        }
     }
 
     private void showDeleteItemDialog(Context context) {
