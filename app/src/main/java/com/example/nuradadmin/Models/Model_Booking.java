@@ -3,22 +3,25 @@ import java.util.Map;
 
 public class Model_Booking {
     private String booking_id, contact_id, payment_id, address_id;
-    private String checkInDate, checkOutDate, note, room;
+    private String checkInDate, checkOutDate, checkInTime, checkOutTime, note, room, voucherCode;
+    private String status;
     private double bookingPrice;
     private int Adult, Child;
-    private String status;
-    private String checkInTime, checkOutTime;
     private Map<String, String> selectedAddOns;
     public Model_Booking() {
     }
 
-    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String checkInDate, String checkOutDate, double bookingPrice, int Adult, int Child, String note, String room,  Map<String, String> selectedAddOns) {
+    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String status, String checkInDate, String checkOutDate, String checkInTime, String checkOutTime, String voucherCode, double bookingPrice, int Adult, int Child, String note, String room,  Map<String, String> selectedAddOns) {
         this.booking_id = booking_id;
         this.contact_id = contact_id;
         this.address_id = address_id;
         this.payment_id = payment_id;
+        this.status = status;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.checkInTime = checkInTime;
+        this.checkOutTime = checkOutTime;
+        this.voucherCode = voucherCode;
         this.bookingPrice = bookingPrice;
         this.Adult = Adult;
         this.Child = Child;
@@ -75,6 +78,30 @@ public class Model_Booking {
         this.checkOutDate = checkOutDate;
     }
 
+    public String getCheckInTime() {
+        return checkInTime;
+    }
+
+    public void setCheckInTime(String checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public String getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setCheckOutTime(String checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
+
     public double getBookingPrice() {
         return bookingPrice;
     }
@@ -114,7 +141,6 @@ public class Model_Booking {
     public void setRoom(String room) {
         this.room = room;
     }
-
     public String getStatus() {
         return status;
     }
@@ -122,23 +148,6 @@ public class Model_Booking {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getCheckInTime() {
-        return checkInTime;
-    }
-
-    public void setCheckInTime(String checkInTime) {
-        this.checkInTime = checkInTime;
-    }
-
-    public String getCheckOutTime() {
-        return checkOutTime;
-    }
-
-    public void setCheckOutTime(String checkOutTime) {
-        this.checkOutTime = checkOutTime;
-    }
-
     public Map<String, String> getSelectedAddOns() {
         return selectedAddOns;
     }

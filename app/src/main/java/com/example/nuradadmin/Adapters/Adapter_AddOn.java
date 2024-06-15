@@ -26,11 +26,14 @@ import java.util.Map;
 public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHolder> {
     private Context context;
     private List<Model_AddOns> addOnList;
-    private Map<String, String> selectedAddOns;
-    public Adapter_AddOn(Context context, List<Model_AddOns> addOnList) {
+    private Map<String, Model_AddOns> selectedAddOns;
+    private OnAddOnSelectionChangedListener onAddOnSelectionChangedListener;
+
+    public Adapter_AddOn(Context context, List<Model_AddOns> addOnList, OnAddOnSelectionChangedListener listener) {
         this.context = context;
         this.addOnList = addOnList;
-        selectedAddOns = new HashMap<>();
+        this.selectedAddOns = new HashMap<>();
+        this.onAddOnSelectionChangedListener = listener;
     }
 
     @NonNull
@@ -62,16 +65,19 @@ public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHold
             holder.addOn_background.setBackgroundColor(Color.parseColor("#FBE3F3"));
         } else {
             holder.addOn_Btn.setText("ADD");
-            holder.addOn_background.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            holder.addOn_background.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
         }
 
-        holder.addOn_Btn.setOnClickListener(v ->{
-            if(selectedAddOns.containsKey(addOns.getId())){
+        holder.addOn_Btn.setOnClickListener(v -> {
+            if (selectedAddOns.containsKey(addOns.getId())) {
                 selectedAddOns.remove(addOns.getId());
             } else {
-                selectedAddOns.put(addOns.getId(), addOns.getTitle());
+                selectedAddOns.put(addOns.getId(), addOns);
             }
             notifyDataSetChanged();
+            if (onAddOnSelectionChangedListener != null) {
+                onAddOnSelectionChangedListener.onSelectionChanged(calculateTotalPrice());
+            }
         });
     }
 
@@ -79,18 +85,33 @@ public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHold
     public int getItemCount() {
         return addOnList.size();
     }
-    public Map<String, String> getSelectedAddOns() {
+
+    public double calculateTotalPrice() {
+        double total = 0;
+        for (Model_AddOns addOn : selectedAddOns.values()) {
+            total += addOn.getPrice();
+        }
+        return total;
+    }
+
+    public Map<String, Model_AddOns> getSelectedAddOns() {
         return selectedAddOns;
     }
+
     public void clearSelectedAddOns() {
         selectedAddOns.clear();
         notifyDataSetChanged();
+        if (onAddOnSelectionChangedListener != null) {
+            onAddOnSelectionChangedListener.onSelectionChanged(0);
+        }
     }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private RelativeLayout addOn_background;
         private TextView addOn_Title, addOn_Subheading, addOn_Description, addOn_Price;
         private ImageView addOn_Image;
         private Button addOn_Btn;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             addOn_background = itemView.findViewById(R.id.relativeLayout);
@@ -101,5 +122,9 @@ public class Adapter_AddOn extends RecyclerView.Adapter<Adapter_AddOn.MyViewHold
             addOn_Image = itemView.findViewById(R.id.addOnImage);
             addOn_Btn = itemView.findViewById(R.id.addBtn);
         }
+    }
+
+    public interface OnAddOnSelectionChangedListener {
+        void onSelectionChanged(double totalPrice);
     }
 }

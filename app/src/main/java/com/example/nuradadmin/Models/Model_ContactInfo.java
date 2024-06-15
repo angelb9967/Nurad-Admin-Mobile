@@ -2,6 +2,7 @@ package com.example.nuradadmin.Models;
 
 public class Model_ContactInfo {
     private String contact_id;
+    private String userId;
     private String prefix, firstName, lastName, phone, mobilePhone, email;
 
     public Model_ContactInfo() {
@@ -15,6 +16,13 @@ public class Model_ContactInfo {
         this.phone = phone;
         this.mobilePhone = mobilePhone;
         this.email = email;
+    }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getContact_id() {
