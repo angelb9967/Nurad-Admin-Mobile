@@ -40,6 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -369,6 +370,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    // Method to Update the Old Room Number to New Room Number on Available Rooms Database
     private void updateToAvailableRooms(String old_roomName, String new_roomName) {
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
 
@@ -393,23 +395,62 @@ public class Activity_CreateRoom extends AppCompatActivity {
                                     // Delete the old record
                                     availableRooms_DBref.child(old_roomName).removeValue()
                                             .addOnSuccessListener(aVoid1 -> {
-                                                Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show();
+                                                // Room Record Updated Successfully in "Booking" Database
+                                                updateBookingRecords(old_roomName, new_roomName);
                                             })
                                             .addOnFailureListener(e -> {
-                                                Toast.makeText(this, "Failed to delete old record: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                Log.e("Firebase", "Failed to delete old record: " + e.getMessage());
                                             });
                                 })
                                 .addOnFailureListener(e -> {
-                                    Toast.makeText(this, "Failed to save new record: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e("Firebase", "Failed to save new record: " + e.getMessage());
                                 });
                     } else {
-                        Toast.makeText(this, "Failed to retrieve old room details", Toast.LENGTH_SHORT).show();
+                        Log.e("Firebase", "Failed to retrieve old room details");
                     }
                 } else {
-                    Toast.makeText(this, "Old room not found", Toast.LENGTH_SHORT).show();
+                    Log.e("Firebase", "Old room not found");
                 }
             } else {
-                Toast.makeText(this, "Failed to fetch old room: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Firebase", "Failed to fetch old room: " + task.getException().getMessage());
+            }
+        });
+    }
+
+    // Method to Update the Old Room Number to New Room Number on Booking Database
+    private void updateBookingRecords(String old_roomName, String new_roomName) {
+        DatabaseReference booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
+
+        // Query to find all bookings with old_roomName
+        Query query = booking_DBref.orderByChild("room").equalTo(old_roomName);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Update each booking record to use new_roomName
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String bookingKey = snapshot.getKey();
+                        if (bookingKey != null) {
+                            booking_DBref.child(bookingKey).child("room").setValue(new_roomName)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Booking record updated successfully
+                                        Log.d("Activity_CreateRoom", "Booking record updated successfully. From " + old_roomName + " to " + new_roomName);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Handle failure to update booking record
+                                        Log.e("Activity_CreateRoom", "Failed to update booking record: " + e.getMessage());
+                                    });
+                        }
+                    }
+                } else {
+                    Log.d("Activity_CreateRoom", "No bookings found for room: " + old_roomName + ". No need to update any bookings.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Activity_CreateRoom", "Database error: " + databaseError.getMessage());
             }
         });
     }

@@ -45,7 +45,28 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
         Model_AvailableRooms availableRooms = availableRoomsList.get(position);
         holder.roomName.setText(availableRooms.getRoomName());
         holder.lastDateUsed.setText(availableRooms.getLastDateUsed());
-        holder.lastTimeUsed.setText(availableRooms.getLastTimeUsed());
+        if(availableRooms.getLastTimeUsed().equalsIgnoreCase("Not used yet")){
+            holder.lastTimeUsed.setText("");
+            holder.indicator.setText("Not used");
+        }else{
+            holder.lastTimeUsed.setText(availableRooms.getLastTimeUsed());
+            // Combine lastDateUsed and lastTimeUsed into a single datetime string
+            String lastDateTimeUsedStr = availableRooms.getLastDateUsed() + " " + availableRooms.getLastTimeUsed();
+            SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy h:mm a", Locale.ENGLISH); // Adjusted date format
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+            try {
+                Date lastDateTimeUsed = sdf.parse(lastDateTimeUsedStr);
+                long lastUsed = lastDateTimeUsed.getTime();
+                long now = System.currentTimeMillis();
+
+                CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(lastUsed, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+                holder.indicator.setText(timeAgo);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                holder.indicator.setText("Unknown time");
+            }
+        }
+
         holder.status.setText(availableRooms.getStatus());
 
         String stats = (String) holder.status.getText();
@@ -59,22 +80,6 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
             holder.status.setText("null");
             holder.icon.setImageResource(R.drawable.circle);
             holder.status.setTextColor(ContextCompat.getColor(context, R.color.lightgray));
-        }
-
-        // Combine lastDateUsed and lastTimeUsed into a single datetime string
-        String lastDateTimeUsedStr = availableRooms.getLastDateUsed() + " " + availableRooms.getLastTimeUsed();
-        SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy h:mm a", Locale.ENGLISH); // Adjusted date format
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
-        try {
-            Date lastDateTimeUsed = sdf.parse(lastDateTimeUsedStr);
-            long lastUsed = lastDateTimeUsed.getTime();
-            long now = System.currentTimeMillis();
-
-            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(lastUsed, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
-            holder.indicator.setText(timeAgo);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            holder.indicator.setText("Unknown time");
         }
 
         holder.optionMenu_Btn.setOnClickListener(v -> {
