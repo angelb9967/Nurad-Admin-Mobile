@@ -569,6 +569,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
         price_Etxt.setCursorVisible(false);
         price_Etxt.setClickable(false);
         price_Etxt.setLongClickable(false);
+        price_Etxt.setEnabled(false);
     }
 
     private void retrieveAndSetPrice(String priceRule) {

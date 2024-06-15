@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,13 +24,17 @@ import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.example.nuradadmin.Utilities.TrimUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
 
 public class Activity_CreatePriceRules extends AppCompatActivity {
-    private DatabaseReference priceRules_DBref;
+    private DatabaseReference priceRules_DBref, allRooms_DBref, recommendedRooms_DBref;
     private EditText ruleName_Etxt, price_Etxt, extraAdultprice_Etxt, extraChildprice_Etxt, friday_Etxt, saturday_Etxt, sunday_Etxt;
     private Button saveBtn;
     private ImageView back_icon;
@@ -82,6 +87,8 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
             saveBtn.setText(R.string.Save);
         }
         priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
+        allRooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
+        recommendedRooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         back_icon.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_PriceRules.class);
@@ -133,6 +140,7 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
                             if(!old_priceRuleName.equals(rule_name)){
                                 priceRules_DBref.child(old_priceRuleName).removeValue();
                             }
+                            updateRooms(old_priceRuleName, rule_name);
                             Toast.makeText(Activity_CreatePriceRules.this, "Updated", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
@@ -156,5 +164,44 @@ public class Activity_CreatePriceRules extends AppCompatActivity {
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
+    }
+
+    private void updateRooms(String old_priceRuleName, String new_priceRuleName) {
+        // Query to find all rooms with old_priceRuleName
+        Query query1 = allRooms_DBref.orderByChild("priceRule").equalTo(old_priceRuleName);
+        Query query2 = recommendedRooms_DBref.orderByChild("priceRule").equalTo(old_priceRuleName);
+
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Update each room record to use new_priceRuleName
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String roomKey = snapshot.getKey();
+                        if (roomKey != null) {
+                            dataSnapshot.getRef().child(roomKey).child("priceRule").setValue(new_priceRuleName)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Room record updated successfully
+                                        Log.d("Activity_CreatePriceRules", "Room record updated successfully. From " + old_priceRuleName + " to " + new_priceRuleName);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Handle failure to update room record
+                                        Log.e("Activity_CreatePriceRules", "Failed to update room record: " + e.getMessage());
+                                    });
+                        }
+                    }
+                } else {
+                    Log.d("Activity_CreatePriceRules", "No rooms found with priceRule: " + old_priceRuleName + ". No need to update any rooms.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Activity_CreatePriceRules", "Database error: " + databaseError.getMessage());
+            }
+        };
+
+        query1.addListenerForSingleValueEvent(listener);
+        query2.addListenerForSingleValueEvent(listener);
     }
 }
