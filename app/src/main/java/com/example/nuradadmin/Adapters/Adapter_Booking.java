@@ -1,7 +1,9 @@
 package com.example.nuradadmin.Adapters;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -133,11 +135,8 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
             popupMenu.show();
 
             popupMenu.setOnMenuItemClickListener(item -> {
-                if (item.getItemId() == R.id.edit) {
-                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
-                } else if (item.getItemId() == R.id.checkIn) {
+                if (item.getItemId() == R.id.checkIn) {
                     if (checkInItem.isEnabled()) {
-                        // Change the Room Status
                         booking.setStatus("Checked In");
                         updateBookingStatus(booking.getBooking_id(), "Checked In");
 
@@ -158,10 +157,12 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 } else if (item.getItemId() == R.id.checkOut) {
                     Toast.makeText(context, "You clicked checkOut", Toast.LENGTH_SHORT).show();
                 } else if (item.getItemId() == R.id.cancelBooking) {
+
                     booking.setStatus("Cancelled");
                     updateBookingStatus(booking.getBooking_id(), "Cancelled");
+
                 } else if (item.getItemId() == R.id.delete) {
-                    Toast.makeText(context, "You clicked delete", Toast.LENGTH_SHORT).show();
+                    showDeleteConfirmationDialog(booking);
                 } else {
                     Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
                     return false;
@@ -169,6 +170,48 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 return true;
             });
         });
+    }
+
+    private void showDeleteConfirmationDialog(Model_Booking booking) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Delete Booking");
+        builder.setMessage("Are you sure you want to delete this booking?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteBooking(booking);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteBooking(Model_Booking booking) {
+        deleteRecord(booking.getBooking_id(), "Booking");
+        deleteRecord(booking.getContact_id(), "Contact Information");
+        deleteRecord(booking.getAddress_id(), "Address Information");
+        deleteRecord(booking.getPayment_id(), "Payment Information");
+
+        // Optionally, you can remove the booking from the bookingList and notify the adapter
+        bookingList.remove(booking);
+        notifyDataSetChanged();
+    }
+
+    private void deleteRecord(String primaryKey, String path) {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(path).child(primaryKey);
+        dbRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Adapter_Booking", "Record deleted successfully from " + path);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Adapter_Booking", "Failed to delete record from " + path + ": " + e.getMessage());
+                });
     }
 
     private void updateBookingStatus(String bookingId, String status) {
