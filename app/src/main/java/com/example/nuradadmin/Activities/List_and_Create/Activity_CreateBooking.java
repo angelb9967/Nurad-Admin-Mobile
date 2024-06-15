@@ -7,11 +7,15 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -67,17 +72,18 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Activity_CreateBooking extends AppCompatActivity {
-    private String roomName, roomTitle, roomType, priceRule;
+    private AutoCompleteTextView emailAutoCompleteTextView;
+    private String roomName, roomTitle, roomType, priceRule, userUID;
     private ImageView back_icon, ExpirationDte_Img, CheckIn_Img, CheckOut_Img, Adult_Plus, Adult_Minus, Child_Plus, Child_Minus;
     private TextView roomDetailsTextView, roomNameTextView,
             roomTitleTextView, roomTypeTextView, roomPriceTextView,
             voucherPrice, selectedAddOnsPrice,
             adultGuestPrice, childGuestPrice,
             bookStatus, bookSubTotal, bookVatVal,
-            checkOutTimeTextView;
+            checkOutTimeTextView, userUIDTextView;
     private double price, extraChildPrice, extraAdultPrice;
     private Map<Long, Long> unavailableDateRanges = new HashMap<>();
-    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef,
+    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef, user_DBref,
             contact_DBref, address_DBref, payment_DBref, addOns_DBref, priceRules_DBref;
     private EditText FirstName_Etxt, LastName_Etxt, PhoneNum_Etxt, MobilePhone_Etxt, Email_Etxt,
             Country_Etxt, Address1_Etxt, Address2_Etxt, ZipPostalCode_Etxt,
@@ -209,6 +215,95 @@ public class Activity_CreateBooking extends AppCompatActivity {
                     // Handle invalid inputs, such as displaying error messages or alerts
                     Toast.makeText( Activity_CreateBooking.this, "Please ensure all fields are filled correctly and voucher code is valid.", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        emailAutoCompleteTextView = findViewById(R.id.emailAutoCompleteTextView);
+        userUIDTextView = findViewById(R.id.UserUID_TxtView);
+        userUIDTextView.setText("UID not found");
+        user_DBref = FirebaseDatabase.getInstance().getReference("Users");
+        emailAutoCompleteTextView.setThreshold(1);
+        emailAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userUIDTextView.setText("UID not found");
+                userUIDTextView.setTextColor(ContextCompat.getColor(Activity_CreateBooking.this, R.color.red));
+                if (s.length() >= 1) {
+                    getUserUid(s.toString()); // Fetch UID immediately for the current input
+                    fetchEmailSuggestions(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed
+            }
+        });
+
+        emailAutoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            String email = (String) parent.getItemAtPosition(position);
+            getUserUid(email);
+        });
+
+    }
+
+    private void fetchEmailSuggestions(String query) {
+        user_DBref.orderByChild("email").startAt(query).endAt(query + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> emails = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String email = snapshot.child("email").getValue(String.class);
+                    if (email != null) {
+                        emails.add(email);
+                    }
+                }
+                updateEmailSuggestions(emails);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Activity_CreateBooking.this, "Error fetching emails", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateEmailSuggestions(List<String> emails) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, emails);
+        emailAutoCompleteTextView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getUserUid(String email) {
+        user_DBref.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String uid = snapshot.getKey();
+                        if (uid != null) {
+                            userUIDTextView.setText(uid);
+                            userUIDTextView.setTextColor(ContextCompat.getColor(Activity_CreateBooking.this, R.color.green));
+                            Log.d("Activity_CreateBooking", "User UID: " + uid);
+                        } else {
+                            userUIDTextView.setText("UID not found");
+                            userUIDTextView.setTextColor(ContextCompat.getColor(Activity_CreateBooking.this, R.color.red));
+                            Log.e("Activity_CreateBooking", "UID not found");
+                        }
+                    }
+                } else {
+                    Log.e("Activity_CreateBooking", "Email not found");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Activity_CreateBooking", "Error fetching UID");
             }
         });
     }
@@ -894,16 +989,13 @@ public class Activity_CreateBooking extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference vouchersRef = database.getReference("Vouchers");
 
-        // Get the current user UID
-//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if (currentUser == null) {
-//            listener.onValidationError(); // Handle case where user is not authenticated
-//            return;
-//        }
-
-        // TODO: retrieve the user id of an account
-
-        String userId = "emHX7ES7goY0U2cjUmhaL4R3TUD2";
+        // Fetch user UID
+        userUID = (String) userUIDTextView.getText();
+        if (userUID == null || userUID.equalsIgnoreCase("UID not found")) {
+            emailAutoCompleteTextView.setError("Enter a valid Nurad email account");
+            emailAutoCompleteTextView.requestFocus();
+            return;
+        }
 
         // Check if the voucher code exists in Vouchers node
         vouchersRef.orderByChild("code").equalTo(code).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -923,7 +1015,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
 
                 if (voucherFound) {
                     // Check if the voucher code is already used by the user in UserVouchers node
-                    DatabaseReference userVouchersRef = database.getReference("UserVouchers").child(userId).child(code);
+                    DatabaseReference userVouchersRef = database.getReference("UserVouchers").child(userUID).child(code);
                     double finalVoucherValue = voucherValue;
                     userVouchersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -988,6 +1080,11 @@ public class Activity_CreateBooking extends AppCompatActivity {
         String cvv = CVV_Etxt.getText().toString().trim();
         String nameOnCard = NameOnTheCard_Etxt.getText().toString().trim();
         String notes = Note_Etxt.getText().toString().trim();
+
+        if(rooms_spinner.getSelectedItem() == null || rooms_spinner.getSelectedItemPosition() == 0){
+            Toast.makeText(this, "Please select a room", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
         if (prefix_spinner.getSelectedItem() == null || prefix_spinner.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Please select a prefix", Toast.LENGTH_SHORT).show();
@@ -1171,6 +1268,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         intent.putExtra("cvv", CVV_Etxt.getText().toString().trim());
         intent.putExtra("nameOnCard", NameOnTheCard_Etxt.getText().toString().trim());
         intent.putExtra("notes", Note_Etxt.getText().toString().trim());
+        intent.putExtra("UserUID", userUIDTextView.getText().toString().trim());
 
         StringBuilder selectedAddOnsBuilder = new StringBuilder();
         Map<String, Model_AddOns> selectedAddOnsMap = addOnAdapter.getSelectedAddOns();

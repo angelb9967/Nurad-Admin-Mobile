@@ -56,6 +56,81 @@
                 tools:layout_editor_absoluteX="30dp" />
 
             <TextView
+                android:id="@+id/textView80"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Nurad Account"
+                android:textColor="@color/softblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/view300"
+                app:layout_constraintEnd_toEndOf="@+id/view300"
+                app:layout_constraintStart_toStartOf="@+id/view300"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/emailAutoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:maxLines="1"
+                android:drawableTint="@color/purple"
+                android:drawableEnd="@drawable/search"
+                android:background="@drawable/custom_input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView80"
+                android:hint="Enter Nurad email account" />
+
+            <TextView
+                android:id="@+id/textView801"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="35dp"
+                android:textStyle="bold"
+                android:text="User UID:"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailAutoCompleteTextView" />
+
+            <TextView
+                android:id="@+id/UserUID_TxtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:textColor="@color/red"
+                android:text="UID not found"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView801"/>
+
+            <View
+                android:id="@+id/view312"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="#882065"
+                app:layout_constraintEnd_toEndOf="@+id/UserUID_TxtView"
+                app:layout_constraintStart_toStartOf="@+id/UserUID_TxtView"
+                app:layout_constraintTop_toBottomOf="@+id/UserUID_TxtView"
+                tools:layout_editor_absoluteX="30dp" />
+
+            <TextView
                 android:id="@+id/textView55"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,9 +141,9 @@
                 android:textColor="@color/softblack"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/view300"
-                app:layout_constraintEnd_toEndOf="@+id/view300"
-                app:layout_constraintStart_toStartOf="@+id/view300"
+                app:layout_constraintTop_toBottomOf="@+id/view312"
+                app:layout_constraintEnd_toEndOf="@+id/view312"
+                app:layout_constraintStart_toStartOf="@+id/view312"
                 tools:layout_editor_absoluteX="0dp" />
 
             <TextView

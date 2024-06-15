@@ -204,6 +204,7 @@ public class Activity_BookingSummary extends AppCompatActivity {
         String notes = intent.getStringExtra("notes");
         String selectedAddOns = intent.getStringExtra("selectedAddOns");
         String voucherCode = intent.getStringExtra("voucherCode");
+        String userId = intent.getStringExtra("UserUID");
 
         double subtotalValue = parsePrice(subtotal);
         double vatValue = parsePrice(vat);
@@ -211,18 +212,6 @@ public class Activity_BookingSummary extends AppCompatActivity {
 
         double semitotal = subtotalValue + vatValue;
         double totalValue = semitotal - voucherValueValue;
-
-        // Extract other data...
-        // TODO GET USER ID
-
-        // Get current user ID
-//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser == null) {
-//            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-        String userId ="emHX7ES7goY0U2cjUmhaL4R3TUD2";
 
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         contact_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
