@@ -205,7 +205,7 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
 
     private void handleRoomTypesUsage(boolean isInUse, int totalSelectedItems) {
         if (isInUse) {
-            Toast.makeText(this, "The room/s can't be deleted because they are in use.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The item/s can't be deleted because they are in use.", Toast.LENGTH_SHORT).show();
         } else {
             showDeleteItemDialog(this);
         }

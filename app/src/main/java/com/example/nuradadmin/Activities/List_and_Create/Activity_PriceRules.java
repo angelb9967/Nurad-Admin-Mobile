@@ -42,11 +42,14 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
     private RecyclerView recyclerView;
     private List<Model_PriceRule> modelPriceRulesList;
     private DatabaseReference priceRules_DBref;
+    private DatabaseReference allRooms_DBref;
+    private DatabaseReference recommendedRooms_DBref;
     private ValueEventListener eventListener;
     private FloatingActionButton floatingBtn;
     private Adapter_PriceRule adapter;
     private View toolbar_normal;
     private View toolbar_deleteMode;
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,8 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
         recyclerView.setAdapter(adapter);
 
         priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
+        allRooms_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
+        recommendedRooms_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
 
         eventListener = priceRules_DBref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,7 +125,7 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
             if (selectedItems.isEmpty()) {
                 Toast.makeText(this, "No item selected", Toast.LENGTH_SHORT).show();
             } else {
-                showDeleteItemDialog(this);
+                checkPriceRulesUsage(selectedItems);
             }
         });
 
@@ -166,6 +171,44 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
 
     private void updateItemCounter(int count) {
         itemCounter.setText(count + " Item(s) Selected");
+    }
+
+    private void checkPriceRulesUsage(List<Model_PriceRule> selectedItems) {
+        final int[] checksCompleted = {0};
+        final boolean[] isInUse = {false};
+
+        for (Model_PriceRule priceRule : selectedItems) {
+            checkPriceRuleUsageInDatabase(allRooms_DBref, priceRule, selectedItems.size(), checksCompleted, isInUse);
+            checkPriceRuleUsageInDatabase(recommendedRooms_DBref, priceRule, selectedItems.size(), checksCompleted, isInUse);
+        }
+    }
+
+    private void checkPriceRuleUsageInDatabase(DatabaseReference databaseRef, Model_PriceRule priceRule, int totalSelectedItems, int[] checksCompleted, boolean[] isInUse) {
+        databaseRef.orderByChild("priceRule").equalTo(priceRule.getRuleName()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                checksCompleted[0]++;
+                if (snapshot.exists()) {
+                    isInUse[0] = true;
+                }
+                if (checksCompleted[0] == totalSelectedItems * 2) {
+                    handlePriceRulesUsage(isInUse[0], totalSelectedItems);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle error
+            }
+        });
+    }
+
+    private void handlePriceRulesUsage(boolean isInUse, int totalSelectedItems) {
+        if (isInUse) {
+            Toast.makeText(this, "The item/s can't be deleted because they are in use.", Toast.LENGTH_SHORT).show();
+        } else {
+            showDeleteItemDialog(this);
+        }
     }
 
     private void showDeleteItemDialog(Context context) {
