@@ -2,34 +2,52 @@ package com.example.nuradadmin.Models;
 import java.util.Map;
 
 public class Model_Booking {
-    private String booking_id, contact_id, payment_id, address_id;
-    private String checkInDate, checkOutDate, checkInTime, checkOutTime, note, room, voucherCode;
-    private String status;
-    private double bookingPrice;
+    private String roomTitle;
     private int Adult, Child;
+    private String booking_id, contact_id, payment_id, address_id, userId;
+    private String checkInDate, checkOutDate, checkInTime, checkOutTime, note, room, voucherCode;
+    private String bookingDate;
+    private String status;
+    private double subtotalValue;
+    private double voucherValueValue;
+    private double roomPrice;
+    private double extraAdultPrice;
+    private double extraChildPrice;
+    private double addOnsPrice;
+    private double totalValue;
+    private double vatValue;
     private Map<String, String> selectedAddOns;
     public Model_Booking() {
     }
 
-    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String status, String checkInDate, String checkOutDate, String checkInTime, String checkOutTime, String voucherCode, double bookingPrice, int Adult, int Child, String note, String room,  Map<String, String> selectedAddOns) {
+    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String userId, String checkInDate, String checkOutDate, String checkInTime, String checkOutTime, String voucherCode, double subtotalValue, int Adult, int Child, String note, String room, Map<String, String> selectedAddOns, String bookingDate, double voucherValueValue, String status, double roomPrice, double extraAdultPrice, double extraChildPrice, double addOnsPrice, double totalValue, double vatValue, String roomTitle) {
         this.booking_id = booking_id;
         this.contact_id = contact_id;
         this.address_id = address_id;
         this.payment_id = payment_id;
-        this.status = status;
+        this.userId = userId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
         this.voucherCode = voucherCode;
-        this.bookingPrice = bookingPrice;
+        this.subtotalValue = subtotalValue;
         this.Adult = Adult;
         this.Child = Child;
         this.note = note;
         this.room = room;
         this.selectedAddOns = selectedAddOns;
+        this.bookingDate = bookingDate;
+        this.voucherValueValue = voucherValueValue;
+        this.status = status;
+        this.roomPrice = roomPrice;
+        this.extraAdultPrice = extraAdultPrice;
+        this.extraChildPrice = extraChildPrice;
+        this.addOnsPrice = addOnsPrice;
+        this.totalValue = totalValue;
+        this.vatValue = vatValue;
+        this.roomTitle = roomTitle;
     }
-
     public String getBooking_id() {
         return booking_id;
     }
@@ -60,6 +78,14 @@ public class Model_Booking {
 
     public void setAddress_id(String address_id) {
         this.address_id = address_id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getCheckInDate() {
@@ -102,14 +128,6 @@ public class Model_Booking {
         this.voucherCode = voucherCode;
     }
 
-    public double getBookingPrice() {
-        return bookingPrice;
-    }
-
-    public void setBookingPrice(double bookingPrice) {
-        this.bookingPrice = bookingPrice;
-    }
-
     public int getAdult() {
         return Adult;
     }
@@ -148,6 +166,87 @@ public class Model_Booking {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public double getSubtotalValue() {
+        return subtotalValue;
+    }
+
+    public void setSubtotalValue(double subtotalValue) {
+        this.subtotalValue = subtotalValue;
+    }
+
+    public String getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(String bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+
+    public double getVoucherValueValue() {
+        return voucherValueValue;
+    }
+
+    public void setVoucherValueValue(double voucherValueValue) {
+        this.voucherValueValue = voucherValueValue;
+    }
+
+    public double getRoomPrice() {
+        return roomPrice;
+    }
+
+    public void setRoomPrice(double roomPrice) {
+        this.roomPrice = roomPrice;
+    }
+
+    public double getExtraAdultPrice() {
+        return extraAdultPrice;
+    }
+
+    public void setExtraAdultPrice(double extraAdultPrice) {
+        this.extraAdultPrice = extraAdultPrice;
+    }
+
+    public double getExtraChildPrice() {
+        return extraChildPrice;
+    }
+
+    public void setExtraChildPrice(double extraChildPrice) {
+        this.extraChildPrice = extraChildPrice;
+    }
+
+    public double getAddOnsPrice() {
+        return addOnsPrice;
+    }
+
+    public void setAddOnsPrice(double addOnsPrice) {
+        this.addOnsPrice = addOnsPrice;
+    }
+
+    public double getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(double totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public double getVatValue() {
+        return vatValue;
+    }
+
+    public void setVatValue(double vatValue) {
+        this.vatValue = vatValue;
+    }
+
+    public String getRoomTitle() {
+        return roomTitle;
+    }
+
+    public void setRoomTitle(String roomTitle) {
+        this.roomTitle = roomTitle;
+    }
+
     public Map<String, String> getSelectedAddOns() {
         return selectedAddOns;
     }

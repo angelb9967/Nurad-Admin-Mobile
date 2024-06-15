@@ -2,20 +2,29 @@ package com.example.nuradadmin.Models;
 
 public class Model_AddressInfo {
     private String address_id;
-    private String country, address1, address2, city, zipCode;
+    private String userId;
+    private String country, address1, address2, city, region, zipCode;
 
     public Model_AddressInfo() {
     }
 
-    public Model_AddressInfo(String address_id, String country, String address1, String address2, String city, String zipCode) {
+    public Model_AddressInfo(String address_id, String userId, String country, String address1, String address2, String city, String region, String zipCode) {
         this.address_id = address_id;
+        this.userId = userId;
         this.country = country;
         this.address1 = address1;
         this.address2 = address2;
         this.city = city;
+        this.region = region;
         this.zipCode = zipCode;
     }
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public String getAddress_id() {
         return address_id;
     }
@@ -54,6 +63,13 @@ public class Model_AddressInfo {
 
     public void setCity(String city) {
         this.city = city;
+    }
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getZipCode() {

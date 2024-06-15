@@ -718,13 +718,15 @@ public class Activity_CreateBooking extends AppCompatActivity {
                 if (view != null && view instanceof TextView) {
                     if (position == 0) {
                         ((TextView) view).setTextColor(Color.GRAY);
+                        setDefaultPrices();;
                         roomName = "";
                         roomTitle = "";
                         roomType = "";
                         priceRule = "";
 
-                        roomTitleTextView.setText("");
+                        roomTitleTextView.setText("Room Title");
                         roomNameTextView.setText("Room Name");
+                        roomDetailsTextView.setText("");
                         roomTypeTextView.setText("Room Type");
                         roomPriceTextView.setText("₱ 0.00");
                         Toast.makeText(Activity_CreateBooking.this, "Please make sure to choose a room before proceeding.", Toast.LENGTH_SHORT).show();
@@ -755,8 +757,10 @@ public class Activity_CreateBooking extends AppCompatActivity {
                         priceRule = modelRoom.getPriceRule();
 
                         roomTitleTextView.setText(roomTitle);
-                        roomNameTextView.setText(roomName);
-                        roomTypeTextView.setText(roomType);
+                        roomNameTextView.setText("Room Number: " + roomName + "\n");
+                        roomTypeTextView.setText("Room Type: " + roomType + "\n");
+                        roomDetailsTextView.setText("Description: " + modelRoom.getDescription() + "\n");
+                        fetchPriceRule(modelRoom.getPriceRule());
                     }
                 } else {
                     recommendedRef.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -770,8 +774,9 @@ public class Activity_CreateBooking extends AppCompatActivity {
                                     priceRule = modelRoom.getPriceRule();
 
                                     roomTitleTextView.setText(roomTitle);
-                                    roomNameTextView.setText(roomName);
-                                    roomTypeTextView.setText(roomType);
+                                    roomNameTextView.setText("Room Number: " + roomName + "\n");
+                                    roomTypeTextView.setText("Room Type: " + roomType + "\n");
+                                    roomDetailsTextView.setText("Description: " + modelRoom.getDescription() + "\n");
                                     fetchPriceRule(modelRoom.getPriceRule());
                                 }
                             }
@@ -964,8 +969,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
         String checkOutDate = CheckOut_Etxt.getText().toString().trim();
         String checkInTime = checkInTimeSpinner.getSelectedItem().toString();
         String checkOutTime = checkInTimeSpinner.getSelectedItem().toString();
-        String room = roomNameTextView.getText().toString();
-        String roomTitle = roomTitleTextView.getText().toString();
+        String room = roomName;
+        String roomTitle1 = roomTitle;
         String adultCount = Adult_Etxt.getText().toString();
         String childCount = Child_Etxt.getText().toString();
         String firstName = FirstName_Etxt.getText().toString().trim();

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         tools:context=".Activities.Activity_BookingSummary">
 
+
         <TextView
             android:id="@+id/unsavedChangesNote5"
             android:layout_width="0dp"
@@ -25,6 +26,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
 
+
         <!-- View above "Your Booking Summary" -->
         <View
             android:id="@+id/topDivider"
@@ -37,6 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <!-- Room Details Card -->
         <androidx.cardview.widget.CardView
@@ -51,11 +54,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/topDivider">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp">
+
 
                 <TextView
                     android:id="@+id/textView121"
@@ -69,6 +74,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -77,11 +83,13 @@
                     android:layout_marginEnd="30dp"
                     android:background="#882065"/>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/date"
@@ -93,6 +101,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Date"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/dateval"
@@ -106,12 +115,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Room Name and Number -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/stayduration"
@@ -123,6 +134,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Check-In"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/staydurationval"
@@ -136,11 +148,13 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/staydurationout"
@@ -152,6 +166,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Check-Out"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/staydurationoutval"
@@ -165,11 +180,13 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/payment"
@@ -181,6 +198,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Payment Method"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/paymentmethod"
@@ -195,11 +213,14 @@
                 </LinearLayout>
 
 
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/roomNameNumber"
@@ -211,6 +232,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Room Name and Number"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/roomNameNumberVals"
@@ -224,12 +246,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Qty of Adult -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/quantityAdult"
@@ -241,6 +265,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Qty of Adult"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/quantityAdultVal"
@@ -254,12 +279,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Qty of Child -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/quantityChild"
@@ -271,6 +298,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Qty of Child"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/quantityChildVal"
@@ -284,6 +312,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Add-Ons -->
                 <LinearLayout
                     android:id="@+id/addOnsContainer"
@@ -291,6 +320,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/addOns"
@@ -303,6 +333,7 @@
                         android:visibility="visible"
                         android:text="Add-Ons"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/addOnsVal"
@@ -317,12 +348,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Add-Ons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/Note"
@@ -334,6 +367,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Note"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/notess"
@@ -347,6 +381,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <View
                     android:layout_width="400dp"
                     android:layout_height="1dp"
@@ -354,12 +389,14 @@
                     android:layout_marginEnd="30dp"
                     android:background="#882065"/>
 
+
                 <!-- Subtotal -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/subtotal"
@@ -371,6 +408,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Subtotal"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/subtotalVal"
@@ -384,12 +422,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Tax/VAT -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/taxVAT"
@@ -401,6 +441,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Tax/VAT (12%)"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/taxVATVal"
@@ -414,12 +455,14 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Discount (Voucher) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
+
 
                     <TextView
                         android:id="@+id/discountVoucher"
@@ -431,6 +474,7 @@
                         android:layout_marginEnd="8dp"
                         android:text="Discount (Code)"
                         android:textSize="12sp" />
+
 
                     <TextView
                         android:id="@+id/discountVoucherVal"
@@ -444,6 +488,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+
                 <!-- Total -->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -451,38 +496,58 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="8dp">
 
+
                     <TextView
                         android:id="@+id/total"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="#882065"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:text="Total"
-                        android:textStyle="bold"
-                        android:textSize="14sp" />
+                        android:layout_weight="1"
+                        android:text="Total Price of the Booking:"
+                        android:textColor="#882065"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/totalValText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:text="Price"
+                        android:textColor="#882065"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/totalVal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="#882065"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
                         android:text="Price"
-                        android:textStyle="bold"
-                        android:textSize="14sp" />
+                        android:textColor="#882065"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
 
 
                 </LinearLayout>
 
+
             </LinearLayout>
 
+
         </androidx.cardview.widget.CardView>
+
 
         <!-- View below "Your Booking Summary" -->
         <View
@@ -497,6 +562,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/roomDetailsCard" />
+
 
         <!-- Unsaved Changes Note -->
         <TextView
@@ -513,7 +579,9 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
 
+
         <!-- Policies -->
+
 
         <Button
             android:id="@+id/nextStepButton"
@@ -528,6 +596,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/unsavedChangesNote5"
             app:layout_constraintVertical_bias="0.032" />
+
 
         <TextView
             android:id="@+id/policies"
@@ -545,6 +614,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nextStepButton" />
 
+
         <TextView
             android:id="@+id/guaranteePolicyDetails"
             android:layout_width="match_parent"
@@ -560,12 +630,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guaranteePolicy" />
 
+
         <TextView
             android:id="@+id/cancelPolicyDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="16dp"
             android:text="This reservation is non-cancellable &amp; non-refundable but may be rebooked subject to applicable rate difference. Rebooking should be done at least 3 days before arrival. Full payment will be forfeited for no-show. Add-Ons will be cancelled automatically."
             android:textColor="#545454"
@@ -575,6 +647,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cancelPolicy" />
+
 
         <TextView
             android:id="@+id/cancelPolicy"
@@ -592,6 +665,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guaranteePolicyDetails" />
 
+
         <TextView
             android:id="@+id/guaranteePolicy"
             android:layout_width="match_parent"
@@ -607,6 +681,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/policies" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

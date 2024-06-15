@@ -8,8 +8,9 @@ public class Model_ContactInfo {
     public Model_ContactInfo() {
     }
 
-    public Model_ContactInfo(String contact_id, String prefix, String firstName, String lastName, String phone, String mobilePhone, String email) {
+    public Model_ContactInfo(String contact_id, String userId, String prefix, String firstName, String lastName, String phone, String mobilePhone, String email) {
         this.contact_id = contact_id;
+        this.userId = userId;
         this.prefix = prefix;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -17,6 +18,7 @@ public class Model_ContactInfo {
         this.mobilePhone = mobilePhone;
         this.email = email;
     }
+
     public String getUserId() {
         return userId;
     }

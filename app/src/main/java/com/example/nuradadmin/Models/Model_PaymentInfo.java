@@ -2,19 +2,27 @@ package com.example.nuradadmin.Models;
 
 public class Model_PaymentInfo {
     private String payment_id;
+    private String userId;
     private String cardNumber, expirationDate, cvv, nameOnTheCard;
 
     public Model_PaymentInfo() {
     }
 
-    public Model_PaymentInfo(String payment_id, String cardNumber, String expirationDate, String cvv, String nameOnTheCard) {
+    public Model_PaymentInfo(String payment_id, String userId, String cardNumber, String expirationDate, String cvv, String nameOnTheCard) {
         this.payment_id = payment_id;
+        this.userId = userId;
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.cvv = cvv;
         this.nameOnTheCard = nameOnTheCard;
     }
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public String getPayment_id() {
         return payment_id;
     }
