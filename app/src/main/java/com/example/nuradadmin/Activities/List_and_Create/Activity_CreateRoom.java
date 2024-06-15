@@ -30,6 +30,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nuradadmin.Adapters.CustomArrayAdapter;
+import com.example.nuradadmin.Models.Model_AvailableRooms;
 import com.example.nuradadmin.Models.Model_PriceRule;
 import com.example.nuradadmin.Models.Model_Room;
 import com.example.nuradadmin.R;
@@ -52,7 +53,7 @@ import java.util.Objects;
 public class Activity_CreateRoom extends AppCompatActivity {
     private FrameLayout frame_layout;
     private CheckBox depositRequired_chkbox, recommendedRoom_chk_box;
-    private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref, old_DBref;
+    private DatabaseReference roomTypes_DBref, priceRules_DBref, rooms_DBref, old_DBref, availableRooms_DBref;
     private StorageReference rooms_Sref;
     private ArrayList<String> roomTypes_list, priceRules_list;
     private CustomArrayAdapter roomTypes_adapter, priceRules_adapter;
@@ -239,6 +240,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
                 return;
             }
             uploadToFirebase(imageUri, modelRoom);
+            saveToAvailableRooms(roomName);
         }
     }
 
@@ -304,6 +306,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
             roomRef.removeValue();
 
             roomRef = rooms_DBref.child(modelRoom.getRoomName());  // Create a new one
+            updateToAvailableRooms(old_roomName, modelRoom.getRoomName());
         } else {
             // If none, update on the old record
             roomRef = rooms_DBref.child(old_roomName);
@@ -352,6 +355,62 @@ public class Activity_CreateRoom extends AppCompatActivity {
         })).addOnProgressListener(snapshot -> progressDialog.show()).addOnFailureListener(e -> {
             progressDialog.dismiss();
             Toast.makeText(Activity_CreateRoom.this, "Uploading Failed!", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void saveToAvailableRooms(String roomName){
+        Model_AvailableRooms modelAvailableRooms = new Model_AvailableRooms(roomName, "Not used yet", "Not used yet", "Not cleaned yet");
+        availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
+
+        availableRooms_DBref.child(roomName).setValue(modelAvailableRooms)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateToAvailableRooms(String old_roomName, String new_roomName) {
+        availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
+
+        availableRooms_DBref.child(old_roomName).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot dataSnapshot = task.getResult();
+                if (dataSnapshot.exists()) {
+                    // Retrieve the old room's details
+                    Model_AvailableRooms oldRoomDetails = dataSnapshot.getValue(Model_AvailableRooms.class);
+
+                    if (oldRoomDetails != null) {
+                        // Save the new record with the new room name
+                        Model_AvailableRooms newRoomDetails = new Model_AvailableRooms(
+                                new_roomName,
+                                oldRoomDetails.getLastDateUsed(),
+                                oldRoomDetails.getLastTimeUsed(),
+                                oldRoomDetails.getStatus()
+                        );
+
+                        availableRooms_DBref.child(new_roomName).setValue(newRoomDetails)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Delete the old record
+                                    availableRooms_DBref.child(old_roomName).removeValue()
+                                            .addOnSuccessListener(aVoid1 -> {
+                                                Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(this, "Failed to delete old record: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Failed to save new record: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        Toast.makeText(this, "Failed to retrieve old room details", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Old room not found", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Failed to fetch old room: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

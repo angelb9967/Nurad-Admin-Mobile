@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateBooking;
 import com.example.nuradadmin.Models.Model_AddressInfo;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
@@ -33,10 +34,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Activity_BookingSummary extends AppCompatActivity {
-
-
-    private DatabaseReference booking_DBref, contact_DBref, address_DBref, payment_DBref, vouchers_DBref, userVouchers_DBref;
-
+    private DatabaseReference booking_DBref, contact_DBref, address_DBref,
+            payment_DBref, vouchers_DBref, userVouchers_DBref;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -162,11 +161,9 @@ public class Activity_BookingSummary extends AppCompatActivity {
             lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
         }
 
-// Display the last four digits in the TextView
+        // Display the last four digits in the TextView
         TextView methodPaymentTextView = findViewById(R.id.paymentmethod);
         methodPaymentTextView.setText("Card ending in ****" + lastFourDigits);
-
-
     }
 
     private void saveDataToDatabase() {
@@ -264,6 +261,10 @@ public class Activity_BookingSummary extends AppCompatActivity {
 
         // Show a success message
         Toast.makeText(this, "Room Officially Booked", Toast.LENGTH_SHORT).show();
+
+        finish();
+        Intent i = new Intent(this, Activity_CreateBooking.class);
+        startActivity(i);
     }
 
 
