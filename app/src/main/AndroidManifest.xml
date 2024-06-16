@@ -43,9 +43,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activities.BottomMenu.Activity_Available"
-            android:exported="false" />
-        <activity
             android:name=".Activities.SideMenu.Activity_Language"
             android:exported="false" />
         <activity
