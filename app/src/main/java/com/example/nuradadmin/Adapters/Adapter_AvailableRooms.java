@@ -1,7 +1,9 @@
 package com.example.nuradadmin.Adapters;
 
 import android.content.Context;
+import android.icu.text.LocaleDisplayNames;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +11,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Models.Model_AvailableRooms;
+import com.example.nuradadmin.Models.Model_Housekeeping;
+import com.example.nuradadmin.Models.Model_InUse;
 import com.example.nuradadmin.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -27,10 +35,12 @@ import java.util.TimeZone;
 public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_AvailableRooms.MyViewHolder> {
     private Context context;
     private List<Model_AvailableRooms> availableRoomsList;
+    private DatabaseReference housekeeping_DBref;
 
     public Adapter_AvailableRooms(Context context, List<Model_AvailableRooms> availableRoomsList) {
         this.context = context;
         this.availableRoomsList = availableRoomsList;
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("HouseKeeping");
     }
 
     @NonNull
@@ -88,16 +98,47 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
 
             popupMenu.show();
 
-//            popupMenu.setOnMenuItemClickListener(item -> {
-//                if (item.getItemId() == R.id.edit) {
-//                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
-//                    return false;
-//                }
-//                return true;
-//            });
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.requestCleaning) {
+                    availableRooms.setStatus("Not cleaned yet");
+                    updateAvailableRoomStatus(availableRooms.getRoomName(), "Not cleaned yet");
+
+                    SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH);
+                    TimeZone timeZone = TimeZone.getTimeZone("Asia/Manila");
+                    Calendar currentDateTime = Calendar.getInstance(timeZone);
+                    currentDateTime.setTimeInMillis(System.currentTimeMillis());
+                    dateTimeFormat.setTimeZone(timeZone);
+                    String currentTimeStr = dateTimeFormat.format(currentDateTime.getTime());
+
+                    // Save Request to Housekeeping
+                    Model_Housekeeping modelHousekeeping = new Model_Housekeeping(availableRooms.getRoomName(), currentTimeStr, "Not occupied");
+                    saveToHousekeeping(availableRooms.getRoomName(), modelHousekeeping);
+                } else {
+                    Log.e("Adapter_AvailableRooms", "Error! couldn't identify popup menu option.");
+                    return false;
+                }
+                return true;
+            });
         });
+    }
+
+    private void updateAvailableRoomStatus(String roomName, String status) {
+        DatabaseReference availableRef = FirebaseDatabase.getInstance().getReference("Available Rooms").child(roomName);
+        availableRef.child("status").setValue(status).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Adapter_AvailableRooms", "Room status updated to " + status);
+            } else {
+                Log.d("Adapter_AvailableRooms", "Failed to update room status " + status);
+            }
+        });
+    }
+
+    private void saveToHousekeeping(String roomName, Model_Housekeeping model_housekeeping){
+        housekeeping_DBref.child(roomName).setValue(model_housekeeping)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override

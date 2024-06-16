@@ -83,7 +83,6 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
 
             // Correct date format
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH);
-
             TimeZone timeZone = TimeZone.getTimeZone("Asia/Manila");
 
             Calendar checkInDateTime = Calendar.getInstance(timeZone);

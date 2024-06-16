@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/booking"
-        android:title="Booking"
-        android:icon="@drawable/calendar_day" />
+        android:id="@+id/housekeeping"
+        android:title="Housekeeping"
+        android:icon="@drawable/room_service" />
 
     <item
         android:id="@+id/available"
@@ -16,13 +16,4 @@
         android:title="In Use"
         android:icon="@drawable/bed"/>
 
-    <item
-        android:id="@+id/housekeeping"
-        android:title="Housekeeping"
-        android:icon="@drawable/room_service" />
-
-    <item
-        android:id="@+id/history"
-        android:title="History"
-        android:icon="@drawable/time_past"/>
 </menu>

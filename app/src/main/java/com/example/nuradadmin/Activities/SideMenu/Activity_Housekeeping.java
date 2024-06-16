@@ -16,12 +16,23 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.nuradadmin.Fragments.Fragment_Available;
+import com.example.nuradadmin.Fragments.Fragment_Booking;
+import com.example.nuradadmin.Fragments.Fragment_History;
+import com.example.nuradadmin.Fragments.Fragment_Housekeeping;
+import com.example.nuradadmin.Fragments.Fragment_InUse;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.example.nuradadmin.databinding.ActivityBookingCalendarBinding;
+import com.example.nuradadmin.databinding.ActivityHousekeepingBinding;
 import com.google.android.material.navigation.NavigationView;
 
 public class Activity_Housekeeping extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private ActivityHousekeepingBinding binding;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menu_icon;
@@ -31,7 +42,8 @@ public class Activity_Housekeeping extends AppCompatActivity implements Navigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_housekeeping);
+        binding = ActivityHousekeepingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -44,11 +56,28 @@ public class Activity_Housekeeping extends AppCompatActivity implements Navigati
         toolbar = findViewById(R.id.toolbarMenu);
         menu_icon = findViewById(R.id.menu_icon);
         title = findViewById(R.id.title);
-
         setSupportActionBar(toolbar);
 
         title.setText("Housekeeping");
+        replaceFragment(new Fragment_Housekeeping());
 
+        // Bottom Navigation
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            // Check which menu item is selected and replace the current fragment accordingly
+          if (item.getItemId() == R.id.available){
+                title.setText("Available");
+                replaceFragment(new Fragment_Available());
+            } else if (item.getItemId() == R.id.inUse){
+                title.setText("In Use");
+                replaceFragment(new Fragment_InUse());
+            } else if (item.getItemId() == R.id.housekeeping){
+                title.setText("Housekeeping");
+                replaceFragment(new Fragment_Housekeeping());
+            }
+            return true;
+        });
+
+        // Side Navigation
         navigationView.setNavigationItemSelectedListener(this);
 
         menu_icon.setOnClickListener(View -> {
@@ -102,5 +131,12 @@ public class Activity_Housekeeping extends AppCompatActivity implements Navigati
             return false;
         }
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.commit();
     }
 }
