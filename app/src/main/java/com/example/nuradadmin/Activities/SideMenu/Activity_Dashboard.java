@@ -26,10 +26,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Activity_Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private TextView title, todaysCheckedIn_TxtView, available_TxtView,
             inUse_TxtView, housekeeping_TxtView;
-    private DatabaseReference availableRooms_DBref, inUse_DBref, housekeeping_DBref;
+    private DatabaseReference checkInsPerDay_DBref, availableRooms_DBref, inUse_DBref, housekeeping_DBref;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menu_icon;
@@ -83,6 +87,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         getOnBackPressedDispatcher().addCallback(this, callback);
 
         // Initialize Firebase
+        checkInsPerDay_DBref = FirebaseDatabase.getInstance().getReference("CheckInsPerDay");
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
         inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
         housekeeping_DBref = FirebaseDatabase.getInstance().getReference("Housekeeping");
@@ -90,6 +95,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         getDBCount(availableRooms_DBref, available_TxtView);
         getDBCount(inUse_DBref, inUse_TxtView);
         getDBCount(housekeeping_DBref, housekeeping_TxtView);
+        getTodayCheckInCount();
     }
 
     private void getDBCount(DatabaseReference database, TextView textview) {
@@ -110,6 +116,26 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         });
     }
 
+    private void getTodayCheckInCount() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference todayRef = checkInsPerDay_DBref.child(today).child("count");
+
+        todayRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long count = 0;
+                if (snapshot.exists()) {
+                    count = snapshot.getValue(Long.class);
+                }
+                todaysCheckedIn_TxtView.setText(String.valueOf(count));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                todaysCheckedIn_TxtView.setText("0");
+            }
+        });
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

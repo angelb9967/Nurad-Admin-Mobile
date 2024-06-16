@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Models.Model_Booking;
@@ -26,6 +27,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
@@ -44,6 +47,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
     private DatabaseReference recomm_DBref;
     private DatabaseReference inUse_DBref;
     private DatabaseReference availableRooms_DBref;
+    private DatabaseReference checkIns_DBref;
     public Adapter_Booking(Context context, List<Model_Booking> bookingList) {
         this.context = context;
         this.bookingList = bookingList;
@@ -52,6 +56,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         recomm_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
         inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
+        checkIns_DBref = FirebaseDatabase.getInstance().getReference("CheckInsPerDay");
     }
 
     @NonNull
@@ -152,6 +157,9 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                                 Log.e("Adapter_Booking", "Failed to delete node.");
                             }
                         });
+
+                        // Add check-in count;
+                        addCheckIn();
                     }
                 } else if (item.getItemId() == R.id.checkOut) {
                     Toast.makeText(context, "You clicked checkOut", Toast.LENGTH_SHORT).show();
@@ -168,6 +176,32 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 }
                 return true;
             });
+        });
+    }
+
+    public void addCheckIn() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        DatabaseReference todayRef = checkIns_DBref.child(today);
+
+        todayRef.child("count").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                Integer currentCount = currentData.getValue(Integer.class);
+                if (currentCount == null) {
+                    currentData.setValue(1);
+                } else {
+                    currentData.setValue(currentCount + 1);
+                }
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                if (error != null) {
+                    Log.e("Adapter_Booking", "The system encountered an error: " + error);
+                }
+            }
         });
     }
 
