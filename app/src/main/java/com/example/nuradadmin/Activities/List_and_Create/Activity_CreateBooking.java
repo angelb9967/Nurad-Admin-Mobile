@@ -287,10 +287,12 @@ public class Activity_CreateBooking extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String uid = snapshot.getKey();
                         if (uid != null) {
-                            userUIDTextView.setText(uid);
+                            userUIDTextView.setText("UID found");
+                            userUID = uid;
                             userUIDTextView.setTextColor(ContextCompat.getColor(Activity_CreateBooking.this, R.color.green));
                             Log.d("Activity_CreateBooking", "User UID: " + uid);
                         } else {
+                            userUID = "";
                             userUIDTextView.setText("UID not found");
                             userUIDTextView.setTextColor(ContextCompat.getColor(Activity_CreateBooking.this, R.color.red));
                             Log.e("Activity_CreateBooking", "UID not found");
@@ -990,8 +992,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
         DatabaseReference vouchersRef = database.getReference("Vouchers");
 
         // Fetch user UID
-        userUID = (String) userUIDTextView.getText();
-        if (userUID == null || userUID.equalsIgnoreCase("UID not found")) {
+        String checkUserUID = (String) userUIDTextView.getText();
+        if (checkUserUID == null || checkUserUID.equalsIgnoreCase("UID not found")) {
             emailAutoCompleteTextView.setError("Enter a valid Nurad email account");
             emailAutoCompleteTextView.requestFocus();
             return;
@@ -1080,6 +1082,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         String cvv = CVV_Etxt.getText().toString().trim();
         String nameOnCard = NameOnTheCard_Etxt.getText().toString().trim();
         String notes = Note_Etxt.getText().toString().trim();
+        String uid = userUIDTextView.getText().toString().trim();
 
         if(rooms_spinner.getSelectedItem() == null || rooms_spinner.getSelectedItemPosition() == 0){
             Toast.makeText(this, "Please select a room", Toast.LENGTH_SHORT).show();
@@ -1178,6 +1181,12 @@ public class Activity_CreateBooking extends AppCompatActivity {
             return false;
         }
 
+        if (uid == null || uid.equalsIgnoreCase("") || uid.equalsIgnoreCase("UID not found")) {
+            emailAutoCompleteTextView.setError("Enter a valid Nurad email account");
+            emailAutoCompleteTextView.requestFocus();
+            return false;
+        }
+
         if (nameOnCard.isEmpty()) {
             NameOnTheCard_Etxt.setError("Name on the card is required");
             NameOnTheCard_Etxt.requestFocus();
@@ -1268,7 +1277,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         intent.putExtra("cvv", CVV_Etxt.getText().toString().trim());
         intent.putExtra("nameOnCard", NameOnTheCard_Etxt.getText().toString().trim());
         intent.putExtra("notes", Note_Etxt.getText().toString().trim());
-        intent.putExtra("UserUID", userUIDTextView.getText().toString().trim());
+        intent.putExtra("UserUID", userUID);
 
         StringBuilder selectedAddOnsBuilder = new StringBuilder();
         Map<String, Model_AddOns> selectedAddOnsMap = addOnAdapter.getSelectedAddOns();
