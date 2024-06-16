@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoom;
+import com.example.nuradadmin.Models.Model_AvailableRooms;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
 import com.example.nuradadmin.Models.Model_History;
@@ -39,6 +41,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
     private DatabaseReference contactInfo_DBref;
     private DatabaseReference history_DBref;
     private DatabaseReference inUse_DBref;
+    private DatabaseReference availableRooms_DBref;
 
     public Adapter_InUse(Context context, List<Model_InUse> inUseList) {
         this.context = context;
@@ -47,6 +50,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         contactInfo_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
         history_DBref = FirebaseDatabase.getInstance().getReference("History");
         inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
+        availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
     }
 
     @NonNull
@@ -129,6 +133,8 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                         }
                     });
 
+                    // Save to Available Rooms
+                    saveToAvailableRooms(inUse.getRoomName(), currentTimeStr);
                 } else if (item.getItemId() == R.id.requestCleaning) {
 
                 } else if (item.getItemId() == R.id.delete) {
@@ -141,6 +147,19 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
             });
         });
     }
+
+    private void saveToAvailableRooms(String roomName, String currentDateTime) {
+        Model_AvailableRooms modelAvailableRooms = new Model_AvailableRooms(roomName, currentDateTime, "", "Not cleaned yet");
+        Log.d("Adapter_InUse", "Saving to Available Rooms: " + modelAvailableRooms.toString());
+        availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
+
+        availableRooms_DBref.child(roomName).setValue(modelAvailableRooms)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
 
     private void saveToHistory(String history_id, Model_History modelHistory){
         history_DBref.child(history_id).setValue(modelHistory)

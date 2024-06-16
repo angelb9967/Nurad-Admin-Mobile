@@ -1,15 +1,15 @@
 package com.example.nuradadmin.Models;
 
 public class Model_AvailableRooms {
-    private String roomName, lastDateUsed, lastTimeUsed, status;
+    private String roomName, lastDateTimeUsed, lastCleaned, status;
 
     public Model_AvailableRooms() {
     }
 
-    public Model_AvailableRooms(String roomName, String lastDateUsed, String lastTimeUsed, String status) {
+    public Model_AvailableRooms(String roomName, String lastDateTimeUsed, String lastCleaned, String status) {
         this.roomName = roomName;
-        this.lastDateUsed = lastDateUsed;
-        this.lastTimeUsed = lastTimeUsed;
+        this.lastDateTimeUsed = lastDateTimeUsed;
+        this.lastCleaned = lastCleaned;
         this.status = status;
     }
 
@@ -21,20 +21,20 @@ public class Model_AvailableRooms {
         this.roomName = roomName;
     }
 
-    public String getLastDateUsed() {
-        return lastDateUsed;
+    public String getLastDateTimeUsed() {
+        return lastDateTimeUsed;
     }
 
-    public void setLastDateUsed(String lastDateUsed) {
-        this.lastDateUsed = lastDateUsed;
+    public void setLastDateTimeUsed(String lastDateTimeUsed) {
+        this.lastDateTimeUsed = lastDateTimeUsed;
     }
 
-    public String getLastTimeUsed() {
-        return lastTimeUsed;
+    public String getLastCleaned() {
+        return lastCleaned;
     }
 
-    public void setLastTimeUsed(String lastTimeUsed) {
-        this.lastTimeUsed = lastTimeUsed;
+    public void setLastCleaned(String lastCleaned) {
+        this.lastCleaned = lastCleaned;
     }
 
     public String getStatus() {

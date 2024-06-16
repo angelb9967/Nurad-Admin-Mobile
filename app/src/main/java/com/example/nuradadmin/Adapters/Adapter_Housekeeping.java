@@ -109,11 +109,28 @@ public class Adapter_Housekeeping extends RecyclerView.Adapter<Adapter_Housekeep
 
     private void updateAvailableRoomStatus(String roomName, String status) {
         DatabaseReference availableRef = FirebaseDatabase.getInstance().getReference("Available Rooms").child(roomName);
+
+        // Get the current date and time in Manila time zone
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"));
+        long currentMillis = System.currentTimeMillis(); // Current time in milliseconds
+
+        SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH);
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+        String currentDateTime = formatter.format(currentMillis);
+
         availableRef.child("status").setValue(status).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("Adapter_AvailableRooms", "Room status updated to " + status);
             } else {
                 Log.d("Adapter_AvailableRooms", "Failed to update room status " + status);
+            }
+        });
+
+        availableRef.child("lastCleaned").setValue(currentDateTime).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Adapter_AvailableRooms", "Room last cleaned time updated to " + currentDateTime);
+            } else {
+                Log.d("Adapter_AvailableRooms", "Failed to update room last cleaned time to " + currentDateTime);
             }
         });
     }

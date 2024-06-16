@@ -52,26 +52,24 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
     public void onBindViewHolder(@NonNull Adapter_AvailableRooms.MyViewHolder holder, int position) {
         Model_AvailableRooms availableRooms = availableRoomsList.get(position);
         holder.roomName.setText(availableRooms.getRoomName());
-        holder.lastDateUsed.setText(availableRooms.getLastDateUsed());
-        if(availableRooms.getLastTimeUsed().equalsIgnoreCase("Not used yet")){
-            holder.lastTimeUsed.setText("");
+        if(availableRooms.getLastDateTimeUsed().equalsIgnoreCase("Not used yet")){
             holder.indicator.setText("Not used");
         }else{
-            holder.lastTimeUsed.setText(availableRooms.getLastTimeUsed());
-            // Combine lastDateUsed and lastTimeUsed into a single datetime string
-            String lastDateTimeUsedStr = availableRooms.getLastDateUsed() + " " + availableRooms.getLastTimeUsed();
-            SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy h:mm a", Locale.ENGLISH); // Adjusted date format
+            holder.lastDateTimeUsed.setText(availableRooms.getLastDateTimeUsed());
+
+            String lastCleanedStr = availableRooms.getLastCleaned();
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH); // Adjusted date format
             sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
             try {
-                Date lastDateTimeUsed = sdf.parse(lastDateTimeUsedStr);
-                long lastUsed = lastDateTimeUsed.getTime();
+                Date lastCleaned = sdf.parse(lastCleanedStr);
+                long lastUsed = lastCleaned.getTime();
                 long now = System.currentTimeMillis();
 
                 CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(lastUsed, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
                 holder.indicator.setText(timeAgo);
             } catch (ParseException e) {
                 e.printStackTrace();
-                holder.indicator.setText("Unknown time");
+                holder.indicator.setText("");
             }
         }
 
@@ -145,14 +143,13 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView roomName, lastDateUsed, lastTimeUsed, indicator, status;
+        private TextView roomName, lastDateTimeUsed, indicator, status;
         private ImageView icon;
         private ImageButton optionMenu_Btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
-            lastDateUsed = itemView.findViewById(R.id.lastDateUsed);
-            lastTimeUsed = itemView.findViewById(R.id.lastTimeUsed);
+            lastDateTimeUsed = itemView.findViewById(R.id.lastDateTimeUsed);
             icon = itemView.findViewById(R.id.icon2);
             indicator = itemView.findViewById(R.id.indicator);
             status = itemView.findViewById(R.id.CleanStatus);

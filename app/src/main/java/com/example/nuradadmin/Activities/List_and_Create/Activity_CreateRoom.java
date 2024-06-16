@@ -360,7 +360,7 @@ public class Activity_CreateRoom extends AppCompatActivity {
     }
 
     private void saveToAvailableRooms(String roomName){
-        Model_AvailableRooms modelAvailableRooms = new Model_AvailableRooms(roomName, "Not used yet", "Not used yet", "Not cleaned yet");
+        Model_AvailableRooms modelAvailableRooms = new Model_AvailableRooms(roomName, "Not used yet", "Never Cleaned" , "Not cleaned yet");
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
 
         availableRooms_DBref.child(roomName).setValue(modelAvailableRooms)
@@ -385,8 +385,8 @@ public class Activity_CreateRoom extends AppCompatActivity {
                         // Save the new record with the new room name
                         Model_AvailableRooms newRoomDetails = new Model_AvailableRooms(
                                 new_roomName,
-                                oldRoomDetails.getLastDateUsed(),
-                                oldRoomDetails.getLastTimeUsed(),
+                                oldRoomDetails.getLastDateTimeUsed(),
+                                oldRoomDetails.getLastCleaned(),
                                 oldRoomDetails.getStatus()
                         );
 

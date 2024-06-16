@@ -65,7 +65,7 @@
                     android:id="@+id/icon1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/lastDateUsed"
+                    android:layout_alignBottom="@id/lastDateTimeUsed"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="2dp"
@@ -74,7 +74,7 @@
                     android:contentDescription="@string/ToDo" />
 
                 <TextView
-                    android:id="@+id/lastDateUsed"
+                    android:id="@+id/lastDateTimeUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="May 20, 2024"
@@ -82,17 +82,6 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="10dp"
                     android:layout_toEndOf="@id/icon1"
-                    />
-
-                <TextView
-                    android:id="@+id/lastTimeUsed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="11:00 AM"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:layout_alignBaseline="@+id/lastDateUsed"
-                    android:layout_toEndOf="@+id/lastDateUsed"
                     />
 
             </RelativeLayout>
@@ -112,7 +101,7 @@
                     android:id="@+id/icon2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="9dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/cross_small"
                     android:contentDescription="@string/ToDo" />
