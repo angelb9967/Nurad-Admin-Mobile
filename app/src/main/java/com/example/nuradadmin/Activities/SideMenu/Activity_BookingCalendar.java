@@ -93,6 +93,33 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
             updateSelectedNavItem(R.id.booking);
         }
 
+        Intent intent = getIntent();
+        String moveToFragment = intent.getStringExtra("Fragment");
+        if (moveToFragment != null) {
+            switch (moveToFragment) {
+                case "Available":
+                    title.setText("Available");
+                    replaceFragment(new Fragment_Available());
+                    updateSelectedNavItem(R.id.available);
+                    break;
+                case "In Use":
+                    title.setText("In Use");
+                    replaceFragment(new Fragment_InUse());
+                    updateSelectedNavItem(R.id.inUse);
+                    break;
+                case "Housekeeping":
+                    title.setText("Housekeeping");
+                    replaceFragment(new Fragment_Housekeeping());
+                    updateSelectedNavItem(R.id.housekeeping);
+                    break;
+                default:
+                    title.setText("Booking");
+                    replaceFragment(new Fragment_Booking());
+                    updateSelectedNavItem(R.id.booking);
+                    break;
+            }
+        }
+
         // Bottom Navigation
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             // Check which menu item is selected and replace the current fragment accordingly
