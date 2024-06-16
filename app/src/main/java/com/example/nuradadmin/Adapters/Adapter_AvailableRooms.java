@@ -1,7 +1,6 @@
 package com.example.nuradadmin.Adapters;
 
 import android.content.Context;
-import android.icu.text.LocaleDisplayNames;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Models.Model_AvailableRooms;
 import com.example.nuradadmin.Models.Model_Housekeeping;
-import com.example.nuradadmin.Models.Model_InUse;
 import com.example.nuradadmin.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

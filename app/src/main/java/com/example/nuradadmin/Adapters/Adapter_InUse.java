@@ -3,7 +3,6 @@ package com.example.nuradadmin.Adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.DataTruncation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
