@@ -63,7 +63,7 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
         title.setText("Booking");
 
         Intent intent = getIntent();
-        String moveToFragment = intent.getStringExtra("Fragment");
+        moveToFragment = intent.getStringExtra("Fragment");
         if (moveToFragment != null) {
             switch (moveToFragment) {
                 case "Available":

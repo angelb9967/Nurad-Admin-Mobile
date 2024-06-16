@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
+import com.example.nuradadmin.Models.Model_History;
 import com.example.nuradadmin.Models.Model_InUse;
 import com.example.nuradadmin.R;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.DataTruncation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,12 +39,16 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
     private List<Model_InUse> inUseList;
     private DatabaseReference bookings_DBref;
     private DatabaseReference contactInfo_DBref;
+    private DatabaseReference history_DBref;
+    private DatabaseReference inUse_DBref;
 
     public Adapter_InUse(Context context, List<Model_InUse> inUseList) {
         this.context = context;
         this.inUseList = inUseList;
         bookings_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         contactInfo_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
+        history_DBref = FirebaseDatabase.getInstance().getReference("History");
+        inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
     }
 
     @NonNull
@@ -65,6 +71,13 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         SimpleDateFormat formatter = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.getDefault());
         formatter.setTimeZone(TimeZone.getTimeZone("Asia/Manila")); // Assuming the original date is in Manila time
 
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH);
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Manila");
+        Calendar currentDateTime = Calendar.getInstance(timeZone);
+        currentDateTime.setTimeInMillis(System.currentTimeMillis());
+        dateTimeFormat.setTimeZone(timeZone);
+        String currentTimeStr = dateTimeFormat.format(currentDateTime.getTime());
+
         try {
             Date checkInDate = formatter.parse(actualCheckInDateTime);
             Log.d("Adapter_InUse", "Parsed check-in date: " + checkInDate);
@@ -78,13 +91,15 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
             long days = durationMillis / (1000 * 60 * 60 * 24);
             long hours = (durationMillis / (1000 * 60 * 60)) % 24;
             long minutes = (durationMillis / (1000 * 60)) % 60;
+            long seconds = (durationMillis / 1000) % 60; // Calculate seconds
 
             // Display the duration of stay
             String durationText = (days > 0 ? days + " days " : "") +
                     (hours > 0 ? hours + " hours " : "") +
-                    (minutes > 0 ? minutes + " minutes" : "");
-            holder.durationOfStay.setText(durationText);
-            Log.d("Adapter_InUse", "Duration of stay: " + durationText); // Ensure this line executes
+                    (minutes > 0 ? minutes + " minutes " : "") +
+                    (seconds > 0 ? seconds + " seconds" : "");
+            holder.durationOfStay.setText(durationText.trim());
+            Log.d("Adapter_InUse", "Duration of stay: " + durationText);
 
         } catch (ParseException e) {
             Log.e("Adapter_InUse", "Error parsing check-in date: " + e.getMessage());
@@ -96,15 +111,55 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
 
             popupMenu.show();
 
-//            popupMenu.setOnMenuItemClickListener(item -> {
-//                if (item.getItemId() == R.id.edit) {
-//                    Toast.makeText(context, "You clicked edit", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Log.e("Adapter_Booking", "Error! couldn't identify popup menu option.");
-//                    return false;
-//                }
-//                return true;
-//            });
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.checkOut) {
+
+                    updateBookingStatus(inUse.getBooking_id(), "Checked Out");
+
+                    // Save the Room to History
+                    String historyId = history_DBref.push().getKey();
+                    Model_History modelHistory = new Model_History(historyId, inUse.getBooking_id(), inUse.getRoomName(), (String) holder.durationOfStay.getText(), currentTimeStr, inUse.getActualCheckInDateTime());
+                    saveToHistory(historyId, modelHistory);
+
+                    // Remove the Room from the In Use Rooms once checked out.
+                    DatabaseReference nodeReference = inUse_DBref.child(inUse.getRoomName());
+                    nodeReference.removeValue().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d("Adapter_InUse", "Node deleted successfully.");
+                        } else {
+                            Log.e("Adapter_InUse", "Failed to delete node.");
+                        }
+                    });
+
+                } else if (item.getItemId() == R.id.requestCleaning) {
+
+                } else if (item.getItemId() == R.id.delete) {
+
+                } else {
+                    Log.e("Adapter_InUse", "Error! couldn't identify popup menu option.");
+                    return false;
+                }
+                return true;
+            });
+        });
+    }
+
+    private void saveToHistory(String history_id, Model_History modelHistory){
+        history_DBref.child(history_id).setValue(modelHistory)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateBookingStatus(String bookingId, String status) {
+        DatabaseReference bookingRef = FirebaseDatabase.getInstance().getReference("Booking").child(bookingId);
+        bookingRef.child("status").setValue(status).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(context, "Booking status updated to " + status, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Failed to update booking status", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

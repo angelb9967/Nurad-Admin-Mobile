@@ -130,7 +130,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 cancelBookingItem.setEnabled(true);
             }
 
-            if (booking.getStatus().equalsIgnoreCase("Cancelled")){
+            if (booking.getStatus().equalsIgnoreCase("Cancelled") || booking.getStatus().equalsIgnoreCase("Checked Out")){
                 checkInItem.setEnabled(false);
                 checkOutItem.setEnabled(false);
                 cancelBookingItem.setEnabled(false);
@@ -140,6 +140,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.checkIn) {
+
                     if (checkInItem.isEnabled()) {
                         booking.setStatus("Checked In");
                         updateBookingStatus(booking.getBooking_id(), "Checked In");
