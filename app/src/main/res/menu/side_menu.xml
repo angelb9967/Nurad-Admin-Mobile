@@ -10,6 +10,10 @@
             android:icon="@drawable/calendar_day"
             android:title="Booking Calendar"/>
 
+        <item android:id="@+id/housekeeping_menu"
+            android:icon="@drawable/broom"
+            android:title="Housekeeping"/>
+
         <item android:id="@+id/otherRevenue_menu"
             android:icon="@drawable/calculator_bill"
             android:title="Other Revenue &amp; Expenses"/>

@@ -258,26 +258,23 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
         if (id == R.id.dashboard_menu) {
             startActivity(new Intent(this, Activity_Dashboard.class));
             overridePendingTransition(0, 0);
-            Log.d(TAG, "Navigating to Dashboard");
         } else if (id == R.id.bookingCalendar_menu) {
             startActivity(new Intent(this, Activity_BookingCalendar.class));
             overridePendingTransition(0, 0);
-            Log.d(TAG, "Navigating to Booking Calendar");
+        } else if (id == R.id.housekeeping_menu) {
+            startActivity(new Intent(this, Activity_Housekeeping.class));
+            overridePendingTransition(0, 0);
         } else if (id == R.id.otherRevenue_menu) {
             drawerLayout.closeDrawer(GravityCompat.START);
-            Log.d(TAG, "Staying in Other Revenue");
         } else if (id == R.id.systemManagement_menu) {
             startActivity(new Intent(this, Activity_SystemManagement.class));
             overridePendingTransition(0, 0);
-            Log.d(TAG, "Navigating to System Management");
         } else if (id == R.id.statistics_menu) {
             startActivity(new Intent(this, Activity_Statistics.class));
             overridePendingTransition(0, 0);
-            Log.d(TAG, "Navigating to Statistics");
         } else if (id == R.id.language_menu) {
             startActivity(new Intent(this, Activity_Language.class));
             overridePendingTransition(0, 0);
-            Log.d(TAG, "Navigating to Language");
         } else if (id == R.id.logout_menu) {
             Log.d(TAG, "Logging out");
             // Logout

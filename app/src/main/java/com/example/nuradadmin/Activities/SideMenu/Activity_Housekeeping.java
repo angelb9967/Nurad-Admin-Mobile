@@ -1,11 +1,9 @@
 package com.example.nuradadmin.Activities.SideMenu;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,25 +17,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
-import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
-import com.example.nuradadmin.Activities.List_and_Create.Activity_Rooms;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.android.material.navigation.NavigationView;
 
-public class Activity_SystemManagement extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Activity_Housekeeping extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
-    private LinearLayout roomType, priceRules, rooms;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_system_management);
+        setContentView(R.layout.activity_housekeeping);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -50,13 +44,11 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         toolbar = findViewById(R.id.toolbarMenu);
         menu_icon = findViewById(R.id.menu_icon);
         title = findViewById(R.id.title);
-        roomType = findViewById(R.id.RoomTypes);
-        priceRules = findViewById(R.id.PriceRules);
-        rooms = findViewById(R.id.Rooms);
 
         setSupportActionBar(toolbar);
 
-        title.setText("System Management");
+        title.setText("Housekeeping");
+
         navigationView.setNavigationItemSelectedListener(this);
 
         menu_icon.setOnClickListener(View -> {
@@ -65,18 +57,6 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
             } else {
                 drawerLayout.openDrawer(navigationView);
             }
-        });
-
-        roomType.setOnClickListener(View -> {
-            goToActivity(Activity_RoomTypes.class);
-        });
-
-        priceRules.setOnClickListener(View -> {
-            goToActivity(Activity_PriceRules.class);
-        });
-
-        rooms.setOnClickListener(View -> {
-            goToActivity(Activity_Rooms.class);
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -92,12 +72,6 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    private void goToActivity(Class<? extends Activity> activityClass) {
-        Intent intent = new Intent(this, activityClass);
-        startActivity(intent);
-        finish();
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -110,16 +84,15 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
             startActivity(new Intent(this, Activity_BookingCalendar.class));
             overridePendingTransition(0, 0);
         } else if (id == R.id.housekeeping_menu) {
-            startActivity(new Intent(this, Activity_Housekeeping.class));
-            overridePendingTransition(0, 0);
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else if (id == R.id.otherRevenue_menu) {
             startActivity(new Intent(this, Activity_OtherRevenue.class));
             overridePendingTransition(0, 0);
         } else if (id == R.id.systemManagement_menu) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (id == R.id.statistics_menu) {
-            startActivity(new Intent(this, Activity_Statistics.class));
+            startActivity(new Intent(this, Activity_SystemManagement.class));
             overridePendingTransition(0, 0);
+        } else if (id == R.id.statistics_menu) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         }  else if (id == R.id.language_menu) {
             startActivity(new Intent(this, Activity_Language.class));
             overridePendingTransition(0, 0);

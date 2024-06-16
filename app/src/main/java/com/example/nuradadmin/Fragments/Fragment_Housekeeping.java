@@ -10,11 +10,6 @@ import android.view.ViewGroup;
 
 import com.example.nuradadmin.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_Housekeeping#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Fragment_Housekeeping extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

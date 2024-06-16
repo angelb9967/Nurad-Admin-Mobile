@@ -83,6 +83,9 @@ public class Activity_Language extends AppCompatActivity implements NavigationVi
         } else if (id == R.id.bookingCalendar_menu) {
             startActivity(new Intent(this, Activity_BookingCalendar.class));
             overridePendingTransition(0, 0);
+        } else if (id == R.id.housekeeping_menu) {
+            startActivity(new Intent(this, Activity_Housekeeping.class));
+            overridePendingTransition(0, 0);
         } else if (id == R.id.otherRevenue_menu) {
             startActivity(new Intent(this, Activity_OtherRevenue.class));
             overridePendingTransition(0, 0);
