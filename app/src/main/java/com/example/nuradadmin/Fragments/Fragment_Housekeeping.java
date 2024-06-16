@@ -71,7 +71,7 @@ public class Fragment_Housekeeping extends Fragment {
         adapter = new Adapter_Housekeeping(getContext(), modelHousekeepingList);
         recyclerView.setAdapter(adapter);
 
-        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("HouseKeeping");
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("Housekeeping");
 
         housekeeping_DBref.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")

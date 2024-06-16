@@ -38,6 +38,7 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
+    private String moveToFragment = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,9 +58,40 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
         menu_icon = findViewById(R.id.menu_icon);
         title = findViewById(R.id.title);
         setSupportActionBar(toolbar);
+
         // Set the initial fragment (default) to display when the activity is created
         title.setText("Booking");
-        replaceFragment(new Fragment_Booking());
+
+        Intent intent = getIntent();
+        String moveToFragment = intent.getStringExtra("Fragment");
+        if (moveToFragment != null) {
+            switch (moveToFragment) {
+                case "Available":
+                    title.setText("Available");
+                    replaceFragment(new Fragment_Available());
+                    updateSelectedNavItem(R.id.available);
+                    break;
+                case "In Use":
+                    title.setText("In Use");
+                    replaceFragment(new Fragment_InUse());
+                    updateSelectedNavItem(R.id.inUse);
+                    break;
+                case "Housekeeping":
+                    title.setText("Housekeeping");
+                    replaceFragment(new Fragment_Housekeeping());
+                    updateSelectedNavItem(R.id.housekeeping);
+                    break;
+                default:
+                    title.setText("Booking");
+                    replaceFragment(new Fragment_Booking());
+                    updateSelectedNavItem(R.id.booking);
+                    break;
+            }
+        } else {
+            title.setText("Booking");
+            replaceFragment(new Fragment_Booking());
+            updateSelectedNavItem(R.id.booking);
+        }
 
         // Bottom Navigation
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -73,9 +105,6 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
             } else if (item.getItemId() == R.id.inUse){
                 title.setText("In Use");
                 replaceFragment(new Fragment_InUse());
-            } else if (item.getItemId() == R.id.housekeeping){
-                title.setText("Housekeeping");
-                replaceFragment(new Fragment_Housekeeping());
             } else if (item.getItemId() == R.id.history){
                 title.setText("History");
                 replaceFragment(new Fragment_History());
@@ -145,5 +174,9 @@ public class Activity_BookingCalendar extends AppCompatActivity implements Navig
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void updateSelectedNavItem(int itemId) {
+        binding.bottomNavigationView.setSelectedItemId(itemId);
     }
 }

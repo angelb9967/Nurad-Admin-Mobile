@@ -11,12 +11,14 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoom;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.android.material.navigation.NavigationView;
@@ -31,9 +33,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Activity_Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private TextView title, todaysCheckedIn_TxtView, available_TxtView,
-            inUse_TxtView, housekeeping_TxtView;
+    private TextView title, todaysCheckedIn_TxtView, available_TxtView, inUse_TxtView, housekeeping_TxtView;
     private DatabaseReference checkInsPerDay_DBref, availableRooms_DBref, inUse_DBref, housekeeping_DBref;
+    private ConstraintLayout bookingCalendar, available, inUse, housekeeping;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageView menu_icon;
@@ -60,6 +62,10 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         available_TxtView = findViewById(R.id.available_TextView);
         inUse_TxtView = findViewById(R.id.inUse_TextView);
         housekeeping_TxtView = findViewById(R.id.housekeeping_TextView);
+        bookingCalendar = findViewById(R.id.moveToBookingCalendar);
+        available = findViewById(R.id.moveToAvailable);
+        inUse = findViewById(R.id.moveToInUse);
+        housekeeping = findViewById(R.id.moveToHousekeeping);
 
         setSupportActionBar(toolbar);
         title.setText("Dashboard");
@@ -96,6 +102,32 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         getDBCount(inUse_DBref, inUse_TxtView);
         getDBCount(housekeeping_DBref, housekeeping_TxtView);
         getTodayCheckInCount();
+
+        bookingCalendar.setOnClickListener(view ->{
+            Intent i = new Intent(this, Activity_BookingCalendar.class);
+            startActivity(i);
+            finish();
+        });
+
+        available.setOnClickListener(view ->{
+            Intent i = new Intent(this, Activity_BookingCalendar.class);
+            i.putExtra("Fragment", "Available");
+            startActivity(i);
+            finish();
+        });
+
+        inUse.setOnClickListener(view ->{
+            Intent i = new Intent(this, Activity_BookingCalendar.class);
+            i.putExtra("Fragment", "In Use");
+            startActivity(i);
+            finish();
+        });
+
+        housekeeping.setOnClickListener(view ->{
+            Intent i = new Intent(this, Activity_Housekeeping.class);
+            startActivity(i);
+            finish();
+        });
     }
 
     private void getDBCount(DatabaseReference database, TextView textview) {
