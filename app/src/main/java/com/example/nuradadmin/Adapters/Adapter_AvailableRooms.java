@@ -40,7 +40,7 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
     public Adapter_AvailableRooms(Context context, List<Model_AvailableRooms> availableRoomsList) {
         this.context = context;
         this.availableRoomsList = availableRoomsList;
-        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("HouseKeeping");
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("Housekeeping");
     }
 
     @NonNull

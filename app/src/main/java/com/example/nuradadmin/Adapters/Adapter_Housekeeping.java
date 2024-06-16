@@ -32,7 +32,7 @@ public class Adapter_Housekeeping extends RecyclerView.Adapter<Adapter_Housekeep
     public Adapter_Housekeeping(Context context, List<Model_Housekeeping> housekeepingList) {
         this.context = context;
         this.housekeepingList = housekeepingList;
-        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("HouseKeeping");
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("Housekeeping");
     }
 
     @NonNull

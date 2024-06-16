@@ -115,9 +115,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                 if (snapshot.exists()) {
                     Model_Booking booking = snapshot.getValue(Model_Booking.class);
                     if (booking != null) {
-                        // TODO Fetch the Total Price of the Booking
-
-                        //                        holder.booking_price.setText(String.valueOf(booking.getBookingPrice()));
+                        holder.booking_price.setText(String.valueOf(booking.getTotalValue()));
                         fetchContactInfo(booking.getContact_id(), holder);
                         holder.checkInDate.setText(booking.getCheckInDate());
                         holder.checkOutDate.setText(booking.getCheckOutDate());
