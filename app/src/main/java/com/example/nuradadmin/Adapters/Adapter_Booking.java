@@ -198,7 +198,6 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         deleteRecord(booking.getAddress_id(), "Address Information");
         deleteRecord(booking.getPayment_id(), "Payment Information");
 
-        // Optionally, you can remove the booking from the bookingList and notify the adapter
         bookingList.remove(booking);
         notifyDataSetChanged();
     }

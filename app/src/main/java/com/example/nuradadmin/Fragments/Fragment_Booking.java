@@ -88,20 +88,19 @@ public class Fragment_Booking extends Fragment {
         // Get the current date and time in Manila timezone
         TimeZone manilaTimeZone = TimeZone.getTimeZone("Asia/Manila");
         Calendar currentCalendar = Calendar.getInstance(manilaTimeZone);
+        calendarView.setDate(currentCalendar.getTimeInMillis(), false, true);
+
         int currentYear = currentCalendar.get(Calendar.YEAR);
         int currentMonth = currentCalendar.get(Calendar.MONTH); // Calendar.MONTH is zero-based
         int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
 
-        // Set the Calendar instance with current year, month, and day
-        Calendar defaultSelectedDate = Calendar.getInstance(manilaTimeZone);
-        defaultSelectedDate.set(currentYear, currentMonth, currentDay);
-        defaultSelectedDate.add(Calendar.DAY_OF_MONTH, 0);
-
-        // Convert Calendar to milliseconds
-        long adjustedTimeMillis = defaultSelectedDate.getTimeInMillis();
-
-        // Set the default selected date on the CalendarView
-        calendarView.setDate(adjustedTimeMillis, false, true);
+        Log.d("Fragment_Booking", "currentCalendar.getTimeInMillis:  " + currentCalendar.getTimeInMillis());
+        Log.d("Fragment_Booking", "Current Calendar (Manila): " +
+                currentCalendar.get(Calendar.YEAR) + "-" +
+                (currentCalendar.get(Calendar.MONTH) + 1) + "-" +
+                currentCalendar.get(Calendar.DAY_OF_MONTH) + " " +
+                currentCalendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                currentCalendar.get(Calendar.MINUTE));
 
         // Format the current date [TextView label on top of the Recycler View]
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM", Locale.getDefault());
