@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Models.Model_Housekeeping;
 import com.example.nuradadmin.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,10 +28,11 @@ import java.util.TimeZone;
 public class Adapter_Housekeeping extends RecyclerView.Adapter<Adapter_Housekeeping.MyViewHolder>{
     private Context context;
     private List<Model_Housekeeping> housekeepingList;
-
+    private DatabaseReference housekeeping_DBref;
     public Adapter_Housekeeping(Context context, List<Model_Housekeeping> housekeepingList) {
         this.context = context;
         this.housekeepingList = housekeepingList;
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("HouseKeeping");
     }
 
     @NonNull
@@ -61,16 +65,57 @@ public class Adapter_Housekeeping extends RecyclerView.Adapter<Adapter_Housekeep
             long days = durationMillis / (1000 * 60 * 60 * 24);
             long hours = (durationMillis / (1000 * 60 * 60)) % 24;
             long minutes = (durationMillis / (1000 * 60)) % 60;
+            long seconds = (durationMillis / 1000) % 60;
 
             // Display the duration of stay
             String durationText = (days > 0 ? days + " days " : "") +
                     (hours > 0 ? hours + " hours " : "") +
-                    (minutes > 0 ? minutes + " minutes" : "");
-            holder.requestTime.setText(durationText + " ago");
+                    (minutes > 0 ? minutes + " minutes " : "") +
+                    (days == 0 && hours == 0 && minutes == 0 && seconds > 0 ? seconds + " seconds " : "");
+            holder.requestTime.setText(durationText + "ago");
 
         } catch (ParseException e) {
             Log.e("Adapter_Housekeeping", "Error parsing request date: " + e.getMessage());
         }
+
+        holder.optionMenu_Btn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_menu_housekeeping, popupMenu.getMenu());
+
+            popupMenu.show();
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.cleaned) {
+                    housekeeping.setStatus("Cleaned");
+                    updateAvailableRoomStatus(housekeeping.getRoomName(), "Cleaned");
+
+                    // Remove the Request from the Housekeeping if done cleaning.
+                    DatabaseReference nodeReference = housekeeping_DBref.child(housekeeping.getRoomName());
+                    nodeReference.removeValue().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d("Adapter_Housekeeping", "Node deleted successfully.");
+                        } else {
+                            Log.e("Adapter_Housekeeping", "Failed to delete node.");
+                        }
+                    });
+                } else {
+                    Log.e("Adapter_Housekeeping", "Error! couldn't identify popup menu option.");
+                    return false;
+                }
+                return true;
+            });
+        });
+    }
+
+    private void updateAvailableRoomStatus(String roomName, String status) {
+        DatabaseReference availableRef = FirebaseDatabase.getInstance().getReference("Available Rooms").child(roomName);
+        availableRef.child("status").setValue(status).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Adapter_AvailableRooms", "Room status updated to " + status);
+            } else {
+                Log.d("Adapter_AvailableRooms", "Failed to update room status " + status);
+            }
+        });
     }
 
     @Override
