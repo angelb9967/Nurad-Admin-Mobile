@@ -1,9 +1,12 @@
 package com.example.nuradadmin.Activities.SideMenu;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,9 +21,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nuradadmin.Activities.List_and_Create.Activity_CreateRoom;
+import com.example.nuradadmin.Adapters.CustomArrayAdapter;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -40,6 +50,11 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
     private NavigationView navigationView;
     private ImageView menu_icon;
     private Toolbar toolbar;
+    private BarChart barChart;
+    private Spinner filter_spinner;
+    private ArrayList<String> filter_list;
+    private ArrayAdapter filter_adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +81,15 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         available = findViewById(R.id.moveToAvailable);
         inUse = findViewById(R.id.moveToInUse);
         housekeeping = findViewById(R.id.moveToHousekeeping);
+        barChart = findViewById(R.id.barChart);
+        filter_spinner = findViewById(R.id.spinner);
 
         setSupportActionBar(toolbar);
         title.setText("Dashboard");
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        menu_icon.setOnClickListener(View -> {
+        menu_icon.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(navigationView)) {
                 drawerLayout.closeDrawer(navigationView);
             } else {
@@ -103,31 +120,67 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         getDBCount(housekeeping_DBref, housekeeping_TxtView);
         getTodayCheckInCount();
 
-        bookingCalendar.setOnClickListener(view ->{
+        bookingCalendar.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_BookingCalendar.class);
             startActivity(i);
             finish();
         });
 
-        available.setOnClickListener(view ->{
+        available.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_BookingCalendar.class);
             i.putExtra("Fragment", "Available");
             startActivity(i);
             finish();
         });
 
-        inUse.setOnClickListener(view ->{
+        inUse.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_BookingCalendar.class);
             i.putExtra("Fragment", "In Use");
             startActivity(i);
             finish();
         });
 
-        housekeeping.setOnClickListener(view ->{
+        housekeeping.setOnClickListener(view -> {
             Intent i = new Intent(this, Activity_Housekeeping.class);
             startActivity(i);
             finish();
         });
+
+        setupSpinner();
+        setupStatisticsForCheckins();
+    }
+
+    private void setupSpinner() {
+        String[] value = {"Week", "Month", "Year"};
+        filter_list = new ArrayList<>(Arrays.asList(value));
+        filter_adapter = new ArrayAdapter(this, R.layout.style_spinner_smaller, filter_list);
+        filter_spinner.setAdapter(filter_adapter);
+
+        filter_adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        filter_spinner.setAdapter(filter_adapter);
+    }
+
+    private void setupStatisticsForCheckins() {
+        ArrayList<BarEntry> revenue = new ArrayList<>();
+        revenue.add(new BarEntry(2014, 420));
+        revenue.add(new BarEntry(2015, 980));
+        revenue.add(new BarEntry(2016, 560));
+        revenue.add(new BarEntry(2017, 347));
+        revenue.add(new BarEntry(2018, 420));
+        revenue.add(new BarEntry(2019, 684));
+        revenue.add(new BarEntry(2020, 842));
+
+        BarDataSet barDataSet = new BarDataSet(revenue, "Guests");
+        barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+
+        BarData barData = new BarData(barDataSet);
+
+        barChart.setFitBars(true);
+        barChart.setData(barData);
+        barChart.getDescription().setText("Bookings");
+        barChart.animateY(2000);
     }
 
     private void getDBCount(DatabaseReference database, TextView textview) {
@@ -191,7 +244,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         } else if (id == R.id.statistics_menu) {
             startActivity(new Intent(this, Activity_Statistics.class));
             overridePendingTransition(0, 0);
-        }  else if (id == R.id.language_menu) {
+        } else if (id == R.id.language_menu) {
             startActivity(new Intent(this, Activity_Language.class));
             overridePendingTransition(0, 0);
         } else if (id == R.id.logout_menu) {

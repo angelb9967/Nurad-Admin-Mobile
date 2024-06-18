@@ -57,4 +57,5 @@ dependencies {
 
     implementation ("androidx.recyclerview:recyclerview:1.3.2")
     implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
