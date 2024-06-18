@@ -3,7 +3,10 @@ package com.example.nuradadmin.Activities.SideMenu;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -21,13 +24,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nuradadmin.Adapters.CustomArrayAdapter;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -39,8 +42,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Activity_Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private TextView title, todaysCheckedIn_TxtView, available_TxtView, inUse_TxtView, housekeeping_TxtView;
@@ -147,41 +154,167 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         });
 
         setupSpinner();
-        setupStatisticsForCheckins();
     }
 
     private void setupSpinner() {
-        String[] value = {"Week", "Month", "Year"};
+        String[] value = {"Day", "Month", "Year"};
         filter_list = new ArrayList<>(Arrays.asList(value));
         filter_adapter = new ArrayAdapter(this, R.layout.style_spinner_smaller, filter_list);
         filter_spinner.setAdapter(filter_adapter);
 
         filter_adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         filter_spinner.setAdapter(filter_adapter);
+
+        // Set listener to handle spinner item selection
+        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = filter_list.get(position);
+                switch (selectedItem) {
+                    case "Day":
+                        // Show data for last 7 days
+                        setupDailyStatistics();
+                        break;
+                    case "Month":
+                        // Show data for current month
+//                        setupMonthlyStatistics();
+                        break;
+                    case "Year":
+                        // Show data for current year
+//                        setupYearlyStatistics();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Handle no selection if needed
+            }
+        });
     }
 
-    private void setupStatisticsForCheckins() {
-        ArrayList<BarEntry> revenue = new ArrayList<>();
-        revenue.add(new BarEntry(2014, 420));
-        revenue.add(new BarEntry(2015, 980));
-        revenue.add(new BarEntry(2016, 560));
-        revenue.add(new BarEntry(2017, 347));
-        revenue.add(new BarEntry(2018, 420));
-        revenue.add(new BarEntry(2019, 684));
-        revenue.add(new BarEntry(2020, 842));
+    private void setupDailyStatistics() {
+        // Fetch data for the last 7 days
+        ArrayList<BarEntry> entries = new ArrayList<>();
 
-        BarDataSet barDataSet = new BarDataSet(revenue, "Guests");
-        barDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        barDataSet.setValueTextColor(Color.BLACK);
-        barDataSet.setValueTextSize(16f);
+        Calendar cal = Calendar.getInstance();
+        for (int i = 6; i >= 0; i--) {
+            Date date = cal.getTime();
+            String formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+            DatabaseReference dailyRef = checkInsPerDay_DBref.child(formattedDate).child("count");
 
-        BarData barData = new BarData(barDataSet);
+            final int finalI = i;
+            dailyRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    long count = 0;
+                    if (snapshot.exists()) {
+                        count = snapshot.getValue(Long.class);
+                    }
+                    entries.add(new BarEntry(finalI, count));
 
-        barChart.setFitBars(true);
-        barChart.setData(barData);
-        barChart.getDescription().setText("Bookings");
-        barChart.animateY(2000);
+                    // Ensure we don't access an index that exceeds the list's size
+                    if (finalI <= entries.size() - 1) {
+                        updateChart(entries);
+                    } else {
+                        // Handle the case where finalI is larger than the list size
+                        // This could involve waiting for more data to be added or adjusting the logic
+                        Log.w("DEBUG", "Attempted to access index " + finalI + " but entries list has size " + entries.size());
+                    }
+
+                    // Debugging line to log the current state
+                    Log.d("DEBUG", "Accessed index: " + finalI + ", Entries size: " + entries.size());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    entries.add(new BarEntry(finalI, 0));
+                    Log.e("Firebase", "Error fetching data for index: " + finalI, error.toException());
+
+                    if (finalI == 0) { // Last entry fetched
+                        updateChart(entries);
+                    }
+                }
+            });
+
+            cal.add(Calendar.DATE, -1); // Move to previous day
+        }
     }
+
+    private void updateChart(ArrayList<BarEntry> entries) {
+        // Ensure entries are not null and not empty before updating the chart
+        if (entries != null && !entries.isEmpty()) {
+            BarDataSet dataSet = new BarDataSet(entries, "Data");
+            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            dataSet.setValueTextColor(Color.BLACK);
+            dataSet.setValueTextSize(12f);
+
+            BarData data = new BarData(dataSet);
+            barChart.setData(data);
+
+            // Notify and refresh chart
+            barChart.notifyDataSetChanged();
+            barChart.invalidate();
+        } else {
+            // Handle case where entries list is empty or null
+            barChart.clear(); // Optionally clear existing data
+            barChart.invalidate(); // Refresh chart
+        }
+    }
+
+
+
+//    private void setupYearlyStatistics() {
+//        ArrayList<BarEntry> entries = new ArrayList<>();
+//
+//        Calendar cal = Calendar.getInstance();
+//        cal.set(Calendar.MONTH, Calendar.JANUARY); // Set to the first month of the year
+//
+//        for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
+//            cal.set(Calendar.MONTH, i);
+//            Date startDate = cal.getTime();
+//            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // Set to last day of the month
+//            Date endDate = cal.getTime();
+//
+//            // Example path assuming monthly data is stored under a "MonthlyCounts" node
+//            DatabaseReference monthlyRef = FirebaseDatabase.getInstance()
+//                    .getReference("MonthlyCounts")
+//                    .child(new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(startDate));
+//
+//            final int finalI = i;
+//            monthlyRef.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    long totalCount = 0;
+//                    for (DataSnapshot monthSnapshot : snapshot.getChildren()) {
+//                        long count = monthSnapshot.getValue(Long.class);
+//                        totalCount += count;
+//                    }
+//
+//                    // Add entry only if data is available
+//                    entries.add(new BarEntry(finalI, totalCount));
+//
+//                    // Update chart if all entries are fetched
+//                    if (finalI == Calendar.DECEMBER) {
+//                        updateChart(entries);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//                    // Handle onCancelled event
+//                    entries.add(new BarEntry(finalI, 0));
+//
+//                    // Update chart if all entries are fetched
+//                    if (finalI == Calendar.DECEMBER) {
+//                        updateChart(entries);
+//                    }
+//                }
+//            });
+//
+//            cal.add(Calendar.MONTH, 1); // Move to the next month
+//        }
+//    }
 
     private void getDBCount(DatabaseReference database, TextView textview) {
         database.addValueEventListener(new ValueEventListener() {
