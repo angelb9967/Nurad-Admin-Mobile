@@ -117,6 +117,18 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
                 showDeleteItemDialog(this);
             }
         });
+
+        // show or hide floating button while scrolling
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && floatingBtn.isShown()) {
+                    floatingBtn.hide();
+                } else if (dy < 0 && !floatingBtn.isShown()) {
+                    floatingBtn.show();
+                }
+            }
+        });
     }
 
     private void fetchRoomsFromDatabase(String... referencePaths) {
@@ -184,6 +196,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
                 toolbar_normal.setVisibility(View.VISIBLE);
                 adapter.clearSelectedItems();
                 adapter.notifyDataSetChanged();
+                floatingBtn.show();
             }
         });
 
