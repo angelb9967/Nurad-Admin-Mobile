@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -157,6 +158,22 @@ public class Fragment_Booking extends Fragment {
             filterBookingsByDate(year, month + 1, dayOfMonth);
             Log.d("Fragment_Booking", "year/month+1/dayOfMonth:" + year + " " + month + " " + dayOfMonth);
         });
+
+
+        // Register the NestedScrollView from your layout
+        NestedScrollView nestedScrollView = view.findViewById(R.id.nestedScrollView);
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY > oldScrollY) {
+                    floatingBtn.hide();
+                } else {
+                    floatingBtn.show();
+                }
+            }
+        });
+
+
         filterBookingsByDate(currentYear, currentMonth + 1, currentDay);
         return view;
     }
