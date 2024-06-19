@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +41,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -48,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class Activity_Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private TextView title, todaysCheckedIn_TxtView, available_TxtView, inUse_TxtView, housekeeping_TxtView;
@@ -195,14 +200,22 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
 
     private void setupDailyStatistics() {
         // Fetch data for the last 7 days
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        SparseArray<BarEntry> tempEntries = new SparseArray<>();
 
+        // Get the current date and time in the Asia/Manila time zone
         Calendar cal = Calendar.getInstance();
-        for (int i = 6; i >= 0; i--) {
-            Date date = cal.getTime();
-            String formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
-            DatabaseReference dailyRef = checkInsPerDay_DBref.child(formattedDate).child("count");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("dd", Locale.getDefault());
 
+        // Set the time zone to Asia/Manila
+        cal.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
+
+        for (int i = 0; i <= 6; i++) {
+            // Format the date
+            String formattedDate = dateFormatter.format(cal.getTime());
+            int currentDay = Integer.parseInt(dayFormatter.format(cal.getTime())); // Get the current day as an int
+
+            DatabaseReference dailyRef = checkInsPerDay_DBref.child(formattedDate).child("count");
             final int finalI = i;
             dailyRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -211,33 +224,38 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                     if (snapshot.exists()) {
                         count = snapshot.getValue(Long.class);
                     }
-                    entries.add(new BarEntry(finalI, count));
+                    tempEntries.put(finalI, new BarEntry(currentDay, count));
 
-                    // Ensure we don't access an index that exceeds the list's size
-                    if (finalI <= entries.size() - 1) {
+                    // Ensure all entries are fetched before updating the chart
+                    if (tempEntries.size() == 7) {
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int j = 0; j <= 6; j++) {
+                            entries.add(tempEntries.get(j));
+                        }
                         updateChart(entries);
-                    } else {
-                        // Handle the case where finalI is larger than the list size
-                        // This could involve waiting for more data to be added or adjusting the logic
-                        Log.w("DEBUG", "Attempted to access index " + finalI + " but entries list has size " + entries.size());
                     }
 
-                    // Debugging line to log the current state
-                    Log.d("DEBUG", "Accessed index: " + finalI + ", Entries size: " + entries.size());
+                    // Log the x and y values of the BarEntry
+                    Log.d("DEBUG", "BarEntry added: x = " + currentDay + ", y = " + count);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    entries.add(new BarEntry(finalI, 0));
+                    tempEntries.put(finalI, new BarEntry(currentDay, 0));
                     Log.e("Firebase", "Error fetching data for index: " + finalI, error.toException());
 
-                    if (finalI == 0) { // Last entry fetched
+                    if (tempEntries.size() == 7) { // Last entry fetched
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int j = 0; j <= 6; j++) {
+                            entries.add(tempEntries.get(j));
+                        }
                         updateChart(entries);
                     }
                 }
             });
 
-            cal.add(Calendar.DATE, -1); // Move to previous day
+            // Move to previous day
+            cal.add(Calendar.DATE, -1);
         }
     }
 
@@ -250,19 +268,24 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             dataSet.setValueTextSize(12f);
 
             BarData data = new BarData(dataSet);
+            barChart.getDescription().setText("No. of Check-ins");
             barChart.setData(data);
+
+            // Log each entry in the chart
+            for (BarEntry entry : entries) {
+                Log.d("DEBUG", "Chart Entry: x = " + entry.getX() + ", y = " + entry.getY());
+            }
 
             // Notify and refresh chart
             barChart.notifyDataSetChanged();
             barChart.invalidate();
         } else {
             // Handle case where entries list is empty or null
+            Log.w("DEBUG", "No data to display in chart.");
             barChart.clear(); // Optionally clear existing data
             barChart.invalidate(); // Refresh chart
         }
     }
-
-
 
 //    private void setupYearlyStatistics() {
 //        ArrayList<BarEntry> entries = new ArrayList<>();
