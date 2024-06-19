@@ -206,6 +206,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
     }
 
     private void setupDailyStatistics() {
+        barChart.clear();
         // Fetch data for the last 7 days
         SparseArray<BarEntry> tempEntries = new SparseArray<>();
 
@@ -273,6 +274,14 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             dataSet.setValueTextColor(Color.BLACK);
             dataSet.setValueTextSize(12f);
+
+            // Set value formatter to display integer values
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value); // Convert float to int for display
+                }
+            });
 
             BarData data = new BarData(dataSet);
             barChart.getDescription().setText("No. of Check-ins");
