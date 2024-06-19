@@ -32,6 +32,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -465,12 +466,30 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             dataSet.setValueTextColor(Color.BLACK);
             dataSet.setValueTextSize(12f);
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value); // Convert float to int for display
+                }
+            });
 
             BarData data = new BarData(dataSet);
             barChart.getDescription().setText("Number of Check-ins per Year");
             barChart.setData(data);
 
-            // Set custom formatter for x-axis
+            // Set custom formatter for y-axis (integer values)
+            ValueFormatter yAxisFormatter = new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value); // Convert float to int for display
+                }
+            };
+
+            // Apply custom formatter to y-axis
+            barChart.getAxisLeft().setValueFormatter(yAxisFormatter);
+            barChart.getAxisRight().setValueFormatter(yAxisFormatter);
+
+            // Set custom formatter for x-axis (year labels)
             IndexAxisValueFormatter xAxisFormatter = new IndexAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value) {
