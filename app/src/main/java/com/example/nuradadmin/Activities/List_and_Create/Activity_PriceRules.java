@@ -134,6 +134,18 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
             startActivity(i);
             finish();
         });
+
+        // show or hide floating button while scrolling
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && floatingBtn.isShown()) {
+                    floatingBtn.hide();
+                } else if (dy < 0 && !floatingBtn.isShown()) {
+                    floatingBtn.show();
+                }
+            }
+        });
     }
 
     @Override
@@ -229,6 +241,7 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
                 toolbar_normal.setVisibility(View.VISIBLE);
                 adapter.clearSelectedItems();
                 adapter.notifyDataSetChanged();
+                floatingBtn.show();
             }
         });
 

@@ -52,7 +52,7 @@ public class Adapter_PriceRule extends RecyclerView.Adapter<Adapter_PriceRule.My
         Model_PriceRule modelPriceRule = modelPriceRulesList.get(position);
         holder.priceRule.setText(modelPriceRule.getRuleName());
 
-        holder.checkbox.setOnCheckedChangeListener(null); // Clear previous listener
+        holder.checkbox.setOnCheckedChangeListener(null);
 
         if (Activity_PriceRules.isContextualModeEnabled && selectedItems.contains(position)) {
             holder.checkbox.setChecked(true);

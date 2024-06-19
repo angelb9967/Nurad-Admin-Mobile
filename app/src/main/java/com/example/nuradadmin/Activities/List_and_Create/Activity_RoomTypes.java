@@ -136,7 +136,7 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
             finish();
         });
 
-        // show or hide button while scrolling
+        // show or hide floating button while scrolling
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -242,6 +242,7 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
                 toolbar_normal.setVisibility(View.VISIBLE);
                 adapter.clearSelectedItems();
                 adapter.notifyDataSetChanged();
+                floatingBtn.show();
             }
         });
 

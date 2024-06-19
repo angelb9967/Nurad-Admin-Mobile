@@ -63,6 +63,8 @@
                     android:layout_marginTop="2dp"
                     android:layout_weight="1"
                     android:text="200"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="#545454"
                     android:textSize="17sp" />
 
@@ -80,6 +82,8 @@
                     android:layout_marginTop="2dp"
                     android:layout_weight="1"
                     android:text="Rent by Day"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="#545454"
                     android:textSize="17sp" />
 
