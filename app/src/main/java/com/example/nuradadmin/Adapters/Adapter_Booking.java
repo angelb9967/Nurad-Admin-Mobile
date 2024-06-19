@@ -258,7 +258,6 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         });
     }
 
-
     private void fetchContactInfo(String contactID, Adapter_Booking.MyViewHolder holder) {
         contactInfo_DBref.child(contactID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

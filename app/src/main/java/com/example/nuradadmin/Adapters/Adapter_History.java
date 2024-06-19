@@ -3,8 +3,11 @@ package com.example.nuradadmin.Adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,7 +47,12 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
         holder.roomName.setText(history.getRoomName());
         fetchBooking(history.getBooking_id(), holder);
 
+        holder.optionMenu_Btn.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            popupMenu.getMenuInflater().inflate(R.menu.pop_menu_history, popupMenu.getMenu());
 
+            popupMenu.show();
+        });
     }
 
     private void fetchBooking(String bookingID, Adapter_History.MyViewHolder holder) {
@@ -78,11 +86,13 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView roomName, stay, revenue;
+        private ImageButton optionMenu_Btn;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             roomName = itemView.findViewById(R.id.roomName);
             stay = itemView.findViewById(R.id.stay);
             revenue = itemView.findViewById(R.id.totalPrice);
+            optionMenu_Btn = itemView.findViewById(R.id.menubtn);
         }
     }
 }
