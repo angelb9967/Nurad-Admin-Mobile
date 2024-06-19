@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -133,6 +134,18 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
             Intent i = new Intent(this, Activity_CreateRoomType.class);
             startActivity(i);
             finish();
+        });
+
+        // show or hide button while scrolling
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && floatingBtn.isShown()) {
+                    floatingBtn.hide();
+                } else if (dy < 0 && !floatingBtn.isShown()) {
+                    floatingBtn.show();
+                }
+            }
         });
     }
 

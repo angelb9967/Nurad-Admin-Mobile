@@ -159,8 +159,6 @@ public class Fragment_Booking extends Fragment {
             Log.d("Fragment_Booking", "year/month+1/dayOfMonth:" + year + " " + month + " " + dayOfMonth);
         });
 
-
-        // Register the NestedScrollView from your layout
         NestedScrollView nestedScrollView = view.findViewById(R.id.nestedScrollView);
         nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -172,7 +170,6 @@ public class Fragment_Booking extends Fragment {
                 }
             }
         });
-
 
         filterBookingsByDate(currentYear, currentMonth + 1, currentDay);
         return view;
