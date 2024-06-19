@@ -28,6 +28,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -309,8 +310,8 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             cal.set(Calendar.DAY_OF_MONTH, numberOfDaysInMonth); // Set to last day of the month
 
             // Format the date for the first and last day of the month
-            String firstDayOfMonth = String.format("%d-%02d-%02d", currentYear, month + 1, 1);
-            String lastDayOfMonth = String.format("%d-%02d-%02d", currentYear, month + 1, numberOfDaysInMonth);
+            String firstDayOfMonth = String.format(Locale.getDefault(), "%d-%02d-%02d", currentYear, month + 1, 1);
+            String lastDayOfMonth = String.format(Locale.getDefault(), "%d-%02d-%02d", currentYear, month + 1, numberOfDaysInMonth);
 
             // Query the database
             Query monthlyQuery = checkInsPerDay_DBref
@@ -318,7 +319,8 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                     .startAt(firstDayOfMonth)
                     .endAt(lastDayOfMonth);
 
-            final int finalMonth = month + 1; // Months are 0-based in Calendar class, so add 1
+            final int finalMonth = month; // Months are 0-based in Calendar class
+
             monthlyQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -329,30 +331,33 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                         totalCheckIns += count;
                     }
 
+                    // Store the data in tempEntries array
                     tempEntries.put(finalMonth, new BarEntry(finalMonth, totalCheckIns));
 
                     // Ensure all entries are fetched before updating the chart
                     if (tempEntries.size() == 12) {
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
-                            entries.add(tempEntries.get(i + 1)); // Retrieve entries for months 1 to 12
+                            entries.add(tempEntries.get(i)); // Retrieve entries for months 0 to 11
                         }
                         updateMonthlyChart(entries);
                     }
 
                     // Log the x and y values of the BarEntry
-                    Log.d("DEBUG", "BarEntry added: x = " + finalMonth + ", y = " + totalCheckIns);
+                    Log.d("DEBUG", "Monthly BarEntry added: x = " + finalMonth + ", y = " + totalCheckIns);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    tempEntries.put(finalMonth, new BarEntry(finalMonth, 0));
+                    // Handle database error if necessary
                     Log.e("Firebase", "Error fetching data for month: " + finalMonth, error.toException());
+                    tempEntries.put(finalMonth, new BarEntry(finalMonth, 0));
 
-                    if (tempEntries.size() == 12) { // Last month fetched
+                    // Check if all months' data are fetched even on error
+                    if (tempEntries.size() == 12) {
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
-                            entries.add(tempEntries.get(i + 1)); // Retrieve entries for months 1 to 12
+                            entries.add(tempEntries.get(i)); // Retrieve entries for months 0 to 11
                         }
                         updateMonthlyChart(entries);
                     }
@@ -362,6 +367,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
     }
 
 
+
     private void updateMonthlyChart(ArrayList<BarEntry> entries) {
         // Ensure entries are not null and not empty before updating the chart
         if (entries != null && !entries.isEmpty()) {
@@ -369,14 +375,38 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             dataSet.setValueTextColor(Color.BLACK);
             dataSet.setValueTextSize(12f);
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value); // Convert float to int for display
+                }
+            });
 
             BarData data = new BarData(dataSet);
             barChart.getDescription().setText("Number of Check-ins per Month");
             barChart.setData(data);
 
-            // Log each entry in the chart
+            // Custom formatter for x-axis (months)
+            final String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+            IndexAxisValueFormatter xAxisFormatter = new IndexAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    int index = (int) value;
+                    if (index >= 0 && index < months.length) {
+                        return months[index];
+                    } else {
+                        return "";
+                    }
+                }
+            };
+
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setValueFormatter(xAxisFormatter); // Apply formatter to x-axis
+            xAxis.setGranularity(1f); // Ensure correct spacing between bars
+
+            // Log each entry in the chart (for debugging purposes)
             for (BarEntry entry : entries) {
-                Log.d("DEBUG", "Chart Entry: x = " + entry.getX() + ", y = " + entry.getY());
+                Log.d("DEBUG", "Monthly Chart Entry: x = " + entry.getX() + ", y = " + entry.getY());
             }
 
             // Notify and refresh chart
@@ -389,6 +419,8 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             barChart.invalidate(); // Refresh chart
         }
     }
+
+
 
     private void setupYearlyStatistics() {
         // Fetch data for each of the last 5 years
