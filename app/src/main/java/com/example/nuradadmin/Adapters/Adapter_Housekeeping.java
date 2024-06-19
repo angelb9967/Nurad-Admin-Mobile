@@ -86,8 +86,11 @@ public class Adapter_Housekeeping extends RecyclerView.Adapter<Adapter_Housekeep
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.cleaned) {
-                    housekeeping.setStatus("Cleaned");
-                    updateAvailableRoomStatus(housekeeping.getRoomName(), "Cleaned");
+                    String status = (String) holder.roomStatus.getText();
+                    if(!status.equalsIgnoreCase("Occupied")){
+                        housekeeping.setStatus("Cleaned");
+                        updateAvailableRoomStatus(housekeeping.getRoomName(), "Cleaned");
+                    }
 
                     // Remove the Request from the Housekeeping if done cleaning.
                     DatabaseReference nodeReference = housekeeping_DBref.child(housekeeping.getRoomName());

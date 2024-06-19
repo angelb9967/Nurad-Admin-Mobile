@@ -91,7 +91,6 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
         holder.optionMenu_Btn.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, v);
             popupMenu.getMenuInflater().inflate(R.menu.pop_menu_available, popupMenu.getMenu());
-
             popupMenu.show();
 
             popupMenu.setOnMenuItemClickListener(item -> {

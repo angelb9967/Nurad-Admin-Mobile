@@ -18,6 +18,7 @@ import com.example.nuradadmin.Models.Model_AvailableRooms;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
 import com.example.nuradadmin.Models.Model_History;
+import com.example.nuradadmin.Models.Model_Housekeeping;
 import com.example.nuradadmin.Models.Model_InUse;
 import com.example.nuradadmin.R;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
     private DatabaseReference history_DBref;
     private DatabaseReference inUse_DBref;
     private DatabaseReference availableRooms_DBref;
+    private DatabaseReference housekeeping_DBref;
 
     public Adapter_InUse(Context context, List<Model_InUse> inUseList) {
         this.context = context;
@@ -51,6 +53,7 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         history_DBref = FirebaseDatabase.getInstance().getReference("History");
         inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
+        housekeeping_DBref = FirebaseDatabase.getInstance().getReference("Housekeeping");
     }
 
     @NonNull
@@ -110,12 +113,10 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
         holder.optionMenu_Btn.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, v);
             popupMenu.getMenuInflater().inflate(R.menu.pop_menu_inuse, popupMenu.getMenu());
-
             popupMenu.show();
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.checkOut) {
-
                     updateBookingStatus(inUse.getBooking_id(), "Checked Out");
 
                     // Save the Room to History
@@ -136,7 +137,9 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                     // Save to Available Rooms
                     saveToAvailableRooms(inUse.getRoomName(), currentTimeStr);
                 } else if (item.getItemId() == R.id.requestCleaning) {
-
+                    // Save Request to Housekeeping
+                    Model_Housekeeping modelHousekeeping = new Model_Housekeeping(inUse.getRoomName(), currentTimeStr, "Occupied");
+                    saveToHousekeeping(inUse.getRoomName(), modelHousekeeping);
                 } else if (item.getItemId() == R.id.delete) {
 
                 } else {
@@ -146,6 +149,14 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                 return true;
             });
         });
+    }
+
+    private void saveToHousekeeping(String roomName, Model_Housekeeping model_housekeeping){
+        housekeeping_DBref.child(roomName).setValue(model_housekeeping)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void saveToAvailableRooms(String roomName, String currentDateTime) {
@@ -159,7 +170,6 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                 })
                 .addOnFailureListener(e -> Toast.makeText(context, "Failed to save: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
-
 
     private void saveToHistory(String history_id, Model_History modelHistory){
         history_DBref.child(history_id).setValue(modelHistory)

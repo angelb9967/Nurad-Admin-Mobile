@@ -270,7 +270,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
     private void updateDailyChart(ArrayList<BarEntry> entries) {
         // Ensure entries are not null and not empty before updating the chart
         if (entries != null && !entries.isEmpty()) {
-            BarDataSet dataSet = new BarDataSet(entries, "Data");
+            BarDataSet dataSet = new BarDataSet(entries, "Daily Data");
             dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
             dataSet.setValueTextColor(Color.BLACK);
             dataSet.setValueTextSize(12f);
@@ -392,7 +392,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             });
 
             BarData data = new BarData(dataSet);
-            barChart.getDescription().setText("Number of Check-ins per Month");
+            barChart.getDescription().setText("No. of Check-ins per Month");
             barChart.setData(data);
 
             // Custom formatter for x-axis (months)
@@ -515,7 +515,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
             });
 
             BarData data = new BarData(dataSet);
-            barChart.getDescription().setText("Number of Check-ins per Year");
+            barChart.getDescription().setText("No. of Check-ins per Year");
             barChart.setData(data);
 
             // Set custom formatter for y-axis (integer values)
