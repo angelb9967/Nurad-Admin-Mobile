@@ -38,6 +38,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -55,7 +56,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class Activity_Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private TextView title, todaysCheckedIn_TxtView, available_TxtView, inUse_TxtView, housekeeping_TxtView;
+    private TextView title, todaysCheckedIn_TxtView, available_TxtView, inUse_TxtView, housekeeping_TxtView, statisticsLabel;
     private DatabaseReference checkInsPerDay_DBref, availableRooms_DBref, inUse_DBref, housekeeping_DBref;
     private ConstraintLayout bookingCalendar, available, inUse, housekeeping;
     private DrawerLayout drawerLayout;
@@ -95,6 +96,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         housekeeping = findViewById(R.id.moveToHousekeeping);
         barChart = findViewById(R.id.barChart);
         filter_spinner = findViewById(R.id.spinner);
+        statisticsLabel = findViewById(R.id.textView13);
 
         setSupportActionBar(toolbar);
         title.setText("Dashboard");
@@ -178,15 +180,18 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                 switch (selectedItem) {
                     case "Day":
                         // Show data for last 7 days
+                        statisticsLabel.setText("Last 7 days");
                         setupDailyStatistics();
                         break;
                     case "Month":
                         // Show data for current month
-//                        setupMonthlyStatistics();
+                        statisticsLabel.setText("Per Month");
+                        setupMonthlyStatistics();
                         break;
                     case "Year":
-                        // Show data for current year
-//                        setupYearlyStatistics();
+                        // Show data for last 5 years
+                        statisticsLabel.setText("Last 5 years");
+                        setupYearlyStatistics();
                         break;
                 }
             }
@@ -232,7 +237,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                         for (int j = 0; j <= 6; j++) {
                             entries.add(tempEntries.get(j));
                         }
-                        updateChart(entries);
+                        updateDailyChart(entries);
                     }
 
                     // Log the x and y values of the BarEntry
@@ -249,7 +254,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
                         for (int j = 0; j <= 6; j++) {
                             entries.add(tempEntries.get(j));
                         }
-                        updateChart(entries);
+                        updateDailyChart(entries);
                     }
                 }
             });
@@ -259,7 +264,7 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         }
     }
 
-    private void updateChart(ArrayList<BarEntry> entries) {
+    private void updateDailyChart(ArrayList<BarEntry> entries) {
         // Ensure entries are not null and not empty before updating the chart
         if (entries != null && !entries.isEmpty()) {
             BarDataSet dataSet = new BarDataSet(entries, "Data");
@@ -287,57 +292,209 @@ public class Activity_Dashboard extends AppCompatActivity implements NavigationV
         }
     }
 
-//    private void setupYearlyStatistics() {
-//        ArrayList<BarEntry> entries = new ArrayList<>();
-//
-//        Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.MONTH, Calendar.JANUARY); // Set to the first month of the year
-//
-//        for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
-//            cal.set(Calendar.MONTH, i);
-//            Date startDate = cal.getTime();
-//            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH)); // Set to last day of the month
-//            Date endDate = cal.getTime();
-//
-//            // Example path assuming monthly data is stored under a "MonthlyCounts" node
-//            DatabaseReference monthlyRef = FirebaseDatabase.getInstance()
-//                    .getReference("MonthlyCounts")
-//                    .child(new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(startDate));
-//
-//            final int finalI = i;
-//            monthlyRef.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    long totalCount = 0;
-//                    for (DataSnapshot monthSnapshot : snapshot.getChildren()) {
-//                        long count = monthSnapshot.getValue(Long.class);
-//                        totalCount += count;
-//                    }
-//
-//                    // Add entry only if data is available
-//                    entries.add(new BarEntry(finalI, totalCount));
-//
-//                    // Update chart if all entries are fetched
-//                    if (finalI == Calendar.DECEMBER) {
-//                        updateChart(entries);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//                    // Handle onCancelled event
-//                    entries.add(new BarEntry(finalI, 0));
-//
-//                    // Update chart if all entries are fetched
-//                    if (finalI == Calendar.DECEMBER) {
-//                        updateChart(entries);
-//                    }
-//                }
-//            });
-//
-//            cal.add(Calendar.MONTH, 1); // Move to the next month
-//        }
-//    }
+    private void setupMonthlyStatistics() {
+        // Fetch data for each month of the current year
+        SparseArray<BarEntry> tempEntries = new SparseArray<>();
+
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+
+        for (int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++) {
+            cal.set(Calendar.YEAR, currentYear);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, 1); // Set the day to 1st of the month
+
+            int numberOfDaysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            cal.set(Calendar.DAY_OF_MONTH, numberOfDaysInMonth); // Set to last day of the month
+
+            // Format the date for the first and last day of the month
+            String firstDayOfMonth = String.format("%d-%02d-%02d", currentYear, month + 1, 1);
+            String lastDayOfMonth = String.format("%d-%02d-%02d", currentYear, month + 1, numberOfDaysInMonth);
+
+            // Query the database
+            Query monthlyQuery = checkInsPerDay_DBref
+                    .orderByKey()
+                    .startAt(firstDayOfMonth)
+                    .endAt(lastDayOfMonth);
+
+            final int finalMonth = month + 1; // Months are 0-based in Calendar class, so add 1
+            monthlyQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    long totalCheckIns = 0;
+
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        long count = childSnapshot.child("count").getValue(Long.class);
+                        totalCheckIns += count;
+                    }
+
+                    tempEntries.put(finalMonth, new BarEntry(finalMonth, totalCheckIns));
+
+                    // Ensure all entries are fetched before updating the chart
+                    if (tempEntries.size() == 12) {
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
+                            entries.add(tempEntries.get(i + 1)); // Retrieve entries for months 1 to 12
+                        }
+                        updateMonthlyChart(entries);
+                    }
+
+                    // Log the x and y values of the BarEntry
+                    Log.d("DEBUG", "BarEntry added: x = " + finalMonth + ", y = " + totalCheckIns);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    tempEntries.put(finalMonth, new BarEntry(finalMonth, 0));
+                    Log.e("Firebase", "Error fetching data for month: " + finalMonth, error.toException());
+
+                    if (tempEntries.size() == 12) { // Last month fetched
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int i = Calendar.JANUARY; i <= Calendar.DECEMBER; i++) {
+                            entries.add(tempEntries.get(i + 1)); // Retrieve entries for months 1 to 12
+                        }
+                        updateMonthlyChart(entries);
+                    }
+                }
+            });
+        }
+    }
+
+
+    private void updateMonthlyChart(ArrayList<BarEntry> entries) {
+        // Ensure entries are not null and not empty before updating the chart
+        if (entries != null && !entries.isEmpty()) {
+            BarDataSet dataSet = new BarDataSet(entries, "Monthly Data");
+            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            dataSet.setValueTextColor(Color.BLACK);
+            dataSet.setValueTextSize(12f);
+
+            BarData data = new BarData(dataSet);
+            barChart.getDescription().setText("Number of Check-ins per Month");
+            barChart.setData(data);
+
+            // Log each entry in the chart
+            for (BarEntry entry : entries) {
+                Log.d("DEBUG", "Chart Entry: x = " + entry.getX() + ", y = " + entry.getY());
+            }
+
+            // Notify and refresh chart
+            barChart.notifyDataSetChanged();
+            barChart.invalidate();
+        } else {
+            // Handle case where entries list is empty or null
+            Log.w("DEBUG", "No data to display in chart.");
+            barChart.clear(); // Optionally clear existing data
+            barChart.invalidate(); // Refresh chart
+        }
+    }
+
+    private void setupYearlyStatistics() {
+        // Fetch data for each of the last 5 years
+        SparseArray<BarEntry> tempEntries = new SparseArray<>();
+
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+
+        for (int i = 0; i < 5; i++) {
+            // Format the date for the first and last day of the year
+            cal.set(Calendar.YEAR, currentYear - i);
+            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.DAY_OF_MONTH, 1); // Set the day to 1st of January
+
+            String firstDayOfYear = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+
+            cal.set(Calendar.MONTH, Calendar.DECEMBER);
+            cal.set(Calendar.DAY_OF_MONTH, 31); // Set the day to 31st of December
+
+            String lastDayOfYear = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+
+            // Query the database
+            Query yearlyQuery = checkInsPerDay_DBref
+                    .orderByKey()
+                    .startAt(firstDayOfYear)
+                    .endAt(lastDayOfYear);
+
+            final int year = currentYear - i; // Store the year as final for inner class usage
+            yearlyQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    long totalCheckIns = 0;
+
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        long count = childSnapshot.child("count").getValue(Long.class);
+                        totalCheckIns += count;
+                    }
+
+                    tempEntries.put(year, new BarEntry(year, totalCheckIns));
+
+                    // Ensure all entries are fetched before updating the chart
+                    if (tempEntries.size() == 5) {
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int j = 0; j < 5; j++) {
+                            entries.add(tempEntries.get(currentYear - j)); // Retrieve entries for the last 5 years
+                        }
+                        updateYearlyChart(entries);
+                    }
+
+                    // Log the x and y values of the BarEntry
+                    Log.d("DEBUG", "BarEntry added: x = " + year + ", y = " + totalCheckIns);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    tempEntries.put(year, new BarEntry(year, 0));
+                    Log.e("Firebase", "Error fetching data for year: " + year, error.toException());
+
+                    if (tempEntries.size() == 5) { // Last year fetched
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        for (int j = 0; j < 5; j++) {
+                            entries.add(tempEntries.get(currentYear - j)); // Retrieve entries for the last 5 years
+                        }
+                        updateYearlyChart(entries);
+                    }
+                }
+            });
+        }
+    }
+
+    private void updateYearlyChart(ArrayList<BarEntry> entries) {
+        // Ensure entries are not null and not empty before updating the chart
+        if (entries != null && !entries.isEmpty()) {
+            BarDataSet dataSet = new BarDataSet(entries, "Yearly Data");
+            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            dataSet.setValueTextColor(Color.BLACK);
+            dataSet.setValueTextSize(12f);
+
+            BarData data = new BarData(dataSet);
+            barChart.getDescription().setText("Number of Check-ins per Year");
+            barChart.setData(data);
+
+            // Set custom formatter for x-axis
+            IndexAxisValueFormatter xAxisFormatter = new IndexAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return String.valueOf((int) value); // Convert float to int for display
+                }
+            };
+
+            barChart.getXAxis().setValueFormatter(xAxisFormatter); // Apply formatter to x-axis
+
+            // Log each entry in the chart
+            for (BarEntry entry : entries) {
+                Log.d("DEBUG", "Chart Entry: x = " + entry.getX() + ", y = " + entry.getY());
+            }
+
+            // Notify and refresh chart
+            barChart.notifyDataSetChanged();
+            barChart.invalidate();
+        } else {
+            // Handle case where entries list is empty or null
+            Log.w("DEBUG", "No data to display in chart.");
+            barChart.clear(); // Optionally clear existing data
+            barChart.invalidate(); // Refresh chart
+        }
+    }
 
     private void getDBCount(DatabaseReference database, TextView textview) {
         database.addValueEventListener(new ValueEventListener() {
