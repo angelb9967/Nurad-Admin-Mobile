@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,8 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
     private Adapter_PriceRule adapter;
     private View toolbar_normal;
     private View toolbar_deleteMode;
-
+    private ViewStub emptyStateViewStub;
+    private View inflatedEmptyStateView;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
         toolbar_deleteMode = findViewById(R.id.toolbar_deleteMode);
         itemCounter = findViewById(R.id.counter);
         delete_icon = findViewById(R.id.delete_icon);
+        emptyStateViewStub = findViewById(R.id.emptyState);
 
         title.setText("Price Rules");
 
@@ -97,6 +100,20 @@ public class Activity_PriceRules extends AppCompatActivity implements Adapter_Pr
                     }
                 }
                 adapter.notifyDataSetChanged();
+
+                // Show/hide empty state ViewStub based on data
+                if (modelPriceRulesList.isEmpty()) {
+                    if (inflatedEmptyStateView == null) {
+                        inflatedEmptyStateView = emptyStateViewStub.inflate();
+                    }
+                    recyclerView.setVisibility(View.GONE);
+                    inflatedEmptyStateView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    if (inflatedEmptyStateView != null) {
+                        inflatedEmptyStateView.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override

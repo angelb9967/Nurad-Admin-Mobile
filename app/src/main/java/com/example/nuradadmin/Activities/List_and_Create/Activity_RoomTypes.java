@@ -53,7 +53,6 @@ public class Activity_RoomTypes extends AppCompatActivity implements Adapter_Roo
     private View toolbar_deleteMode;
     private ViewStub emptyStateViewStub;
     private View inflatedEmptyStateView;
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
