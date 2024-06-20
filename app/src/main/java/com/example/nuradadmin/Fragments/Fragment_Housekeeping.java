@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Toast;
 
 import com.example.nuradadmin.Adapters.Adapter_Housekeeping;
@@ -32,6 +33,8 @@ public class Fragment_Housekeeping extends Fragment {
     private List<Model_Housekeeping> modelHousekeepingList;
     private DatabaseReference housekeeping_DBref;
     private Adapter_Housekeeping adapter;
+    private ViewStub emptyStateViewStub;
+    private View inflatedEmptyStateView;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -65,6 +68,7 @@ public class Fragment_Housekeeping extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__housekeeping, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
+        emptyStateViewStub = view.findViewById(R.id.emptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         modelHousekeepingList = new ArrayList<>();
@@ -83,6 +87,20 @@ public class Fragment_Housekeeping extends Fragment {
                     modelHousekeepingList.add(housekeeping);
                 }
                 adapter.notifyDataSetChanged();
+
+                // Show/hide empty state ViewStub based on data
+                if (modelHousekeepingList.isEmpty()) {
+                    if (inflatedEmptyStateView == null) {
+                        inflatedEmptyStateView = emptyStateViewStub.inflate();
+                    }
+                    recyclerView.setVisibility(View.GONE);
+                    inflatedEmptyStateView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    if (inflatedEmptyStateView != null) {
+                        inflatedEmptyStateView.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
