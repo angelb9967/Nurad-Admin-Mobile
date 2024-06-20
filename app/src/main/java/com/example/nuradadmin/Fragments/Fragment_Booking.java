@@ -39,6 +39,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class Fragment_Booking extends Fragment {
+    private int selectedYear;
+    private int selectedMonth;
+    private int selectedDay;
     private FloatingActionButton floatingBtn;
     private CalendarView calendarView;
     private RecyclerView recyclerView;
@@ -46,7 +49,6 @@ public class Fragment_Booking extends Fragment {
     private DatabaseReference booking_DBref;
     private Adapter_Booking adapter;
     private TextView date, indicator;
-
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -94,6 +96,9 @@ public class Fragment_Booking extends Fragment {
         int currentYear = currentCalendar.get(Calendar.YEAR);
         int currentMonth = currentCalendar.get(Calendar.MONTH); // Calendar.MONTH is zero-based
         int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
+        selectedYear = currentYear;
+        selectedMonth = currentMonth;
+        selectedDay = currentDay;
 
         Log.d("Fragment_Booking", "currentCalendar.getTimeInMillis:  " + currentCalendar.getTimeInMillis());
         Log.d("Fragment_Booking", "Current Calendar (Manila): " +
@@ -112,7 +117,7 @@ public class Fragment_Booking extends Fragment {
         date.setText(formattedMonth + " " + currentDay);
 
         modelBookingList = new ArrayList<>();
-        adapter = new Adapter_Booking(getContext(), modelBookingList);
+        adapter = new Adapter_Booking(getContext(), modelBookingList, this);
         recyclerView.setAdapter(adapter);
 
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
@@ -142,6 +147,10 @@ public class Fragment_Booking extends Fragment {
         });
 
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = dayOfMonth;
+
             // Format the selected date
             Calendar selectedCalendar = Calendar.getInstance(manilaTimeZone);
             selectedCalendar.set(year, month, dayOfMonth);
@@ -153,10 +162,11 @@ public class Fragment_Booking extends Fragment {
             date.setText(formattedSelectedMonth + " " + dayOfMonth);
 
             setIndicatorText(year, month, dayOfMonth, manilaTimeZone);
+            selectedCalendar.set(year, month, dayOfMonth); // Update selectedCalendar
 
             // Filter bookings based on the selected date
             filterBookingsByDate(year, month + 1, dayOfMonth);
-            Log.d("Fragment_Booking", "year/month+1/dayOfMonth:" + year + " " + month + " " + dayOfMonth);
+            Log.d("Fragment_Booking", " calendarView.setOnDateChangeListener (selectedyear/month+1/dayOfMonth):" + year + " " + month + " " + dayOfMonth);
         });
 
         NestedScrollView nestedScrollView = view.findViewById(R.id.nestedScrollView);
@@ -243,6 +253,16 @@ public class Fragment_Booking extends Fragment {
             dayFormat.setTimeZone(timeZone);
             String dayOfWeek = dayFormat.format(selectedCalendar.getTime());
             indicator.setText(dayOfWeek);
+        }
+    }
+
+    public void onBookingDeleted() {
+        if (selectedYear != 0 && selectedMonth != 0 && selectedDay != 0) {
+            Log.d("Fragment_Booking", "After a booking gets deleted: selectedDateString: " + selectedYear + "/" + selectedMonth + "/" + selectedDay);
+            filterBookingsByDate(selectedYear, selectedMonth + 1, selectedDay);
+        } else {
+            Log.e("Fragment_Booking", "selectedDate values are invalid or uninitialized in onBookingDeleted");
+            // Handle the case where selectedDate values are unexpectedly invalid or uninitialized
         }
     }
 }

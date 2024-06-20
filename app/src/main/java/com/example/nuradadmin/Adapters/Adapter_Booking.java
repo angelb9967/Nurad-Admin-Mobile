@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.nuradadmin.Fragments.Fragment_Booking;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
 import com.example.nuradadmin.Models.Model_InUse;
@@ -31,6 +32,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,7 +50,8 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
     private DatabaseReference inUse_DBref;
     private DatabaseReference availableRooms_DBref;
     private DatabaseReference checkIns_DBref;
-    public Adapter_Booking(Context context, List<Model_Booking> bookingList) {
+    private Fragment_Booking fragment;
+    public Adapter_Booking(Context context, List<Model_Booking> bookingList, Fragment_Booking fragment) {
         this.context = context;
         this.bookingList = bookingList;
         contactInfo_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
@@ -57,6 +60,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         inUse_DBref = FirebaseDatabase.getInstance().getReference("InUse Rooms");
         availableRooms_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
         checkIns_DBref = FirebaseDatabase.getInstance().getReference("CheckInsPerDay");
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -240,6 +244,10 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference(path).child(primaryKey);
         dbRef.removeValue()
                 .addOnSuccessListener(aVoid -> {
+                    // Notify the fragment about the deletion
+                    if (path.equalsIgnoreCase("Booking")){
+                        fragment.onBookingDeleted();
+                    }
                     Log.d("Adapter_Booking", "Record deleted successfully from " + path);
                 })
                 .addOnFailureListener(e -> {
