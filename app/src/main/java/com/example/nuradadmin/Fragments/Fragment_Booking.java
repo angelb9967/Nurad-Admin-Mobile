@@ -284,4 +284,26 @@ public class Fragment_Booking extends Fragment {
             // Handle the case where selectedDate values are unexpectedly invalid or uninitialized
         }
     }
+
+    public void refreshData() {
+        booking_DBref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                modelBookingList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Model_Booking booking = snapshot.getValue(Model_Booking.class);
+                    modelBookingList.add(booking);
+                }
+                adapter.notifyDataSetChanged();
+                filterBookingsByDate(selectedYear, selectedMonth + 1, selectedDay);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+                Toast.makeText(getContext(), "Failed to load data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

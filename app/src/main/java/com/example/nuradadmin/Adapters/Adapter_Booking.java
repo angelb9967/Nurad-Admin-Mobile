@@ -182,6 +182,11 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         });
     }
 
+    private void refreshBookingList() {
+        // Refresh data from Firebase and update the fragment's view
+        fragment.refreshData();
+    }
+
     public void addCheckIn() {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         DatabaseReference todayRef = checkIns_DBref.child(today);
@@ -258,6 +263,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
         bookingRef.child("status").setValue(status).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(context, "Booking status updated to " + status, Toast.LENGTH_SHORT).show();
+                refreshBookingList();
             } else {
                 Toast.makeText(context, "Failed to update booking status", Toast.LENGTH_SHORT).show();
             }
