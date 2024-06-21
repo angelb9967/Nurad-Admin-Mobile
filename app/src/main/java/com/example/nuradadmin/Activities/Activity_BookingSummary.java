@@ -20,6 +20,7 @@ import com.example.nuradadmin.Models.Model_AddressInfo;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
 import com.example.nuradadmin.Models.Model_PaymentInfo;
+import com.example.nuradadmin.Models.Models_RevenueCost;
 import com.example.nuradadmin.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,15 +28,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class Activity_BookingSummary extends AppCompatActivity {
     private DatabaseReference booking_DBref, contact_DBref, address_DBref,
-            payment_DBref, vouchers_DBref, userVouchers_DBref;
+            payment_DBref, vouchers_DBref, userVouchers_DBref, revenueCost_DBref;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -213,17 +218,34 @@ public class Activity_BookingSummary extends AppCompatActivity {
         double semitotal = subtotalValue + vatValue;
         double totalValue = semitotal - voucherValueValue;
 
+        // Define the timezone for Asia/Manila
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Manila");
+
+        // Get the current date and time in the specified timezone
+        Calendar calendar = Calendar.getInstance(timeZone);
+        Date date = calendar.getTime();
+
+        // Define the formatters for date and time
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+
+        // Format the date and time
+        String currentDate = dateFormatter.format(date);
+        String currentTime = timeFormatter.format(date);
+
         booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         contact_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
         address_DBref = FirebaseDatabase.getInstance().getReference("Address Information");
         payment_DBref = FirebaseDatabase.getInstance().getReference("Payment Information");
         vouchers_DBref = FirebaseDatabase.getInstance().getReference("Vouchers");
         userVouchers_DBref = FirebaseDatabase.getInstance().getReference("User Vouchers");
+        revenueCost_DBref = FirebaseDatabase.getInstance().getReference("Revenue and Expenses");
 
         String bookingId = booking_DBref.push().getKey();
         String contactId = contact_DBref.push().getKey();
         String addressId = address_DBref.push().getKey();
         String paymentId = payment_DBref.push().getKey();
+        String revenueCostId = revenueCost_DBref.push().getKey();
 
         if (bookingId == null || contactId == null || addressId == null || paymentId == null) {
             Toast.makeText(this, "Failed to generate IDs", Toast.LENGTH_SHORT).show();
@@ -240,6 +262,7 @@ public class Activity_BookingSummary extends AppCompatActivity {
         Model_AddressInfo addressInfo = new Model_AddressInfo(addressId, userId, country, address1, address2, selectedCity, selectedRegion, zipCode);
         Model_ContactInfo contactInfo = new Model_ContactInfo(contactId, userId, prefix, firstName, lastName, phone, mobilePhone, email);
         Model_PaymentInfo paymentInfo = new Model_PaymentInfo(paymentId, userId, cardNumber, expirationDate, cvv, nameOnCard);
+        Models_RevenueCost revenueInfo = new Models_RevenueCost(revenueCostId, currentDate, currentTime, "Revenue", totalValue, "From Booking [" + bookingId + "]");
 
         // Save the data to Firebase
         saveToBookingFirebase(bookingId, booking);
@@ -247,6 +270,7 @@ public class Activity_BookingSummary extends AppCompatActivity {
         saveToContactInfoFirebase(contactId, contactInfo);
         saveToPaymentInfoFirebase(paymentId, paymentInfo);
         updateUserVoucherStatus(voucherCode);
+        saveToRevenueAndExpenses(revenueCostId, revenueInfo);
 
         // Show a success message
         Toast.makeText(this, "Room Officially Booked", Toast.LENGTH_SHORT).show();
@@ -256,6 +280,15 @@ public class Activity_BookingSummary extends AppCompatActivity {
         startActivity(i);
     }
 
+    private void saveToRevenueAndExpenses(String revenueID, Models_RevenueCost revenueCost) {
+        revenueCost_DBref.child(revenueID).setValue(revenueCost)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Revenue and Expenses info saved successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to save revenue and expenses info: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
 
     private void saveToPaymentInfoFirebase(String paymentId, Model_PaymentInfo paymentInfo) {
         payment_DBref.child(paymentId).setValue(paymentInfo)

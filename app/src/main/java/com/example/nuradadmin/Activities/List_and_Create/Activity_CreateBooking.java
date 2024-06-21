@@ -82,8 +82,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
             checkOutTimeTextView, userUIDTextView;
     private double price, extraChildPrice, extraAdultPrice;
     private Map<Long, Long> unavailableDateRanges = new HashMap<>();
-    private DatabaseReference booking_DBref, allRoomsRef, recommendedRef, user_DBref,
-            contact_DBref, address_DBref, payment_DBref, addOns_DBref, priceRules_DBref;
+    private DatabaseReference allRoomsRef, recommendedRef, user_DBref,
+            addOns_DBref, priceRules_DBref;
     private EditText FirstName_Etxt, LastName_Etxt, PhoneNum_Etxt, MobilePhone_Etxt, Email_Etxt,
             Country_Etxt, Address1_Etxt, Address2_Etxt, ZipPostalCode_Etxt,
             CardNum_Etxt, ExpirationDte_Etxt, CVV_Etxt, NameOnTheCard_Etxt,
@@ -391,12 +391,8 @@ public class Activity_CreateBooking extends AppCompatActivity {
     }
 
     private void setDatabaseReferences(){
-        booking_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         allRoomsRef = FirebaseDatabase.getInstance().getReference("AllRooms");
         recommendedRef = FirebaseDatabase.getInstance().getReference("RecommRooms");
-        contact_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
-        address_DBref = FirebaseDatabase.getInstance().getReference("Address Information");
-        payment_DBref = FirebaseDatabase.getInstance().getReference("Payment Information");
         addOns_DBref = FirebaseDatabase.getInstance().getReference("AddOns");
         priceRules_DBref = FirebaseDatabase.getInstance().getReference("Price Rules");
     }
