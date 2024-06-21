@@ -120,9 +120,6 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         } else if (id == R.id.statistics_menu) {
             startActivity(new Intent(this, Activity_Statistics.class));
             overridePendingTransition(0, 0);
-        }  else if (id == R.id.language_menu) {
-            startActivity(new Intent(this, Activity_Language.class));
-            overridePendingTransition(0, 0);
         } else if (id == R.id.logout_menu) {
             // Logout
         } else {
