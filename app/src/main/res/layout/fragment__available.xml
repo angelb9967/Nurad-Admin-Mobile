@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.Fragment_Available">
 
+    <ViewStub
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/emp_state_available"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"

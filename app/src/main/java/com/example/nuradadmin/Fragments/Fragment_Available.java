@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Toast;
 
 import com.example.nuradadmin.Adapters.Adapter_AvailableRooms;
@@ -30,6 +31,8 @@ public class Fragment_Available extends Fragment {
     private List<Model_AvailableRooms> modelAvailableRoomsList;
     private DatabaseReference availableRooms_DBref;
     private Adapter_AvailableRooms adapter;
+    private ViewStub emptyStateViewStub;
+    private View inflatedEmptyStateView;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -64,6 +67,7 @@ public class Fragment_Available extends Fragment {
         View view = inflater.inflate(R.layout.fragment__available, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
+        emptyStateViewStub = view.findViewById(R.id.emptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         modelAvailableRoomsList = new ArrayList<>();
@@ -82,6 +86,20 @@ public class Fragment_Available extends Fragment {
                     modelAvailableRoomsList.add(availableRooms);
                 }
                 adapter.notifyDataSetChanged();
+
+                // Show/hide empty state ViewStub based on data
+                if (modelAvailableRoomsList.isEmpty()) {
+                    if (inflatedEmptyStateView == null) {
+                        inflatedEmptyStateView = emptyStateViewStub.inflate();
+                    }
+                    recyclerView.setVisibility(View.GONE);
+                    inflatedEmptyStateView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    if (inflatedEmptyStateView != null) {
+                        inflatedEmptyStateView.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
