@@ -81,7 +81,7 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
             PopupMenu popupMenu = new PopupMenu(context, v);
             popupMenu.getMenuInflater().inflate(R.menu.pop_menu_booking, popupMenu.getMenu());
             MenuItem checkInItem = popupMenu.getMenu().findItem(R.id.checkIn);
-            MenuItem checkOutItem = popupMenu.getMenu().findItem(R.id.checkOut);
+            MenuItem deleteItem = popupMenu.getMenu().findItem(R.id.delete);
             MenuItem cancelBookingItem = popupMenu.getMenu().findItem(R.id.cancelBooking);
 
             // Check if check-in is allowed
@@ -124,20 +124,20 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
 
             if (booking.getStatus().equalsIgnoreCase("Checked In")){
                 checkInItem.setEnabled(false);
-                checkOutItem.setEnabled(true);
                 cancelBookingItem.setEnabled(false);
+                deleteItem.setEnabled(false);
             }
 
             if (booking.getStatus().equalsIgnoreCase("Booked")){
                 checkInItem.setEnabled(true);
-                checkOutItem.setEnabled(false);
                 cancelBookingItem.setEnabled(true);
+                deleteItem.setEnabled(true);
             }
 
             if (booking.getStatus().equalsIgnoreCase("Cancelled") || booking.getStatus().equalsIgnoreCase("Checked Out")){
                 checkInItem.setEnabled(false);
-                checkOutItem.setEnabled(false);
                 cancelBookingItem.setEnabled(false);
+                deleteItem.setEnabled(true);
             }
 
             popupMenu.show();
@@ -166,8 +166,6 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                         // Add check-in count;
                         addCheckIn();
                     }
-                } else if (item.getItemId() == R.id.checkOut) {
-                    Toast.makeText(context, "You clicked checkOut", Toast.LENGTH_SHORT).show();
                 } else if (item.getItemId() == R.id.cancelBooking) {
 
                     booking.setStatus("Cancelled");

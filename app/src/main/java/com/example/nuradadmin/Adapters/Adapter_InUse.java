@@ -140,8 +140,6 @@ public class Adapter_InUse extends RecyclerView.Adapter<Adapter_InUse.MyViewHold
                     // Save Request to Housekeeping
                     Model_Housekeeping modelHousekeeping = new Model_Housekeeping(inUse.getRoomName(), currentTimeStr, "Occupied");
                     saveToHousekeeping(inUse.getRoomName(), modelHousekeeping);
-                } else if (item.getItemId() == R.id.delete) {
-
                 } else {
                     Log.e("Adapter_InUse", "Error! couldn't identify popup menu option.");
                     return false;

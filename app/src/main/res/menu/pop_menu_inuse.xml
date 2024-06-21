@@ -12,9 +12,4 @@
         android:id="@+id/requestCleaning"
         app:showAsAction="never"/>
 
-    <item
-        android:title="Delete"
-        android:id="@+id/delete"
-        app:showAsAction="never"/>
-
 </menu>

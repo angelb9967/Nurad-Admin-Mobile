@@ -8,11 +8,6 @@
         app:showAsAction="never"/>
 
     <item
-        android:title="Check Out"
-        android:id="@+id/checkOut"
-        app:showAsAction="never"/>
-
-    <item
         android:title="Cancel Booking"
         android:id="@+id/cancelBooking"
         app:showAsAction="never"/>
