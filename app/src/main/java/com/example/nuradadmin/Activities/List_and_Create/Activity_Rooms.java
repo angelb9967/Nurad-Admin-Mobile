@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,8 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
     private Adapter_Room adapter;
     private View toolbar_normal;
     private View toolbar_deleteMode;
+    private ViewStub emptyStateViewStub;
+    private View inflatedEmptyStateView;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
         toolbar_deleteMode = findViewById(R.id.toolbar_deleteMode);
         itemCounter = findViewById(R.id.counter);
         delete_icon = findViewById(R.id.delete_icon);
+        emptyStateViewStub = findViewById(R.id.emptyState);
 
         modelRoomList = new ArrayList<>();
         roomTitles = new ArrayList<>();
@@ -148,6 +152,20 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
                         }
                     }
                     adapter.notifyDataSetChanged();
+
+                    // Show/hide empty state ViewStub based on data
+                    if (modelRoomList.isEmpty()) {
+                        if (inflatedEmptyStateView == null) {
+                            inflatedEmptyStateView = emptyStateViewStub.inflate();
+                        }
+                        recyclerView.setVisibility(View.GONE);
+                        inflatedEmptyStateView.setVisibility(View.VISIBLE);
+                    } else {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        if (inflatedEmptyStateView != null) {
+                            inflatedEmptyStateView.setVisibility(View.GONE);
+                        }
+                    }
                 }
 
                 @Override
