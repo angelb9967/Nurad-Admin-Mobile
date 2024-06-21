@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,9 @@ public class Fragment_Booking extends Fragment {
     private DatabaseReference booking_DBref;
     private Adapter_Booking adapter;
     private TextView date, indicator;
+    private ViewStub emptyStateViewStub;
+    private View inflatedEmptyStateView;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -86,6 +90,7 @@ public class Fragment_Booking extends Fragment {
         date = view.findViewById(R.id.date_Etxt);
         indicator = view.findViewById(R.id.indicator_Etxt);
         recyclerView = view.findViewById(R.id.recyclerView);
+        emptyStateViewStub = view.findViewById(R.id.emptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Get the current date and time in Manila timezone
@@ -221,6 +226,20 @@ public class Fragment_Booking extends Fragment {
                 // Check if the selected date falls within the booking period
                 if (!selectedCalendar.before(checkinCalendar) && !selectedCalendar.after(checkoutCalendar)) {
                     filteredList.add(booking);
+                }
+
+                // Show/hide empty state ViewStub based on data
+                if (filteredList.isEmpty()) {
+                    if (inflatedEmptyStateView == null) {
+                        inflatedEmptyStateView = emptyStateViewStub.inflate();
+                    }
+                    recyclerView.setVisibility(View.GONE);
+                    inflatedEmptyStateView.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    if (inflatedEmptyStateView != null) {
+                        inflatedEmptyStateView.setVisibility(View.GONE);
+                    }
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
