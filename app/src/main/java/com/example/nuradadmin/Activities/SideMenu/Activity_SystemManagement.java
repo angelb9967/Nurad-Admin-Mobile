@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.nuradadmin.Activities.Activity_ActiveVouchers;
 import com.example.nuradadmin.Activities.Activity_Feedbacks;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
@@ -33,7 +34,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
-    private LinearLayout roomType, priceRules, rooms, feedbacks;
+    private LinearLayout roomType, priceRules, rooms, feedbacks, activeVouchers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         priceRules = findViewById(R.id.PriceRules);
         rooms = findViewById(R.id.Rooms);
         feedbacks = findViewById(R.id.feedback);
+        activeVouchers = findViewById(R.id.activeVouchers);
 
         setSupportActionBar(toolbar);
 
@@ -83,6 +85,10 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
 
         feedbacks.setOnClickListener(View -> {
             goToActivity(Activity_Feedbacks.class);
+        });
+
+        activeVouchers.setOnClickListener(View -> {
+            goToActivity(Activity_ActiveVouchers.class);
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

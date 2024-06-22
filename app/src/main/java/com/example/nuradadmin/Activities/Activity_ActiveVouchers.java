@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -16,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nuradadmin.Activities.SideMenu.Activity_SystemManagement;
 import com.example.nuradadmin.Adapters.Adapter_Feedback;
+import com.example.nuradadmin.Adapters.Adapter_Vouchers;
 import com.example.nuradadmin.Models.Model_Feedback;
+import com.example.nuradadmin.Models.Model_PriceRule;
+import com.example.nuradadmin.Models.Model_Voucher;
 import com.example.nuradadmin.R;
 import com.example.nuradadmin.Utilities.SystemUIUtil;
 import com.google.firebase.database.DataSnapshot;
@@ -28,19 +32,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Activity_Feedbacks extends AppCompatActivity {
+public class Activity_ActiveVouchers extends AppCompatActivity {
     private ImageView back_icon;
     private TextView title;
     private RecyclerView recyclerView;
-    private DatabaseReference feedback_DBref;
-    private Adapter_Feedback adapter;
-    private List<Model_Feedback> modelFeedbackList = new ArrayList<>();
+    private DatabaseReference activeVouchers_DBref;
+    private Adapter_Vouchers adapter;
+    private List<Model_Voucher> modelVoucherList = new ArrayList<>();
     private ValueEventListener eventListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedbacks);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_active_vouchers);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -52,25 +56,23 @@ public class Activity_Feedbacks extends AppCompatActivity {
         title = findViewById(R.id.title);
         recyclerView = findViewById(R.id.recyclerView);
 
-        title.setText("Customer Feedback");
+        title.setText("Active Vouchers");
 
-        feedback_DBref = FirebaseDatabase.getInstance().getReference("Customer Feedback");
+        activeVouchers_DBref = FirebaseDatabase.getInstance().getReference("Vouchers");
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         // Set the adapter after initializing the list
-        adapter = new Adapter_Feedback(this, modelFeedbackList);
+        adapter = new Adapter_Vouchers(Activity_ActiveVouchers.this, modelVoucherList);
         recyclerView.setAdapter(adapter);
 
-        eventListener = feedback_DBref.addValueEventListener(new ValueEventListener() {
+        eventListener = activeVouchers_DBref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                modelFeedbackList.clear(); // Clear the list to avoid duplicates
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot feedbackSnapshot : userSnapshot.getChildren()) {
-                        Model_Feedback feedback = feedbackSnapshot.getValue(Model_Feedback.class);
-                        if (feedback != null) {
-                            modelFeedbackList.add(feedback);
-                        }
+                modelVoucherList.clear();
+                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                    Model_Voucher modelVoucher = itemSnapshot.getValue(Model_Voucher.class);
+                    if (modelVoucher != null) {
+                        modelVoucherList.add(modelVoucher);
                     }
                 }
                 adapter.notifyDataSetChanged();

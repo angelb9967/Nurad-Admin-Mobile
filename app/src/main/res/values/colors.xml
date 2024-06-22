@@ -10,4 +10,5 @@
     <color name="darkgray">#545454</color>
     <color name="red">#F44336</color>
     <color name="green">#4CAF50</color>
+    <color name="colorActiveVoucher">#872065</color>
 </resources>
