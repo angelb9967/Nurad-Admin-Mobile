@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class Model_Booking {
     private String roomTitle;
-    private int Adult, Child;
+    private int adultCount, childCount;
     private String booking_id, contact_id, payment_id, address_id, userId;
     private String checkInDate, checkOutDate, checkInTime, checkOutTime, note, room, voucherCode;
     private String bookingDate;
@@ -20,7 +20,7 @@ public class Model_Booking {
     public Model_Booking() {
     }
 
-    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String userId, String checkInDate, String checkOutDate, String checkInTime, String checkOutTime, String voucherCode, double subtotalValue, int Adult, int Child, String note, String room, Map<String, String> selectedAddOns, String bookingDate, double voucherValueValue, String status, double roomPrice, double extraAdultPrice, double extraChildPrice, double addOnsPrice, double totalValue, double vatValue, String roomTitle) {
+    public Model_Booking(String booking_id, String contact_id, String address_id, String payment_id, String userId, String checkInDate, String checkOutDate, String checkInTime, String checkOutTime, String voucherCode, double subtotalValue, int adultCount, int childCount, String note, String room, Map<String, String> selectedAddOns, String bookingDate, double voucherValueValue, String status, double roomPrice, double extraAdultPrice, double extraChildPrice, double addOnsPrice, double totalValue, double vatValue, String roomTitle) {
         this.booking_id = booking_id;
         this.contact_id = contact_id;
         this.address_id = address_id;
@@ -32,8 +32,8 @@ public class Model_Booking {
         this.checkOutTime = checkOutTime;
         this.voucherCode = voucherCode;
         this.subtotalValue = subtotalValue;
-        this.Adult = Adult;
-        this.Child = Child;
+        this.adultCount = adultCount;
+        this.childCount = childCount;
         this.note = note;
         this.room = room;
         this.selectedAddOns = selectedAddOns;
@@ -128,20 +128,20 @@ public class Model_Booking {
         this.voucherCode = voucherCode;
     }
 
-    public int getAdult() {
-        return Adult;
+    public int getAdultCount() {
+        return adultCount;
     }
 
-    public void setAdult(int adult) {
-        Adult = adult;
+    public void setAdultCount(int adultCount) {
+        this.adultCount = adultCount;
     }
 
-    public int getChild() {
-        return Child;
+    public int getChildCount() {
+        return childCount;
     }
 
-    public void setChild(int child) {
-        Child = child;
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
     }
 
     public String getNote() {

@@ -61,6 +61,9 @@
             android:name=".Activities.List_and_Create.Activity_CreateBooking"
             android:exported="false" />
         <activity
+            android:name=".Activities.Activity_BookingInvoice"
+            android:exported="false" />
+        <activity
             android:name=".Activities.SideMenu.Activity_Dashboard"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
