@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    android:elevation="8dp">
+
+    <RelativeLayout
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout1"
+            android:layout_toEndOf="@+id/Reviews_ProfileImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Reviews_ProfileName"
+                android:layout_width="120sp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="#160D08"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="John Doe" />
+
+            <TextView
+                android:id="@+id/Reviews_Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:text="March, 7 2024" />
+        </LinearLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/Reviews_ProfileImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            tools:srcCompat="@drawable/ic_launcher_background" />
+
+        <LinearLayout
+            android:id="@+id/LinearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/LinearLayout1"
+            android:layout_toEndOf="@id/Reviews_ProfileImage"
+            android:orientation="horizontal">
+
+            <RatingBar
+                android:id="@+id/Reviews_StarRating"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:fillViewport="true"
+                android:layoutDirection="ltr"
+                android:numStars="5"
+                android:progressTint="#FFCE38"
+                android:rating="5"
+                android:scaleX="1"
+                android:scaleY="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LinearLayout3"
+            android:layout_toEndOf="@id/Reviews_ProfileImage"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/OptionType"
+                android:layout_marginEnd="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Room Quality"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/Feedback"
+                android:layout_marginEnd="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I bought this guitar for my son's birthday, and he absolutely loves it!"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout2"
+            android:layout_below="@id/LinearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#DAD8D8"
+            android:orientation="horizontal"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
