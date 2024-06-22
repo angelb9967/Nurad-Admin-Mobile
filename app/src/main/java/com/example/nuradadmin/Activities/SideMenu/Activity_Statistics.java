@@ -92,10 +92,6 @@ public class Activity_Statistics extends AppCompatActivity implements Navigation
         } else if (id == R.id.systemManagement_menu) {
             startActivity(new Intent(this, Activity_SystemManagement.class));
             overridePendingTransition(0, 0);
-        } else if (id == R.id.statistics_menu) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (id == R.id.logout_menu) {
-            // Logout
         } else {
             return false;
         }

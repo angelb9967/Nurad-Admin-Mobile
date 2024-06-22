@@ -269,12 +269,6 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
         } else if (id == R.id.systemManagement_menu) {
             startActivity(new Intent(this, Activity_SystemManagement.class));
             overridePendingTransition(0, 0);
-        } else if (id == R.id.statistics_menu) {
-            startActivity(new Intent(this, Activity_Statistics.class));
-            overridePendingTransition(0, 0);
-        } else if (id == R.id.logout_menu) {
-            Log.d(TAG, "Logging out");
-            // Logout
         } else {
             return false;
         }
