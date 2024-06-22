@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.nuradadmin.Activities.Activity_ActiveVouchers;
+import com.example.nuradadmin.Activities.Activity_ExpiredVouchers;
 import com.example.nuradadmin.Activities.Activity_Feedbacks;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_PriceRules;
 import com.example.nuradadmin.Activities.List_and_Create.Activity_RoomTypes;
@@ -34,7 +35,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
     private ImageView menu_icon;
     private Toolbar toolbar;
     private TextView title;
-    private LinearLayout roomType, priceRules, rooms, feedbacks, activeVouchers;
+    private LinearLayout roomType, priceRules, rooms, feedbacks, activeVouchers, expiredVouchers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
         rooms = findViewById(R.id.Rooms);
         feedbacks = findViewById(R.id.feedback);
         activeVouchers = findViewById(R.id.activeVouchers);
+        expiredVouchers = findViewById(R.id.ExpiredVouchers);
 
         setSupportActionBar(toolbar);
 
@@ -89,6 +91,10 @@ public class Activity_SystemManagement extends AppCompatActivity implements Navi
 
         activeVouchers.setOnClickListener(View -> {
             goToActivity(Activity_ActiveVouchers.class);
+        });
+
+        expiredVouchers.setOnClickListener(View -> {
+            goToActivity(Activity_ExpiredVouchers.class);
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
