@@ -151,6 +151,18 @@ public class Activity_OtherRevenue extends AppCompatActivity implements Navigati
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+
+        // show or hide floating button while scrolling
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && floatingBtn.isShown()) {
+                    floatingBtn.hide();
+                } else if (dy < 0 && !floatingBtn.isShown()) {
+                    floatingBtn.show();
+                }
+            }
+        });
     }
 
     private void loadRevenueCostData() {
