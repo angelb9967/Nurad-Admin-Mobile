@@ -251,8 +251,10 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
                 if (snapshot.exists()) {
                     Model_Booking booking = snapshot.getValue(Model_Booking.class);
                     if (booking != null) {
+                        holder.bookingID.setText(booking.getBooking_id());
                         holder.stay.setText(booking.getCheckInDate() + " to " + booking.getCheckOutDate());
                         holder.revenue.setText(String.valueOf(booking.getTotalValue()));
+                        fetchContactInfo(booking.getContact_id(), holder);
                     } else {
                         Log.e("Adapter_History", "Booking is null for History Record: " + bookingID);
                     }
@@ -268,13 +270,36 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
         });
     }
 
+    private void fetchContactInfo(String contactID, Adapter_History.MyViewHolder holder) {
+        contacts_DBref.child(contactID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Model_ContactInfo contactInfo = snapshot.getValue(Model_ContactInfo.class);
+                    if (contactInfo != null) {
+                        holder.guestName.setText(contactInfo.getFirstName() + " " + contactInfo.getLastName());
+                    } else {
+                        Log.e("Adapter_Booking", "Contact Information is null for Contact ID: " + contactID);
+                    }
+                } else {
+                    Log.e("Adapter_Booking", "Contact Information is null for Contact ID: " + contactID);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Adapter_Booking", "Failed to retrieve Contact ID: " + error.getMessage());
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return historyList.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView roomName, stay, revenue;
+        private TextView roomName, stay, revenue, guestName, bookingID;
         private ImageButton optionMenu_Btn;
         private RelativeLayout relativeLayout;
         public MyViewHolder(@NonNull View itemView) {
@@ -284,6 +309,8 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
             revenue = itemView.findViewById(R.id.totalPrice);
             optionMenu_Btn = itemView.findViewById(R.id.menubtn);
             relativeLayout = itemView.findViewById(R.id.relativeLayout);
+            guestName = itemView.findViewById(R.id.guestName);
+            bookingID = itemView.findViewById(R.id.bookingId);
         }
     }
 }

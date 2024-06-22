@@ -51,8 +51,74 @@
             android:background="#E6DBDB"
             android:layout_below="@+id/top" />
 
+
         <LinearLayout
             android:layout_below="@id/view"
+            android:id="@+id/linearLayout37"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon37"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/ToDo"
+                    android:src="@drawable/hastag"
+                    app:tint="@color/darkgray" />
+
+                <TextView
+                    android:id="@+id/bookingId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toEndOf="@id/icon37"
+                    android:text=""
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_below="@id/linearLayout37"
+            android:id="@+id/linearLayout34"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="@string/ToDo"
+                    android:src="@drawable/user"
+                    app:tint="@color/darkgray" />
+
+                <TextView
+                    android:id="@+id/guestName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toEndOf="@id/icon7"
+                    android:text="John Doe"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@id/linearLayout34"
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
