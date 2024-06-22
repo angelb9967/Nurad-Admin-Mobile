@@ -169,7 +169,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/chart_simple"
+                            android:src="@drawable/feedback_hand"
                             app:tint="@color/purple" />
 
                         <TextView
@@ -177,7 +177,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="6dp"
-                            android:text="Statistics"
+                            android:text="Feedback"
                             android:textColor="@color/softblack"
                             android:textSize="18sp" />
                     </LinearLayout>
@@ -204,7 +204,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/time_past"
+                            android:src="@drawable/ticket"
                             app:tint="@color/purple" />
 
                         <TextView
@@ -212,7 +212,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="6dp"
-                            android:text="History"
+                            android:textAlignment="center"
+                            android:text="Active\nVouchers"
                             android:textColor="@color/softblack"
                             android:textSize="18sp" />
                     </LinearLayout>
@@ -239,7 +240,7 @@
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/power"
+                            android:src="@drawable/square_x"
                             app:tint="@color/purple" />
 
                         <TextView
@@ -247,7 +248,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="6dp"
-                            android:text="Logout"
+                            android:textAlignment="center"
+                            android:text="Expired\nVouchers"
                             android:textColor="@color/softblack"
                             android:textSize="18sp" />
                     </LinearLayout>
