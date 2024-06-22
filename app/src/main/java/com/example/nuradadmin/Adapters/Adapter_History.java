@@ -25,6 +25,7 @@ import com.example.nuradadmin.Models.Model_AddressInfo;
 import com.example.nuradadmin.Models.Model_Booking;
 import com.example.nuradadmin.Models.Model_ContactInfo;
 import com.example.nuradadmin.Models.Model_History;
+import com.example.nuradadmin.Models.Model_PaymentInfo;
 import com.example.nuradadmin.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,12 +44,14 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
     private DatabaseReference bookings_DBref;
     private DatabaseReference contacts_DBref;
     private DatabaseReference address_DBref;
+    private DatabaseReference payment_DBref;
     public Adapter_History(Context context, List<Model_History> historyList ) {
         this.context = context;
         this.historyList = historyList;
         bookings_DBref = FirebaseDatabase.getInstance().getReference("Booking");
         contacts_DBref = FirebaseDatabase.getInstance().getReference("Contact Information");
         address_DBref = FirebaseDatabase.getInstance().getReference("Address Information");
+        payment_DBref = FirebaseDatabase.getInstance().getReference("Payment Information");
     }
 
     @NonNull
@@ -173,7 +176,29 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
                                                             String zip = addressInfo.getZipCode();
                                                             String fullAddress = address1 + "/" + address2 + "; " + city + ", " + region + ", " + country + ", " + zip;
                                                             intent.putExtra("Address", fullAddress);
-                                                            context.startActivity(intent);
+
+                                                            payment_DBref.child(booking.getPayment_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if (snapshot.exists()) {
+                                                                        Model_PaymentInfo paymentInfo = snapshot.getValue(Model_PaymentInfo.class);
+                                                                        if (paymentInfo != null) {
+                                                                            String cardNumber = paymentInfo.getCardNumber();
+                                                                            String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+                                                                            intent.putExtra("Card Number", "xxxx xxxx xxxx " + lastFourDigits);
+                                                                            context.startActivity(intent);
+                                                                        } else {
+                                                                            Log.e("Adapter_History", "Address is null for History Record: " + history.getBooking_id());
+                                                                        }
+                                                                    } else {
+                                                                        Log.e("Adapter_History", "Address does not exist for History Record: " + history.getBooking_id());
+                                                                    }
+                                                                }
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                                    Log.e("Adapter_History", "Failed to retrieve booking: " + error.getMessage());
+                                                                }
+                                                            });
                                                         } else {
                                                             Log.e("Adapter_History", "Address is null for History Record: " + history.getBooking_id());
                                                         }

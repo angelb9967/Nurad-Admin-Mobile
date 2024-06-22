@@ -589,7 +589,6 @@
                 android:text="Discount (Code)"
                 android:textSize="12sp" />
 
-
             <TextView
                 android:id="@+id/discountVoucherVal"
                 android:layout_width="0dp"

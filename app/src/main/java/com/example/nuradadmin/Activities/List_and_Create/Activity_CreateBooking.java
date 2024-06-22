@@ -989,7 +989,7 @@ public class Activity_CreateBooking extends AppCompatActivity {
         // Fetch user UID
         String checkUserUID = (String) userUIDTextView.getText();
         if (checkUserUID == null || checkUserUID.equalsIgnoreCase("UID not found")) {
-            emailAutoCompleteTextView.setError("Enter a valid Nurad email account");
+            emailAutoCompleteTextView.setError("Enter a valid email account");
             emailAutoCompleteTextView.requestFocus();
             return;
         }

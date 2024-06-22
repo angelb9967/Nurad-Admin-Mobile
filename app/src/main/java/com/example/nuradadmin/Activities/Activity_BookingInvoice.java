@@ -111,6 +111,7 @@ public class Activity_BookingInvoice extends AppCompatActivity {
         String emailStr = intent.getStringExtra("Email");
         String contactInfoStr = intent.getStringExtra("contactInfo");
         String addressStr = intent.getStringExtra("Address");
+        String cardNumberStr = intent.getStringExtra("Card Number");
 
         bookingIdTextView.setText(bookingID);
         roomTextView.setText(room);
@@ -133,6 +134,7 @@ public class Activity_BookingInvoice extends AppCompatActivity {
         custEmail.setText("Email: " + emailStr);
         custContact.setText("Contact No: " + contactInfoStr);
         custAddress.setText("Address: " + addressStr);
+        paymentMethod.setText(cardNumberStr);
 
         // Retrieve add-ons names and prices
         ArrayList<String> addOnsNames = intent.getStringArrayListExtra("AddOnsNames");
