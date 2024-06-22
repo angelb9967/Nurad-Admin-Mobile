@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Print Invoice"
-        android:id="@+id/print"
+        android:title="Delete"
+        android:id="@+id/delete"
         app:showAsAction="never"/>
 </menu>

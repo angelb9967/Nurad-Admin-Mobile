@@ -1,6 +1,8 @@
 package com.example.nuradadmin.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +74,26 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
         return new ArrayList<>(map.values());
     }
 
+    private void showDeleteConfirmationDialog(Model_History history) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Selected Booking History")
+                .setMessage("Are you sure you want to delete this data?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    deleteRecord(history.getHistory_id(), "History");
+                    historyList.remove(history);
+                    notifyDataSetChanged();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void deleteRecord(String primaryKey, String path) {
+        FirebaseDatabase.getInstance().getReference(path).child(primaryKey)
+                .removeValue()
+                .addOnSuccessListener(aVoid -> Log.d("Adapter_History", "Record deleted successfully from " + path))
+                .addOnFailureListener(e -> Log.e("Adapter_History", "Failed to delete record from " + path + ": " + e.getMessage()));
+    }
+
     @Override
     public void onBindViewHolder(@NonNull Adapter_History.MyViewHolder holder, int position) {
         Model_History history = historyList.get(position);
@@ -82,6 +104,16 @@ public class Adapter_History extends RecyclerView.Adapter<Adapter_History.MyView
             PopupMenu popupMenu = new PopupMenu(context, v);
             popupMenu.getMenuInflater().inflate(R.menu.pop_menu_history, popupMenu.getMenu());
             popupMenu.show();
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.delete) {
+                    showDeleteConfirmationDialog(history);
+                } else {
+                    Log.e("Adapter_History", "Error! couldn't identify popup menu option.");
+                    return false;
+                }
+                return true;
+            });
         });
 
         holder.relativeLayout.setOnClickListener(v -> {
