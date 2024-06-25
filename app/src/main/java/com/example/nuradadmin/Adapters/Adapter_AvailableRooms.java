@@ -52,11 +52,10 @@ public class Adapter_AvailableRooms extends RecyclerView.Adapter<Adapter_Availab
     public void onBindViewHolder(@NonNull Adapter_AvailableRooms.MyViewHolder holder, int position) {
         Model_AvailableRooms availableRooms = availableRoomsList.get(position);
         holder.roomName.setText(availableRooms.getRoomName());
+        holder.lastDateTimeUsed.setText(availableRooms.getLastDateTimeUsed());
         if(availableRooms.getLastDateTimeUsed().equalsIgnoreCase("Not used yet")){
             holder.indicator.setText("Not used");
         }else{
-            holder.lastDateTimeUsed.setText(availableRooms.getLastDateTimeUsed());
-
             String lastCleanedStr = availableRooms.getLastCleaned();
             SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy h:mm a", Locale.ENGLISH); // Adjusted date format
             sdf.setTimeZone(TimeZone.getTimeZone("Asia/Manila"));
