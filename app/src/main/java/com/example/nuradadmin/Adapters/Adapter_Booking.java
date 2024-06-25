@@ -118,10 +118,6 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 return;
             }
 
-            // Check if the current time is within the allowed check-in period
-            boolean isCheckInAllowed = !currentDateTime.before(checkInDateTime) && !currentDateTime.after(checkOutDateTime);
-            checkInItem.setEnabled(isCheckInAllowed);
-
             if (booking.getStatus().equalsIgnoreCase("Checked In")){
                 checkInItem.setEnabled(false);
                 cancelBookingItem.setEnabled(false);
@@ -132,6 +128,10 @@ public class Adapter_Booking extends RecyclerView.Adapter<Adapter_Booking.MyView
                 checkInItem.setEnabled(true);
                 cancelBookingItem.setEnabled(true);
                 deleteItem.setEnabled(true);
+
+                // Check if the current time is within the allowed check-in period
+                boolean isCheckInAllowed = !currentDateTime.before(checkInDateTime) && !currentDateTime.after(checkOutDateTime);
+                checkInItem.setEnabled(isCheckInAllowed);
             }
 
             if (booking.getStatus().equalsIgnoreCase("Cancelled") || booking.getStatus().equalsIgnoreCase("Checked Out")){

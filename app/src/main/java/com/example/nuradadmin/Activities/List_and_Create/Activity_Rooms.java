@@ -47,7 +47,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
     private RecyclerView recyclerView;
     private List<String> roomTitles;
     private List<Model_Room> modelRoomList;
-    private DatabaseReference room_DBref, recommended_DBref;
+    private DatabaseReference room_DBref, recommended_DBref, available_DBref;
     private TextView title, itemCounter;
     private FloatingActionButton floatingBtn;
     private Adapter_Room adapter;
@@ -86,6 +86,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
 
         room_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         recommended_DBref = FirebaseDatabase.getInstance().getReference("RecommRooms");
+        available_DBref = FirebaseDatabase.getInstance().getReference("Available Rooms");
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         adapter = new Adapter_Room(Activity_Rooms.this, modelRoomList, this, this);
@@ -228,7 +229,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
         builder.create().show();
     }
 
-    private void checkAndDeleteRoom(Model_Room room) {
+    private void checkAndDeleteRoom (Model_Room room) {
         room_DBref.child(room.getRoomName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -237,6 +238,7 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
                 if (snapshot.exists()) {
                     room_DBref.child(room.getRoomName()).removeValue();
                     deleteImageFromStorage(room.getImageUrl());
+                    available_DBref.child(room.getRoomName()).removeValue();
                 } else {
                     recommended_DBref.child(room.getRoomName()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -244,8 +246,9 @@ public class Activity_Rooms extends AppCompatActivity implements Adapter_Room.On
                             if (snapshot.exists()) {
                                 recommended_DBref.child(room.getRoomName()).removeValue();
                                 deleteImageFromStorage(room.getImageUrl());
+                                available_DBref.child(room.getRoomName()).removeValue();
                             } else {
-                                Log.e("Activity_Rooms", "Room does not exist in database (recommended): " + room.getRoomName());
+                                Log.e("Activity_Rooms", "Room does not exist in database (recommended & allrooms): " + room.getRoomName());
                             }
                         }
 

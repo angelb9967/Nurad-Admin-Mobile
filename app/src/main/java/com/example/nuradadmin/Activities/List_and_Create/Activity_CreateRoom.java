@@ -106,6 +106,9 @@ public class Activity_CreateRoom extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             loadRoomDetails(bundle);
+        } else {
+            title.setText(R.string.Create);
+            saveBtn.setText(R.string.Save);
         }
         setEventListeners();
     }
@@ -163,13 +166,8 @@ public class Activity_CreateRoom extends AppCompatActivity {
             old_DBref = FirebaseDatabase.getInstance().getReference("AllRooms");
         }
 
-        if (purpose.equalsIgnoreCase("View Details")) {
-            title.setText(R.string.Edit);
-            saveBtn.setText(R.string.Update);
-        } else {
-            title.setText(R.string.Create);
-            saveBtn.setText(R.string.Save);
-        }
+        title.setText(R.string.Edit);
+        saveBtn.setText(R.string.Update);
     }
 
     private void changeSpinnerItemTextColor(Spinner spinner, int position) {
