@@ -1,4 +1,4 @@
-# 🏨 Nurad Admin: Mobile Hotel Management System (Admin)
+# 🏨 Nurad Admin: Mobile Hotel Management System
 
 ## ✨ Project Overview
 
@@ -10,13 +10,12 @@ It facilitates efficient oversight of room inventory, guest bookings, and real-t
 
 Explore the core administrative functionalities of Nurad Admin:
 
-*   **📊 Centralized Dashboard:** Offers an aggregated view of key operational metrics and quick access to essential management features.
-*   **📋 Booking Management:** Enables administrators to perform CRUD (Create, Read, Update, Delete) operations on guest bookings, including reservation details, check-in/check-out statuses, and guest information.
-*   **🛏️ Room Inventory Management:** Provides real-time visibility into room status (occupied, vacant, pending cleaning), configuration of room types, and capacity allocation.
-*   **🔄 Real-time Data Synchronization:** Leverages Firebase Realtime Database to ensure immediate propagation of all operational data changes across the system, maintaining data consistency.
-*   **🔐 Secure Authentication:** Implements Firebase Authentication for secure administrator login and granular access control.
-*   **🖥️ Intuitive User Interface (UI):** Engineered for operational clarity and efficient task execution by administrative personnel, minimizing training overhead.
-
+*   **Centralized Dashboard:** Offers an aggregated view of key operational metrics and quick access to essential management features.
+*   **Booking Management:** Enables administrators to perform CRUD (Create, Read, Update, Delete) operations on guest bookings, including reservation details, check-in/check-out statuses, and guest information.
+*   **Room Inventory Management:** Provides real-time visibility into room status (occupied, vacant, pending cleaning), configuration of room types, and capacity allocation.
+*   **Real-time Data Synchronization:** Leverages Firebase Realtime Database to ensure immediate propagation of all operational data changes across the system, maintaining data consistency.
+*   **Secure Authentication:** Implements Firebase Authentication for secure administrator login.
+  
 ## 🛠️ Technologies Utilized
 
 Nurad Admin is constructed upon the following core technologies:
