@@ -43,7 +43,7 @@ These instructions detail the process of setting up and running the Nurad Admin 
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/angelb9967/NUrad-Admin.git
+    git clone https://github.com/angelb9967/Nurad-Admin-Mobile.git
     ```
 2.  **Open Project in Android Studio:**
     *   Launch Android Studio.
