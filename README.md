@@ -71,9 +71,11 @@ Post-installation, the Nurad Admin application can be operated as follows:
 
 For any inquiries or feedback regarding this project, please reach out to the team:
 
-*   **Allysandrei Aparicio** - [***REMOVED***](mailto:***REMOVED***)
-*   **Angeline Bedis** - [***REMOVED***](mailto:***REMOVED***)
-*   **Angie Suson** - [***REMOVED***](mailto:***REMOVED***)
-*   **Jersey Usman** - [***REMOVED***](mailto:***REMOVED***)
+| Name               | Email                                    |
+| :----------------- | :--------------------------------------- |
+| Allysandrei Aparicio | [***REMOVED***](mailto:***REMOVED***) |
+| Angeline Bedis     | [***REMOVED***](mailto:***REMOVED***) |
+| Angie Suson        | [***REMOVED***](mailto:***REMOVED***) |
+| Jersey Usman       | [***REMOVED***](mailto:***REMOVED***) |
 
 Project Repository: [https://github.com/angelb9967/NUrad-Admin.git](https://github.com/angelb9967/NUrad-Admin.git)
