@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/2e944381-d236-4ca8-81ff-db648950e088" alt="Nurad_Admin_Logo" width="700" />
+</div>
+
 # 🏨 Nurad Admin: Mobile Hotel Management System
 
 ## ✨ Project Overview
