@@ -76,9 +76,9 @@ For any inquiries or feedback regarding this project, please reach out to the te
 
 | Name               | Email                                    |
 | :----------------- | :--------------------------------------- |
-| Allysandrei Aparicio | [***REMOVED***](mailto:***REMOVED***) |
-| Angeline Bedis     | [***REMOVED***](mailto:***REMOVED***) |
-| Angie Suson        | [***REMOVED***](mailto:***REMOVED***) |
-| Jersey Usman       | [***REMOVED***](mailto:***REMOVED***) |
+| Allysandrei | 👨‍🎨 [allysandreiaparicio](https://github.com/allysandreiaparicio) |
+| Angeline     | 👩‍💻 [angelb9967](https://github.com/angelb9967) |
+| Angie        | 👩‍🎨 [anjicln ](https://github.com/anjicln) |
+| Jersey       | 👩‍💻 [jerseyloveu](https://github.com/jerseyloveu) |
 
 Project Repository: [https://github.com/angelb9967/Nurad-Admin-Mobile.git](https://github.com/angelb9967/Nurad-Admin-Mobile.git)
