@@ -74,7 +74,7 @@ Post-installation, the Nurad Admin application can be operated as follows:
 
 For any inquiries or feedback regarding this project, please reach out to the team:
 
-| Name               | Email                                    |
+| Contributor               | Email                                    |
 | :----------------- | :--------------------------------------- |
 | Allysandrei | 👨‍🎨 [allysandreiaparicio](https://github.com/allysandreiaparicio) |
 | Angeline     | 👩‍💻 [angelb9967](https://github.com/angelb9967) |
