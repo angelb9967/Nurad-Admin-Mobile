@@ -2,7 +2,16 @@
   <img src="https://github.com/user-attachments/assets/2e944381-d236-4ca8-81ff-db648950e088" alt="Nurad_Admin_Logo" width="700" />
 </div>
 
-# 🏨 Nurad Admin: Mobile Hotel Management System
+<p align="center">
+  <a href="https://github.com/angelb9967/Nurad-Admin-Mobile/issues/new">
+    <img src="https://img.shields.io/badge/Report%20a%20Bug-red?style=for-the-badge&logo=github" />
+  </a>
+  <a href="https://github.com/angelb9967/Nurad-Admin-Mobile/issues/new">
+    <img src="https://img.shields.io/badge/Request%20Feature-blue?style=for-the-badge&logo=github" />
+  </a>
+</p>
+
+# Nurad Admin: Mobile Hotel Management System
 
 ## ✨ Project Overview
 
@@ -100,5 +109,5 @@ Get a quick look at Nurad Admin Mobile in action!
   <img width="185" alt="App screen 10" src="https://github.com/user-attachments/assets/d476e8d5-8aa2-4005-9ef8-e5d44ce0bf55" />
 </p>
 
-
+<img src="https://img.shields.io/badge/Developed%20with%20%E2%9D%A4-angelb9967-red?style=for-the-badge" />
 
